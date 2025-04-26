@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Include Font Awesome -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+    .container {
+      margin: 20px auto;
+      max-width: 600px;
+      padding: 20px;
+      background: #ffffff;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      text-align: center;
+      position: relative;
+    }
+
+    /* Profile Section */
+    .cover-container {
+      width: 100%;
+      height: 200px;
+      background: #ccc;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    .cover-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .upload-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 2;
+    }
+    .upload-btn button {
+      background-color: rgba(0, 123, 255, 0.8);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .upload-btn button:hover {
+      background-color: #0056b3;
+    }
+
+    .profile-picture {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid white;
+      margin-top: -75px;
+      position: relative;
+    }
+
+    .change-profile-btn {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      background-color: #007bff;
+      color: white;
+      border-radius: 50%;
+      padding: 8px;
+      cursor: pointer;
+    }
+    .change-profile-btn i {
+      font-size: 16px;
+    }
+
+    .user-details {
+      margin-top: 20px;
+    }
+    .user-details h2 {
+      margin: 0;
+      font-size: 24px;
+      color: #333;
+    }
+    .user-details p {
+      margin: 5px 0;
+      font-size: 16px;
+      color: #555;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 2px solid #007bff;
+      font-size: 18px;
+      padding: 10px;
+      cursor: pointer;
+      color: #007bff;
+      z-index: 9999;
+      border-radius: 5px;
+    }
+    .back-button:hover {
+      color: #0056b3;
+      background-color: rgba(0, 123, 255, 0.2);
+    }
+
+    /* Post Section */
+    .post-section {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .post-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    .post-form button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .post-form button:hover {
+      background-color: #0056b3;
+    }
+
+    .media-upload {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 10px;
+    }
+    .media-upload i {
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .media-preview {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .post-display {
+      margin-top: 20px;
+    }
+    .post {
+      background-color: #fff;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    }
+    .post-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .post-info img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .post-info .name {
+      font-weight: bold;
+      color: #333;
+    }
+    .post-info .date {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .reaction-icons {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .reaction-icons i {
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .comments-list {
+      margin-top: 15px;
+    }
+
+    .comment-input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- Back Button -->
+<button class="back-button" onclick="window.history.back();">👈🏻 Go Back</button>
+
+<!-- Profile Section -->
+<div class="container">
+  <div class="upload-btn">
+    <button onclick="document.getElementById('coverUpload').click();">
+      <i class="fas fa-image"></i> Change Cover
+    </button>
+    <input type="file" id="coverUpload" accept="image/*" style="display: none;" onchange="updateCoverPicture()">
+  </div>
+
+  <div class="cover-container">
+    <img id="coverImage" src="default-cover.jpg" alt="Cover Picture">
+  </div>
+
+  <img id="profileImage" class="profile-picture" src="default-avatar.png" alt="Profile Picture">
+  
+  <button class="change-profile-btn" onclick="document.getElementById('profileUpload').click();">
+    <i class="fas fa-user-circle"></i>
+  </button>
+  <input type="file" id="profileUpload" accept="image/*" style="display: none;" onchange="updateProfilePicture()">
+
+  <div class="user-details">
+    <h2 id="userName">John Doe</h2>
+    <p id="userEmail">Email: example@example.com</p>
+    <p id="userGender">Gender: Male</p>
+    <p id="userDob">Date of Birth: 01/01/1990</p>
+    
+    <a href="authentication.html"><button>Edit Profile</button></a>
+    
+  </div>
+</div>
+
+<!-- Post Section -->
+<div class="container post-section">
+  <h3>Create a Post</h3>
+  <div class="post-form">
+    <textarea id="postContent" rows="4" placeholder="What's on your mind?"></textarea>
+    
+    <div class="media-upload">
+      <i class="fas fa-image" onclick="document.getElementById('imageUpload').click();"></i>
+      <i class="fas fa-video" onclick="document.getElementById('videoUpload').click();"></i>
+    </div>
+
+    <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="previewMedia('image')">
+    <input type="file" id="videoUpload" accept="video/*" style="display: none;" onchange="previewMedia('video')">
+
+    <button onclick="createPost()">Post</button>
+  </div>
+
+  <div class="media-preview" id="mediaPreview"></div>
+
+  <div class="post-display" id="postDisplay"></div>
+</div>
+
+<script>
+  let mediaData = { image: null, video: null };
+  const userProfile = { 
+    userId: "12345", 
+    name: "John Doe", 
+    username: "@john_doe", 
+    avatar: "https://via.placeholder.com/40" 
+  };
+
+  function previewMedia(type) {
+    const file = type === 'image' ? document.getElementById('imageUpload').files[0] : document.getElementById('videoUpload').files[0];
+    const previewContainer = document.getElementById('mediaPreview');
+    const reader = new FileReader();
+
+    if (file) {
+      if (type === 'image') {
+        reader.onload = function (e) {
+          mediaData.image = e.target.result;
+          previewContainer.innerHTML = `<img src="${e.target.result}" alt="Preview Image">`;
+        };
+        reader.readAsDataURL(file);
+      } else if (type === 'video') {
+        reader.onload = function (e) {
+          mediaData.video = e.target.result;
+          previewContainer.innerHTML = `<video controls><source src="${e.target.result}" type="video/mp4"></video>`;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  }
+
+  function createPost() {
+    const content = document.getElementById('postContent').value;
+
+    if (content) {
+      const postDisplay = document.getElementById('postDisplay');
+      const newPost = document.createElement('div');
+      newPost.classList.add('post');
+
+      const postDate = new Date().toLocaleString();
+
+      newPost.innerHTML = `
+        <div class="post-info">
+          <img src="${userProfile.avatar}" alt="User Avatar">
+          <div>
+            <div class="name">${userProfile.name}</div>
+            <div class="username">${userProfile.username}</div>  
+            <div class="date">${postDate}</div>
+            <div class="user-id">User ID: ${userProfile.userId}</div>
+          </div>
+        </div>
+        <p>${content}</p>
+      `;
+
+      if (mediaData.image) {
+        newPost.innerHTML += `<img src="${mediaData.image}" alt="Post Image" style="max-width: 100%; max-height: 300px; margin-top: 10px;">`;
+      } else if (mediaData.video) {
+        newPost.innerHTML += `<video controls style="max-width: 100%; max-height: 300px; margin-top: 10px;">
+                               <source src="${mediaData.video}" type="video/mp4">
+                             </video>`;
+      }
+
+      const posts = JSON.parse(localStorage.getItem('posts')) || [];
+      posts.unshift({ content, postDate, userId: userProfile.userId, image: mediaData.image, video: mediaData.video });
+      localStorage.setItem('posts', JSON.stringify(posts));
+
+      postDisplay.prepend(newPost);
+      document.getElementById('postContent').value = '';
+      document.getElementById('mediaPreview').innerHTML = '';
+      mediaData = { image: null, video: null };
+
+    } else {
+      alert('Please write something before posting.');
+    }
+  }
+
+  window.onload = function() {
+    const posts = JSON.parse(localStorage.getItem('posts')) || [];
+    const postDisplay = document.getElementById('postDisplay');
+    posts.forEach(post => {
+      const newPost = document.createElement('div');
+      newPost.classList.add('post');
+
+      newPost.innerHTML = `
+        <div class="post-info">
+          <img src="${userProfile.avatar}" alt="User Avatar">
+          <div>
+            <div class="name">${userProfile.name}</div>
+            <div class="username">${userProfile.username}</div>  
+            <div class="date">${post.postDate}</div>
+            <div class="user-id">User ID: ${post.userId}</div>
+          </div>
+        </div>
+        <p>${post.content}</p>
+      `;
+
+      if (post.image) {
+        newPost.innerHTML += `<img src="${post.image}" alt="Post Image" style="max-width: 100%; max-height: 300px; margin-top: 10px;">`;
+      } else if (post.video) {
+        newPost.innerHTML += `<video controls style="max-width: 100%; max-height: 300px; margin-top: 10px;">
+                               <source src="${post.video}" type="video/mp4">
+                             </video>`;
+      }
+
+      postDisplay.appendChild(newPost);
+    });
+  }
+
+  function updateCoverPicture() {
+    const file = document.getElementById('coverUpload').files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const coverImage = document.getElementById('coverImage');
+        coverImage.src = e.target.result;
+
+        const userProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
+        userProfile.coverPicture = e.target.result;
+        localStorage.setItem('userProfile', JSON.stringify(userProfile));
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function updateProfilePicture() {
+    const file = document.getElementById('profileUpload').files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const profileImage = document.getElementById('profileImage');
+        profileImage.src = e.target.result;
+
+        const userProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
+        userProfile.profilePicture = e.target.result;
+        localStorage.setItem('userProfile', JSON.stringify(userProfile));
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  
+  window.onload = function() {
+  // Retrieve the user profile from localStorage
+  const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+
+  if (userProfile) {
+    // Update the profile picture
+    document.getElementById('profileImage').src = userProfile.profilePicture || 'default-avatar.png';
+
+    // Update the cover image
+    document.getElementById('coverImage').src = userProfile.coverPicture || 'default-cover.jpg';
+
+    // Populate user details
+    document.getElementById('userName').textContent = userProfile.name || 'John Doe';
+    document.getElementById('userEmail').textContent = `Email: ${userProfile.email || 'example@example.com'}`;
+    document.getElementById('userGender').textContent = `Gender: ${userProfile.gender || 'Male'}`;
+    document.getElementById('userDob').textContent = `Date of Birth: ${userProfile.dob || '01/01/1990'}`;
+  } else {
+    // If no user profile exists, redirect to the profile creation page
+    window.location.href = "profile-form.html";
+  }
+
+  // Load and display previous posts from localStorage
+  const posts = JSON.parse(localStorage.getItem('posts')) || [];
+  const postDisplay = document.getElementById('postDisplay');
+  
+  posts.forEach(post => {
+    const newPost = document.createElement('div');
+    newPost.classList.add('post');
+
+    newPost.innerHTML = `
+      <div class="post-info">
+        <img src="${userProfile.avatar || 'default-avatar.png'}" alt="User Avatar">
+        <div>
+          <div class="name">${userProfile.name || 'John Doe'}</div>
+          <div class="date">${post.postDate}</div>
+        </div>
+      </div>
+      <p>${post.content}</p>
+    `;
+
+    if (post.image) {
+      newPost.innerHTML += `<img src="${post.image}" alt="Post Image" style="max-width: 100%; max-height: 300px; margin-top: 10px;">`;
+    } else if (post.video) {
+      newPost.innerHTML += `<video controls style="max-width: 100%; max-height: 300px; margin-top: 10px;">
+                             <source src="${post.video}" type="video/mp4">
+                           </video>`;
+    }
+
+    postDisplay.appendChild(newPost);
+  });
+};
+
+  window.onload = function() {
+  // Retrieve the user profile from localStorage
+  const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+
+  if (!userProfile) {
+    // If no user profile exists, redirect to the profile creation page
+    window.location.href = "profile-form.html";
+    return;
+  }
+
+  // Update the profile picture
+  document.getElementById('profileImage').src = userProfile.profilePicture || 'default-avatar.png';
+
+  // Update the cover image
+  document.getElementById('coverImage').src = userProfile.coverPicture || 'default-cover.jpg';
+
+  // Populate user details
+  document.getElementById('userName').textContent = userProfile.name || 'John Doe';
+  document.getElementById('userEmail').textContent = `Email: ${userProfile.email || 'example@example.com'}`;
+  document.getElementById('userGender').textContent = `Gender: ${userProfile.gender || 'Male'}`;
+  document.getElementById('userDob').textContent = `Date of Birth: ${userProfile.dob || '01/01/1990'}`;
+
+  // Load the post for the logged-in user from localStorage (if available)
+  const posts = JSON.parse(localStorage.getItem('posts')) || [];
+  const postDisplay = document.getElementById('postDisplay');
+
+  // Find the post created by the current user (if any)
+  const userPost = posts.find(post => post.userId === userProfile.userId);
+
+  if (userPost) {
+    const newPost = document.createElement('div');
+    newPost.classList.add('post');
+
+    newPost.innerHTML = `
+      <div class="post-info">
+        <img src="${userProfile.avatar || 'default-avatar.png'}" alt="User Avatar">
+        <div>
+          <div class="name">${userProfile.name || 'John Doe'}</div>
+          <div class="date">${userPost.postDate}</div>
+        </div>
+      </div>
+      <p>${userPost.content}</p>
+    `;
+
+    if (userPost.image) {
+      newPost.innerHTML += `<img src="${userPost.image}" alt="Post Image" style="max-width: 100%; max-height: 300px; margin-top: 10px;">`;
+    } else if (userPost.video) {
+      newPost.innerHTML += `<video controls style="max-width: 100%; max-height: 300px; margin-top: 10px;">
+                             <source src="${userPost.video}" type="video/mp4">
+                           </video>`;
+    }
+
+    postDisplay.appendChild(newPost);
+  } else {
+    // If the user has no post, display a message or leave the section empty
+    postDisplay.innerHTML = "<p>No posts available for this user.</p>";
+  }
+};
+
+function createPost() {
+  const content = document.getElementById('postContent').value;
+
+  if (content) {
+    const postDate = new Date().toLocaleString();
+    const userId = userProfile.userId;  // Assuming userProfile is already defined and contains user info
+
+    // Create the post object
+    const newPost = {
+      content,
+      postDate,
+      userId,
+      image: mediaData.image || null,
+      video: mediaData.video || null
+    };
+
+    // Retrieve posts from localStorage (if any)
+    const posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+    // Check if the user already has a post
+    const existingPostIndex = posts.findIndex(post => post.userId === userId);
+
+    if (existingPostIndex !== -1) {
+      // If the user already has a post, replace it with the new one
+      posts[existingPostIndex] = newPost;
+    } else {
+      // If the user doesn't have a post, add a new one
+      posts.unshift(newPost);
+    }
+
+    // Save the updated posts array to localStorage
+    localStorage.setItem('posts', JSON.stringify(posts));
+
+    // Clear the input and media preview
+    document.getElementById('postContent').value = '';
+    document.getElementById('mediaPreview').innerHTML = '';
+    mediaData = { image: null, video: null };
+
+    // Update the post display
+    window.onload();
+  } else {
+    alert('Please write something before posting.');
+  }
+}
+// On page load
+window.onload = function() {
+  // Retrieve the user profile from localStorage
+  const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+
+  if (!userProfile) {
+    // If no user profile exists, redirect to the profile creation page
+    window.location.href = "profile-form.html";
+    return;
+  }
+
+  // Update the profile picture
+  document.getElementById('profileImage').src = userProfile.profilePicture || 'default-avatar.png';
+
+  // Update the cover image
+  document.getElementById('coverImage').src = userProfile.coverPicture || 'default-cover.jpg';
+
+  // Populate user details
+  document.getElementById('userName').textContent = userProfile.name || 'John Doe';
+  document.getElementById('userEmail').textContent = `Email: ${userProfile.email || 'example@example.com'}`;
+  document.getElementById('userGender').textContent = `Gender: ${userProfile.gender || 'Male'}`;
+  document.getElementById('userDob').textContent = `Date of Birth: ${userProfile.dob || '01/01/1990'}`;
+
+  // Load posts for the logged-in user from localStorage (if available)
+  displayUserPost(userProfile.userId);
+};
+
+// Display the user's post
+function displayUserPost(userId) {
+  const posts = JSON.parse(localStorage.getItem('posts')) || [];
+  const postDisplay = document.getElementById('postDisplay');
+
+  // Find the post created by the current user (if any)
+  const userPost = posts.find(post => post.userId === userId);
+
+  if (userPost) {
+    const newPost = document.createElement('div');
+    newPost.classList.add('post');
+
+    newPost.innerHTML = `
+      <div class="post-info">
+        <img src="${userPost.avatar || 'default-avatar.png'}" alt="User Avatar">
+        <div>
+          <div class="name">${userPost.name || 'John Doe'}</div>
+          <div class="date">${userPost.postDate}</div>
+        </div>
+      </div>
+      <p>${userPost.content}</p>
+    `;
+
+    if (userPost.image) {
+      newPost.innerHTML += `<img src="${userPost.image}" alt="Post Image" style="max-width: 100%; max-height: 300px; margin-top: 10px;">`;
+    } else if (userPost.video) {
+      newPost.innerHTML += `<video controls style="max-width: 100%; max-height: 300px; margin-top: 10px;">
+                             <source src="${userPost.video}" type="video/mp4">
+                           </video>`;
+    }
+
+    postDisplay.innerHTML = ''; // Clear previous posts
+    postDisplay.appendChild(newPost); // Add the new post
+  } else {
+    // If no post is found for the user, show a message
+    postDisplay.innerHTML = "<p>No posts available for this user.</p>";
+  }
+}
+
+// Create a post
+function createPost() {
+  const content = document.getElementById('postContent').value;
+  const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+
+  if (content && userProfile) {
+    const postDate = new Date().toLocaleString();
+    const userId = userProfile.userId; // Assuming userProfile is already defined and contains user info
+
+    // Create the post object
+    const newPost = {
+      content,
+      postDate,
+      userId,
+      image: mediaData.image || null,
+      video: mediaData.video || null,
+      avatar: userProfile.profilePicture || 'default-avatar.png',  // Use the profile picture as avatar
+      name: userProfile.name || 'John Doe', // User's name
+    };
+
+    // Retrieve posts from localStorage (if any)
+    const posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+    // Check if the user already has a post
+    const existingPostIndex = posts.findIndex(post => post.userId === userId);
+
+    if (existingPostIndex !== -1) {
+      // If the user already has a post, replace it with the new one
+      posts[existingPostIndex] = newPost;
+    } else {
+      // If the user doesn't have a post, add a new one
+      posts.unshift(newPost);
+    }
+
+    // Save the updated posts array to localStorage
+    localStorage.setItem('posts', JSON.stringify(posts));
+
+    // Clear the input and media preview
+    document.getElementById('postContent').value = '';
+    document.getElementById('mediaPreview').innerHTML = '';
+    mediaData = { image: null, video: null };
+
+    // Reload to update the display
+    displayUserPost(userId);
+  } else {
+    alert('Please write something before posting.');
+  }
+}
+</script>
+
+</body>
+</html>

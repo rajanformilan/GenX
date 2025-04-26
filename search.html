@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Search Results - GenX</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .result-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .cover-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px 8px 0 0;
+    }
+    .profile-image {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      margin-top: -70px;
+      border: 5px solid white;
+      object-fit: cover;
+    }
+    h2, h3 {
+      margin: 10px 0;
+    }
+    p {
+      margin: 5px 0;
+      color: #555;
+    }
+    .no-result {
+      margin-top: 50px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="searchResult" class="result-container">
+    <h2>Loading...</h2>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const query = params.get('query')?.toLowerCase();
+      const user = JSON.parse(localStorage.getItem('userProfile')); // from your profile form
+
+      const container = document.getElementById('searchResult');
+
+      if (!query) {
+        container.innerHTML = '<p class="no-result">No search query provided.</p>';
+        return;
+      }
+
+      if (user && (user.name.toLowerCase() === query || user.email.toLowerCase() === query)) {
+        container.innerHTML = `
+          <img src="${user.coverPicture}" class="cover-image" alt="Cover">
+          <img src="${user.profilePicture}" class="profile-image" alt="Profile">
+          <h3>${user.name}</h3>
+          <p><strong>Email:</strong> ${user.email}</p>
+          <p><strong>Gender:</strong> ${user.gender}</p>
+          <p><strong>DOB:</strong> ${user.dob}</p>
+        `;
+      } else {
+        container.innerHTML = `<p class="no-result">No profile found for "<strong>${query}</strong>".</p>`;
+      }
+    });
+  </script>
+
+</body>
+</html>

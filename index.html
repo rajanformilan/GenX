@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenX</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">GenX</div>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for profiles...">
+            <button onclick="searchProfile()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="authentication.html"><i class="fas fa-sign-in-alt"></i> Signup/Login</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+            <li><a href="services.html"><i class="fas fa-cogs"></i> Services</a></li>
+            <li><a href="contact.html"><i class="fas fa-phone-alt"></i> Contact</a></li>
+        </ul>
+
+        <div class="burger" onclick="toggleMenu()">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+    </nav>
+
+    <center><h2>News Feed</h2></center>
+    
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Property Listings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+    .container {
+      margin: 20px auto;
+      max-width: 900px;
+      padding: 20px;
+      background: #ffffff;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    .property-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .property-item {
+      background-color: #fff;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    }
+    .property-item img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .property-info {
+      margin-top: 10px;
+    }
+    .property-info h3 {
+      font-size: 20px;
+      color: #333;
+    }
+    .property-info p {
+      font-size: 16px;
+      color: #555;
+    }
+    .location {
+      font-size: 14px;
+      color: #888;
+    }
+    .map-container {
+      margin-top: 10px;
+      height: 200px;
+      background-color: #ddd;
+      border-radius: 8px;
+    }
+    .btn {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+    }
+    .user-info {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #777;
+    }
+    .engagements {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+    .engagement-btn {
+      background-color: #f1f1f1;
+      color: #555;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 10px;
+      border: 1px solid #ddd;
+    }
+    .engagement-btn:hover {
+      background-color: #e7e7e7;
+    }
+    .engagement-btn.active {
+      background-color: #007bff;
+      color: white;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      padding-top: 60px;
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 8px;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Property Listings in Your Area</h2>
+    <div class="property-list">
+      <!-- Property 1: Land for Sale -->
+      <div class="property-item" id="property-1">
+        <img src="property1.jpg" alt="Property Image">
+        
+        <div class="property-info">
+          <h3>Beautiful Land in Downtown Area</h3>
+          <p>Price: NPR 30,00,000</p>
+          <p>Size: 5 Ropani, 3 Katta</p>
+          <p class="location">Location: Downtown, City</p>
+          <div class="map-container">
+            <iframe src="https://maps.google.com/maps?q=Downtown%20City&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" frameborder="0"></iframe>
+          </div>
+          <!-- Link to the post details page -->
+          <a href="property1-detail.html" class="btn">View Details</a>
+        </div>
+        
+        <div class="user-info">
+          <strong>Posted by:</strong> <span>JohnDoe123</span>
+        </div>
+        <div class="engagements">
+          <strong>Engagements:</strong> 
+          <span id="likes-1">Likes: 120</span> | 
+          <span>Comments: 35</span> | 
+          <span>Shares: 15</span>
+          <div class="engagement-options">
+            <button class="engagement-btn" onclick="likePost(1)">Like</button>
+            <button class="engagement-btn" onclick="openCommentModal(1)">Comment</button>
+            <button class="engagement-btn" onclick="sharePost(1)">Share</button>
+            <button class="engagement-btn" onclick="copyLink(1)">Copy Link</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property 2: Home for Sale -->
+      <div class="property-item" id="property-2">
+        <img src="property2.jpg" alt="Property Image">
+        
+        <div class="property-info">
+          <h3>Luxury 3-Bedroom Home in Riverside</h3>
+          <p>Price: NPR 45,00,000</p>
+          <p>Size: 1500 sqft</p>
+          <p class="location">Location: Riverside, City</p>
+          <div class="map-container">
+            <iframe src="https://maps.google.com/maps?q=Riverside%20City&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" frameborder="0"></iframe>
+          </div>
+          <!-- Link to the post details page -->
+          <a href="property2-detail.html" class="btn">View Details</a>
+        </div>
+
+        <div class="user-info">
+          <strong>Posted by:</strong> <span>Alice_Properties</span>
+        </div>
+        <div class="engagements">
+          <strong>Engagements:</strong> 
+          <span id="likes-2">Likes: 85</span> | 
+          <span>Comments: 25</span> | 
+          <span>Shares: 10</span>
+          <div class="engagement-options">
+            <button class="engagement-btn" onclick="likePost(2)">Like</button>
+            <button class="engagement-btn" onclick="openCommentModal(2)">Comment</button>
+            <button class="engagement-btn" onclick="sharePost(2)">Share</button>
+            <button class="engagement-btn" onclick="copyLink(2)">Copy Link</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comment Modal -->
+  <div id="commentModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeCommentModal()">&times;</span>
+      <h3>Leave a Comment</h3>
+      <textarea id="commentText" rows="4" style="width: 100%;" placeholder="Write your comment..."></textarea>
+      <br><br>
+      <button onclick="submitComment()">Submit Comment</button>
+    </div>
+  </div>
+
+  <script>
+    // Function to handle the Like button click and update the count
+    function likePost(postId) {
+      var likeCountElement = document.getElementById('likes-' + postId);
+      var likeCount = parseInt(likeCountElement.innerText.split(': ')[1]);
+      
+      // Increment the like count and update the display
+      likeCount++;
+      likeCountElement.innerText = "Likes: " + likeCount;
+
+      // Toggle the 'active' class on the Like button
+      var likeButton = document.querySelector('.property-item:nth-child(' + postId + ') .engagement-btn:nth-child(1)');
+      likeButton.classList.toggle('active');
+      
+      // Optionally, change button text when liked (optional)
+      if (likeButton.classList.contains('active')) {
+        likeButton.innerText = "Liked";
+      } else {
+        likeButton.innerText = "Like";
+      }
+    }
+
+    // Open the Comment Modal
+    function openCommentModal(postId) {
+      var modal = document.getElementById("commentModal");
+      modal.style.display = "block";
+    }
+
+    // Close the Comment Modal
+    function closeCommentModal() {
+      var modal = document.getElementById("commentModal");
+      modal.style.display = "none";
+    }
+
+    // Submit the Comment
+    function submitComment() {
+      var comment = document.getElementById("commentText").value;
+      if (comment) {
+        alert("Comment submitted: " + comment);
+        // Here, you would send the comment to the server, for example.
+        closeCommentModal();
+      } else {
+        alert("Please write a comment before submitting.");
+      }
+    }
+
+    // Share the post on various social media platforms
+    function sharePost(postId) {
+      var postUrl = window.location.href; // Share current URL
+      var shareUrl;
+
+      // Social media share URLs
+      switch (postId) {
+        case 1:
+          shareUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(postUrl);
+          break;
+        case 2:
+          shareUrl = "https://twitter.com/intent/tweet?url=" + encodeURIComponent(postUrl);
+          break;
+        case 3:
+          shareUrl = "https://wa.me/?text=" + encodeURIComponent(postUrl);
+          break;
+        case 4:
+          shareUrl = "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(postUrl);
+          break;
+        default:
+          alert('Share option not defined');
+          return;
+      }
+
+      // Open share URL in a new window
+      window.open(shareUrl, '_blank');
+    }
+
+    // Copy Link to Clipboard
+    function copyLink(postId) {
+      var postUrl = window.location.href; // Get current post URL
+      navigator.clipboard.writeText(postUrl).then(function() {
+        alert("Link copied to clipboard!");
+      }).catch(function(err) {
+        alert("Failed to copy the link: " + err);
+      });
+    }
+  </script>
+
+</body>
+</html>
+
+    
+    <script src="script.js"></script>
+</body>
+</html>
