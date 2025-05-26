@@ -91,3 +91,109 @@ body {
 body {
   padding-top: 60px; /* Adjust the padding-top value according to the height of your navbar */
 }
+
+#feedContainer {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+.post {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.post-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.post-info img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 12px;
+  object-fit: cover;
+}
+
+.post-info .name {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.post-info .date {
+  font-size: 12px;
+  color: #888;
+}
+
+.post p {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.post img,
+.post video {
+  max-width: 100%;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+
+
+
+.post {
+  background: #fff;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+.post-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.post-info .name {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.post-info .date {
+  font-size: 0.8em;
+  color: #666;
+}
+
+.engagements {
+  margin-top: 12px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.engagement-btn {
+  cursor: pointer;
+  padding: 5px 12px;
+  margin-right: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  transition: background-color 0.3s;
+  user-select: none;
+}
+
+.engagement-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.engagement-btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
