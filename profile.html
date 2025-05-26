@@ -276,6 +276,15 @@
   <div class="post-display" id="postDisplay"></div>
 </div>
 
+<div class="reaction-icons">
+  <i class="fas fa-heart" onclick="toggleLike(this, '${postId}')"></i> <span class="like-count">0</span>
+  <i class="fas fa-comment" onclick="focusCommentInput('${postId}')"></i> <span class="comment-count">0</span>
+  <i class="fas fa-share" onclick="sharePost('${postId}')"></i> <span class="share-count">0</span>
+</div>
+<div class="comments-list" id="comments-${postId}"></div>
+<input type="text" class="comment-input" id="comment-input-${postId}" placeholder="Write a comment..." onkeydown="addComment(event, '${postId}')">
+
+
 <script>
   let mediaData = { image: null, video: null };
   const userProfile = { 
@@ -685,6 +694,92 @@ function createPost() {
     alert('Please write something before posting.');
   }
 }
+
+
+
+function getPosts() {
+  return JSON.parse(localStorage.getItem('posts')) || [];
+}
+
+function savePosts(posts) {
+  localStorage.setItem('posts', JSON.stringify(posts));
+}
+
+function toggleLike(element, postId) {
+  const posts = getPosts();
+  const post = posts.find(p => p.id === postId);
+  if (!post.likes) post.likes = 0;
+  if (!post.liked) {
+    post.likes++;
+    post.liked = true;
+    element.style.color = 'red';  // Show liked state
+  } else {
+    post.likes--;
+    post.liked = false;
+    element.style.color = '';  // Reset color
+  }
+  savePosts(posts);
+  updatePostEngagement(postId);
+}
+
+function updatePostEngagement(postId) {
+  const posts = getPosts();
+  const post = posts.find(p => p.id === postId);
+  if (!post) return;
+  const postElem = document.querySelector(`[data-post-id="${postId}"]`);
+  if (!postElem) return;
+
+  postElem.querySelector('.like-count').textContent = post.likes || 0;
+  postElem.querySelector('.comment-count').textContent = (post.comments ? post.comments.length : 0);
+  postElem.querySelector('.share-count').textContent = post.shares || 0;
+}
+
+function focusCommentInput(postId) {
+  document.getElementById(`comment-input-${postId}`).focus();
+}
+
+function addComment(event, postId) {
+  if (event.key === 'Enter' && event.target.value.trim()) {
+    const commentText = event.target.value.trim();
+    const posts = getPosts();
+    const post = posts.find(p => p.id === postId);
+    if (!post.comments) post.comments = [];
+    post.comments.push({ text: commentText, date: new Date().toLocaleString() });
+    savePosts(posts);
+    event.target.value = '';
+    renderComments(postId);
+    updatePostEngagement(postId);
+  }
+}
+
+function renderComments(postId) {
+  const posts = getPosts();
+  const post = posts.find(p => p.id === postId);
+  const commentsContainer = document.getElementById(`comments-${postId}`);
+  if (!post || !commentsContainer) return;
+
+  commentsContainer.innerHTML = '';
+  if (post.comments && post.comments.length) {
+    post.comments.forEach(comment => {
+      const commentElem = document.createElement('div');
+      commentElem.textContent = `${comment.date}: ${comment.text}`;
+      commentElem.style.fontSize = '14px';
+      commentElem.style.marginTop = '5px';
+      commentsContainer.appendChild(commentElem);
+    });
+  }
+}
+
+function sharePost(postId) {
+  const posts = getPosts();
+  const post = posts.find(p => p.id === postId);
+  if (!post.shares) post.shares = 0;
+  post.shares++;
+  savePosts(posts);
+  updatePostEngagement(postId);
+  alert('Post shared! (simulate)');
+}
+
 </script>
 
 </body>
