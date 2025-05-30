@@ -2,157 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Authentication</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-      background-color: #f4f4f9;
-    }
-    .container {
-      margin: 20px auto;
-      max-width: 400px;
+      background: #f4f4f4;
       padding: 20px;
-      background: #ffffff;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
     }
-    input, select, button {
-      width: 90%;
-      margin: 10px auto;
+    .auth-container {
+      background: #fff;
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input[type="text"], input[type="file"] {
+      width: 100%;
+      margin-bottom: 10px;
       padding: 10px;
-      font-size: 16px;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      border-radius: 4px;
-      display: block;
     }
     button {
-      background-color: #007bff;
+      width: 100%;
+      background: #1877f2;
       color: white;
+      padding: 10px;
       border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .profile-picture, .cover-picture {
-      width: 170px;
-      height: 170px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin: 10px auto;
-      display: block;
-    }
-    .cover-container {
-      width: 100%;
-      height: 200px;
-      background: #ccc;
-      margin-bottom: 20px;
       border-radius: 8px;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .cover-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Create Your Profile</h1>
-    <form id="profileForm">
-      <!-- Cover Picture Upload -->
-      <div class="cover-container">
-        <img id="coverPreview" class="cover-picture" src="default-cover.jpg" alt="Cover Picture">
-      </div>
-      <input type="file" id="coverPicture" accept="image/*" placeholder="Upload Cover Picture">
-
-      <input type="text" id="name" placeholder="Enter your name" required>
-      <input type="email" id="email" placeholder="Enter your email" required>
-      <select id="gender" required>
-        <option value="">Select Gender</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-        <option value="Other">Other</option>
-      </select>
-
-      <!-- Date of Birth Field -->
-      <input type="date" id="dob" required>
-
-      <!-- Password Field -->
-      <input type="password" id="password" placeholder="Enter your password" required>
-
-      <!-- Profile Picture Upload -->
-      <img id="profilePreview" class="profile-picture" src="default-avatar.png" alt="Profile Picture">
-      <input type="file" id="profilePicture" accept="image/*">
-      
-      <button type="submit">Save Profile</button>
-    </form>
+  <div class="auth-container">
+    <h2>Create/Edit Profile</h2>
+    <input type="text" id="name" placeholder="Enter your name" required />
+    <input type="text" id="bio" placeholder="Enter your bio" />
+    <label>Profile Picture</label>
+    <input type="file" id="profilePicInput" accept="image/*" />
+    <label>Cover Photo</label>
+    <input type="file" id="coverPicInput" accept="image/*" />
+    <button onclick="saveUserProfile()">Save Profile</button>
   </div>
 
   <script>
-    const profilePictureInput = document.getElementById('profilePicture');
-    const profilePreview = document.getElementById('profilePreview');
-    const coverPictureInput = document.getElementById('coverPicture');
-    const coverPreview = document.getElementById('coverPreview');
-
-    // Preview the uploaded profile image
-    profilePictureInput.addEventListener('change', function() {
-      const file = this.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          profilePreview.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    // Preview the uploaded cover image
-    coverPictureInput.addEventListener('change', function() {
-      const file = this.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          coverPreview.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    document.getElementById('profileForm').addEventListener('submit', function(event) {
-      event.preventDefault(); // Prevent form submission
-
-      // Get form values
+    function saveUserProfile() {
       const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      const gender = document.getElementById('gender').value;
-      const dob = document.getElementById('dob').value;
-      const password = document.getElementById('password').value;
+      const bio = document.getElementById('bio').value;
+      const profileFile = document.getElementById('profilePicInput').files[0];
+      const coverFile = document.getElementById('coverPicInput').files[0];
 
-      // Save profile data in localStorage
-      const userProfile = {
-        name: name,
-        email: email,
-        gender: gender,
-        dob: dob, // Save Date of Birth
-        password: password, // Save password (be cautious with saving passwords)
-        profilePicture: profilePreview.src, // Save the profile picture as a base64 string
-        coverPicture: coverPreview.src // Save the cover picture as a base64 string
+      let profilePic = "";
+      let coverPic = "";
+
+      const readProfile = new FileReader();
+      const readCover = new FileReader();
+
+      readProfile.onload = () => {
+        profilePic = readProfile.result;
+        if (!coverFile) saveAll();
       };
-      localStorage.setItem('userProfile', JSON.stringify(userProfile));
 
-      // Redirect to profile.html after saving
-      alert("Profile saved successfully!");
-      window.location.href = "profile.html";
-    });
+      readCover.onload = () => {
+        coverPic = readCover.result;
+        saveAll();
+      };
+
+      function saveAll() {
+        const userProfile = {
+          name: name || "Anonymous",
+          bio: bio || "Hello from the village!",
+          profilePic: profilePic || "https://via.placeholder.com/100",
+          coverPic: coverPic || "https://via.placeholder.com/600x200"
+        };
+
+        localStorage.setItem('profile', JSON.stringify(userProfile));
+        alert("Profile saved!");
+        window.location.href = "profile.html";
+      }
+
+      if (profileFile) {
+        readProfile.readAsDataURL(profileFile);
+      }
+      if (coverFile) {
+        readCover.readAsDataURL(coverFile);
+      }
+      if (!profileFile && !coverFile) {
+        saveAll();
+      }
+    }
   </script>
 </body>
 </html>
