@@ -261,7 +261,6 @@ function deletePost(id) {
 
 function toggleOptions(id) {
   const menu = document.getElementById(`options-${id}`);
-  // Close all other open menus
   document.querySelectorAll(".post-options").forEach(m => {
     if (m.id !== `options-${id}`) m.style.display = "none";
   });
@@ -286,6 +285,10 @@ function showPosts() {
   const posts = JSON.parse(localStorage.getItem("posts") || "[]");
   const container = document.getElementById("postsContainer");
   container.innerHTML = "";
+  if (posts.length === 0) {
+    container.innerHTML = "<p>No posts yet. Start by writing something!</p>";
+    return;
+  }
   posts.slice().reverse().forEach(post => {
     const media = post.media
       ? post.type === "video"
