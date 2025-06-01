@@ -11,22 +11,27 @@
       margin: 0;
       padding: 0;
     }
+
     .container {
       max-width: 600px;
       margin: auto;
       padding: 20px;
     }
+
     .cover {
+      position: relative;
       height: 200px;
       border-radius: 12px;
       overflow: hidden;
       margin-bottom: 10px;
     }
+
     .cover img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
+
     .profile {
       text-align: center;
       background: white;
@@ -35,6 +40,7 @@
       margin-bottom: 20px;
       position: relative;
     }
+
     .profile img {
       width: 100px;
       height: 100px;
@@ -43,6 +49,16 @@
       border: 3px solid white;
       margin-top: -60px;
     }
+
+    .profile h2 {
+      margin: 10px 0 5px;
+    }
+
+    .profile p {
+      color: gray;
+      margin: 0;
+    }
+
     .edit-btn {
       position: absolute;
       top: 10px;
@@ -54,13 +70,15 @@
       padding: 6px 10px;
       cursor: pointer;
     }
-    .post-form, .post {
+
+    .post-form {
       background: white;
       padding: 15px;
       border-radius: 12px;
       margin-bottom: 20px;
     }
-    textarea {
+
+    .post-form textarea {
       width: 100%;
       padding: 10px;
       border-radius: 8px;
@@ -68,9 +86,11 @@
       margin-bottom: 10px;
       border: 1px solid #ccc;
     }
+
     .post-form input[type="file"] {
       margin-bottom: 10px;
     }
+
     .post-form button {
       background: #1877f2;
       color: white;
@@ -79,11 +99,30 @@
       border-radius: 8px;
       cursor: pointer;
     }
+
+    .post {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
     .post img, .post video {
       width: 100%;
       margin-top: 10px;
       border-radius: 8px;
     }
+
+    .post small {
+      color: gray;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .engagement {
+      margin-top: 10px;
+    }
+
     .engagement button {
       margin-right: 10px;
       background: none;
@@ -91,66 +130,31 @@
       cursor: pointer;
       color: #555;
     }
+
     .preview img, .preview video {
       width: 100%;
       margin-top: 10px;
       border-radius: 8px;
-    }
-    .three-dots {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-      cursor: pointer;
-    }
-    .post-options {
-      display: none;
-      position: absolute;
-      right: 10px;
-      top: 30px;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      z-index: 10;
-    }
-    .post-options button {
-      display: block;
-      background: none;
-      border: none;
-      padding: 10px;
-      width: 100%;
-      text-align: left;
-      cursor: pointer;
-    }
-    .comment-section {
-      margin-top: 10px;
-    }
-    .comment-section input {
-      width: 80%;
-      padding: 5px;
-    }
-    .comment {
-      font-size: 0.9em;
-      margin-top: 5px;
-      padding-left: 10px;
-      color: #333;
     }
   </style>
 </head>
 <body>
 
 <div class="container">
+  <!-- Cover Photo -->
   <div class="cover">
-    <img id="coverPic" src="https://via.placeholder.com/600x200" />
+    <img id="coverPic" src="https://via.placeholder.com/600x200" alt="Cover" />
   </div>
 
+  <!-- Profile Section -->
   <div class="profile">
     <button class="edit-btn" onclick="window.location.href='authentication.html'">Edit Profile</button>
-    <img id="profilePic" src="https://via.placeholder.com/100" />
+    <img id="profilePic" src="https://via.placeholder.com/100" alt="Profile" />
     <h2 id="profileName">John Doe</h2>
     <p id="profileBio">Hello from the village!</p>
   </div>
 
+  <!-- Post Form -->
   <div class="post-form">
     <textarea id="postText" placeholder="What's on your mind?" required></textarea>
     <input type="file" id="mediaInput" accept="image/*,video/*" />
@@ -158,178 +162,110 @@
     <button onclick="createPost()">Post</button>
   </div>
 
+  <!-- Posts Display -->
   <div id="postsContainer"></div>
 </div>
 
 <script>
-let mediaBase64 = "";
+  let mediaBase64 = "";
 
-function loadProfile() {
-  const data = JSON.parse(localStorage.getItem("profile")) || {
-    name: "John Doe",
-    bio: "Hello from the village!",
-    profilePic: "https://via.placeholder.com/100",
-    coverPic: "https://via.placeholder.com/600x200"
-  };
-  document.getElementById("profileName").innerText = data.name;
-  document.getElementById("profileBio").innerText = data.bio;
-  document.getElementById("profilePic").src = data.profilePic;
-  document.getElementById("coverPic").src = data.coverPic;
-}
-
-document.getElementById("mediaInput").addEventListener("change", function () {
-  const file = this.files[0];
-  const preview = document.getElementById("mediaPreview");
-  preview.innerHTML = "";
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      mediaBase64 = e.target.result;
-      preview.innerHTML = file.type.startsWith("image/")
-        ? `<img src="${mediaBase64}" />`
-        : `<video controls src="${mediaBase64}"></video>`;
+  function loadProfile() {
+    const data = JSON.parse(localStorage.getItem("profile")) || {
+      name: "John Doe",
+      bio: "Hello from the village!",
+      profilePic: "https://via.placeholder.com/100",
+      coverPic: "https://via.placeholder.com/600x200"
     };
-    reader.readAsDataURL(file);
+
+    document.getElementById("profileName").innerText = data.name;
+    document.getElementById("profileBio").innerText = data.bio;
+    document.getElementById("profilePic").src = data.profilePic;
+    document.getElementById("coverPic").src = data.coverPic;
   }
-});
 
-function createPost() {
-  const text = document.getElementById("postText").value.trim();
-  if (text === "") return alert("Please write something!");
-  const profile = JSON.parse(localStorage.getItem("profile")) || { name: "Anonymous" };
-  const posts = JSON.parse(localStorage.getItem("posts") || "[]");
-  posts.push({
-    id: Date.now(),
-    text,
-    media: mediaBase64,
-    type: mediaBase64.startsWith("data:video") ? "video" : "image",
-    liked: false,
-    likes: 0,
-    comments: [],
-    timestamp: new Date().toLocaleString(),
-    author: profile.name
+  document.getElementById('mediaInput').addEventListener('change', function () {
+    const file = this.files[0];
+    const preview = document.getElementById('mediaPreview');
+    preview.innerHTML = '';
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        mediaBase64 = e.target.result;
+        if (file.type.startsWith('image/')) {
+          preview.innerHTML = `<img src="${mediaBase64}" alt="Preview">`;
+        } else if (file.type.startsWith('video/')) {
+          preview.innerHTML = `<video controls src="${mediaBase64}"></video>`;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   });
-  localStorage.setItem("posts", JSON.stringify(posts));
-  document.getElementById("postText").value = "";
-  document.getElementById("mediaInput").value = "";
-  document.getElementById("mediaPreview").innerHTML = "";
-  mediaBase64 = "";
-  showPosts();
-}
 
-function likePost(id) {
-  const posts = JSON.parse(localStorage.getItem("posts") || "[]");
-  const post = posts.find(p => p.id === id);
-  if (post) {
-    post.liked = !post.liked;
-    post.likes += post.liked ? 1 : -1;
-    localStorage.setItem("posts", JSON.stringify(posts));
+  function createPost() {
+    const text = document.getElementById('postText').value.trim();
+    if (text === "") return alert("Please write something!");
+
+    const profile = JSON.parse(localStorage.getItem("profile")) || { name: "Anonymous" };
+
+    const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+    posts.push({
+      id: Date.now(),
+      text,
+      media: mediaBase64,
+      type: mediaBase64.startsWith('data:video') ? 'video' : 'image',
+      likes: 0,
+      timestamp: new Date().toLocaleString(),
+      author: profile.name
+    });
+
+    localStorage.setItem('posts', JSON.stringify(posts));
+    document.getElementById('postText').value = "";
+    document.getElementById('mediaInput').value = "";
+    document.getElementById('mediaPreview').innerHTML = "";
+    mediaBase64 = "";
     showPosts();
   }
-}
 
-function addComment(id, inputId) {
-  const commentText = document.getElementById(inputId).value.trim();
-  if (!commentText) return;
-  const posts = JSON.parse(localStorage.getItem("posts") || "[]");
-  const post = posts.find(p => p.id === id);
-  if (post) {
-    post.comments.push(commentText);
-    localStorage.setItem("posts", JSON.stringify(posts));
-    showPosts();
+  function likePost(postId) {
+    const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+    const post = posts.find(p => p.id === postId);
+    if (post) {
+      post.likes += 1;
+      localStorage.setItem('posts', JSON.stringify(posts));
+      showPosts();
+    }
   }
-}
 
-function editPost(id) {
-  const newText = prompt("Edit your post:");
-  if (!newText) return;
-  const posts = JSON.parse(localStorage.getItem("posts") || "[]");
-  const post = posts.find(p => p.id === id);
-  if (post) {
-    post.text = newText;
-    localStorage.setItem("posts", JSON.stringify(posts));
-    showPosts();
-  }
-}
+  function showPosts() {
+    const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+    const container = document.getElementById('postsContainer');
+    container.innerHTML = "";
 
-function deletePost(id) {
-  let posts = JSON.parse(localStorage.getItem("posts") || "[]");
-  posts = posts.filter(p => p.id !== id);
-  localStorage.setItem("posts", JSON.stringify(posts));
-  showPosts();
-}
-
-function toggleOptions(id) {
-  const menu = document.getElementById(`options-${id}`);
-  document.querySelectorAll(".post-options").forEach(m => {
-    if (m.id !== `options-${id}`) m.style.display = "none";
-  });
-  menu.style.display = menu.style.display === "block" ? "none" : "block";
-}
-
-function getPostUrl(postId) {
-  const baseUrl = window.location.href.split("#")[0].split("?")[0];
-  return `${baseUrl}?postId=${postId}`;
-}
-
-function copyPostLink(postId) {
-  const url = getPostUrl(postId);
-  navigator.clipboard.writeText(url).then(() => {
-    alert("Post link copied to clipboard!");
-  }).catch(() => {
-    alert("Failed to copy link. Please copy manually: " + url);
-  });
-}
-
-function showPosts() {
-  const posts = JSON.parse(localStorage.getItem("posts") || "[]");
-  const container = document.getElementById("postsContainer");
-  container.innerHTML = "";
-  if (posts.length === 0) {
-    container.innerHTML = "<p>No posts yet. Start by writing something!</p>";
-    return;
-  }
-  posts.slice().reverse().forEach(post => {
-    const media = post.media
-      ? post.type === "video"
+    posts.slice().reverse().forEach(post => {
+      const media = post.media ? (post.type === 'video'
         ? `<video controls src="${post.media}"></video>`
-        : `<img src="${post.media}" />`
-      : "";
+        : `<img src="${post.media}" />`) : "";
 
-    const commentsHtml = post.comments.map(c => `<div class="comment">💬 ${c}</div>`).join("");
+      container.innerHTML += `
+        <div class="post">
+          <strong>${post.author || "Unknown User"}</strong>
+          <p>${post.text}</p>
+          ${media}
+          <div class="engagement">
+            <button onclick="likePost(${post.id})">👍 Like (${post.likes})</button>
+            <button>💬 Comment</button>
+            <button>↗ Share</button>
+          </div>
+          <small>${post.timestamp}</small>
+        </div>
+      `;
+    });
+  }
 
-    container.innerHTML += `
-      <div class="post" style="position: relative">
-        <div class="three-dots" onclick="toggleOptions(${post.id})">⋯</div>
-        <div class="post-options" id="options-${post.id}">
-          <button onclick="editPost(${post.id})">Edit</button>
-          <button onclick="deletePost(${post.id})">Delete</button>
-        </div>
-        <strong>${post.author}</strong>
-        <p>${post.text}</p>
-        ${media}
-        <div class="engagement">
-          <button onclick="likePost(${post.id})">
-            ${post.liked ? "💙 Unlike" : "🤍 Like"} (${post.likes})
-          </button>
-          <button onclick="document.getElementById('comment-box-${post.id}').style.display='block'">💬 Comment</button>
-          <button onclick="copyPostLink(${post.id})">🔗 Copy Link</button>
-        </div>
-        <div id="comment-box-${post.id}" class="comment-section" style="display:none;">
-          <input id="commentInput-${post.id}" placeholder="Write a comment..." />
-          <button onclick="addComment(${post.id}, 'commentInput-${post.id}')">Send</button>
-        </div>
-        ${commentsHtml}
-        <small>${post.timestamp}</small>
-      </div>
-    `;
-  });
-}
-
-window.onload = () => {
-  loadProfile();
-  showPosts();
-};
+  window.onload = () => {
+    loadProfile();
+    showPosts();
+  };
 </script>
 
 </body>
