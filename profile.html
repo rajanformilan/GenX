@@ -111,6 +111,7 @@
       border: 1px solid #ccc;
       border-radius: 6px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 10;
     }
     .post-options button {
       display: block;
@@ -260,7 +261,25 @@ function deletePost(id) {
 
 function toggleOptions(id) {
   const menu = document.getElementById(`options-${id}`);
+  // Close all other open menus
+  document.querySelectorAll(".post-options").forEach(m => {
+    if (m.id !== `options-${id}`) m.style.display = "none";
+  });
   menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+function getPostUrl(postId) {
+  const baseUrl = window.location.href.split("#")[0].split("?")[0];
+  return `${baseUrl}?postId=${postId}`;
+}
+
+function copyPostLink(postId) {
+  const url = getPostUrl(postId);
+  navigator.clipboard.writeText(url).then(() => {
+    alert("Post link copied to clipboard!");
+  }).catch(() => {
+    alert("Failed to copy link. Please copy manually: " + url);
+  });
 }
 
 function showPosts() {
@@ -291,7 +310,7 @@ function showPosts() {
             ${post.liked ? "💙 Unlike" : "🤍 Like"} (${post.likes})
           </button>
           <button onclick="document.getElementById('comment-box-${post.id}').style.display='block'">💬 Comment</button>
-          <button onclick="alert('Shared!')">↗ Share</button>
+          <button onclick="copyPostLink(${post.id})">🔗 Copy Link</button>
         </div>
         <div id="comment-box-${post.id}" class="comment-section" style="display:none;">
           <input id="commentInput-${post.id}" placeholder="Write a comment..." />
