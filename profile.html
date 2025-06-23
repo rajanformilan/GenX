@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>User Profile with Engagements</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -244,151 +247,210 @@
       <img id="coverImage" src="default-cover.jpg" alt="Cover" />
     </div>
     <div style="text-align: center;">
-      <img id="profileImage" src="images/default-avatar.jpg" />
+  <img id="profileImage" class="profile-picture" src="https://via.placeholder.com/120" />
+</div>
 
     </div>
+
     <div class="user-details">
       <h2 id="userName">John Doe</h2>
       <p id="userEmail">johndoe@example.com</p>
       <p id="userGender">Male</p>
       <p id="userDob">1990-01-01</p>
     </div>
-    <a href="authentication.html">
-  <button style="
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    background-color: #eee;
-    font-size: 20px;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  ">
-    🔏
-  </button>
-</a>
-
+    <a href="authentication.html" title="Edit Profile">
+      <button
+        style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          border: none;
+          background-color: #eee;
+          font-size: 20px;
+          cursor: pointer;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        "
+      >
+        🔏
+      </button>
+    </a>
   </div>
 
   <div class="container">
     <h3>Create a Post</h3>
-    <textarea id="postContent" rows="4" placeholder="What's on your mind?"></textarea>
-    <div class="media-upload">
-      <i class="fas fa-image" onclick="document.getElementById('imageUpload').click()"></i>
-      <i class="fas fa-video" onclick="document.getElementById('videoUpload').click()"></i>
+    <textarea
+      id="postContent"
+      rows="4"
+      placeholder="What's on your mind?"
+      aria-label="Write your post content"
+    ></textarea>
+    <div class="media-upload" aria-label="Upload media">
+      <i
+        class="fas fa-image"
+        role="button"
+        tabindex="0"
+        aria-label="Upload image"
+        onclick="document.getElementById('imageUpload').click()"
+        onkeydown="if(event.key==='Enter'){document.getElementById('imageUpload').click()}"
+      ></i>
+      <i
+        class="fas fa-video"
+        role="button"
+        tabindex="0"
+        aria-label="Upload video"
+        onclick="document.getElementById('videoUpload').click()"
+        onkeydown="if(event.key==='Enter'){document.getElementById('videoUpload').click()}"
+      ></i>
     </div>
-    <input type="file" id="imageUpload" accept="image/*" style="display:none" onchange="previewMedia('image')" />
-    <input type="file" id="videoUpload" accept="video/*" style="display:none" onchange="previewMedia('video')" />
-    <div class="media-preview" id="mediaPreview"></div>
+    <input
+      type="file"
+      id="imageUpload"
+      accept="image/*"
+      style="display: none"
+      onchange="previewMedia('image')"
+    />
+    <input
+      type="file"
+      id="videoUpload"
+      accept="video/*"
+      style="display: none"
+      onchange="previewMedia('video')"
+    />
+    <div class="media-preview" id="mediaPreview" aria-live="polite"></div>
     <button onclick="createPost()">Post</button>
   </div>
 
-  <div class="container" id="postDisplay"></div>
+  <div class="container" id="postDisplay" aria-live="polite"></div>
 
   <script>
     let mediaData = { image: null, video: null };
 
-    // User profile object
-    let userProfile = {
-      name: "John Doe",
-      username: "@john_doe",
-      avatar: "default-avatar.png",
-      coverPicture: "default-cover.jpg",
-      email: "johndoe@example.com",
-      gender: "Male",
-      dob: "1990-01-01"
-    };
+    // Load user profile from localStorage or default fallback
+    function loadUserProfile() {
+      const defaultProfile = {
+        name: "John Doe",
+        username: "@john_doe",
+        avatar: "https://via.placeholder.com/120",
+        coverPicture: "default-cover.jpg",
+        email: "johndoe@example.com",
+        gender: "Male",
+        dob: "1990-01-01",
+      };
+      const storedProfile = localStorage.getItem("userProfile");
+      if (storedProfile) {
+        try {
+          return JSON.parse(storedProfile);
+        } catch {
+          return defaultProfile;
+        }
+      } else {
+        return defaultProfile;
+      }
+    }
 
-    window.onload = function () {
-      // Load user profile info dynamically
+    const userProfile = loadUserProfile();
+
+    function updateUserProfileUI() {
       document.getElementById("userName").textContent = userProfile.name;
       document.getElementById("userEmail").textContent = userProfile.email;
       document.getElementById("userGender").textContent = userProfile.gender;
       document.getElementById("userDob").textContent = userProfile.dob;
-      document.getElementById("profileImage").src = userProfile.avatar;
-      document.getElementById("coverImage").src = userProfile.coverPicture;
 
-      // Load and show saved posts
-      const posts = JSON.parse(localStorage.getItem("posts")) || [];
-      posts.forEach(post => showPost(post));
+      // Defensive fallback if image URLs are empty or invalid
+      document.getElementById("profileImage").src =
+        userProfile.avatar || "https://via.placeholder.com/120";
+      document.getElementById("coverImage").src =
+        userProfile.coverPicture || "default-cover.jpg";
+    }
 
-      // Close dropdowns if clicked outside
-      document.addEventListener("click", () => {
-        document.querySelectorAll(".menu-dropdown.active").forEach(menu => menu.classList.remove("active"));
-      });
-    };
-
+    // Preview uploaded media
     function previewMedia(type) {
-      const file = document.getElementById(type === "image" ? "imageUpload" : "videoUpload").files[0];
+      const input = document.getElementById(type === "image" ? "imageUpload" : "videoUpload");
+      const file = input.files[0];
+      if (!file) return;
+
       const reader = new FileReader();
       reader.onload = function (e) {
         mediaData.image = type === "image" ? e.target.result : null;
         mediaData.video = type === "video" ? e.target.result : null;
         document.getElementById("mediaPreview").innerHTML =
           type === "image"
-            ? `<img src="${e.target.result}" />`
-            : `<video controls><source src="${e.target.result}" type="video/mp4" /></video>`;
+            ? `<img src="${e.target.result}" alt="Uploaded image preview" />`
+            : `<video controls><source src="${e.target.result}" type="${file.type}" /></video>`;
       };
-      if (file) reader.readAsDataURL(file);
+      reader.readAsDataURL(file);
     }
 
+    // Create new post
     function createPost() {
-      const content = document.getElementById("postContent").value.trim();
-      if (!content) return alert("Write something!");
+      const contentInput = document.getElementById("postContent");
+      const content = contentInput.value.trim();
+      if (!content) {
+        alert("Please write something before posting!");
+        return;
+      }
 
-      const post = {
+      const newPost = {
         id: Date.now(),
         name: userProfile.name,
-        username: userProfile.username,
-        avatar: userProfile.avatar,
-        content,
+        username: userProfile.username || "",
+        avatar: userProfile.avatar || "images/default-avatar.png",
+        content: content,
         image: mediaData.image,
         video: mediaData.video,
         date: new Date().toLocaleString(),
         likes: 0,
         liked: false,
         comments: 0,
-        shares: 0
+        shares: 0,
       };
 
       const posts = JSON.parse(localStorage.getItem("posts")) || [];
-      posts.unshift(post);
+      posts.unshift(newPost);
       localStorage.setItem("posts", JSON.stringify(posts));
 
-      // Reset inputs
-      document.getElementById("postContent").value = "";
+      // Reset input and preview
+      contentInput.value = "";
       document.getElementById("mediaPreview").innerHTML = "";
       mediaData = { image: null, video: null };
 
-      showPost(post, true);
+      showPost(newPost, true);
     }
 
+    // Show a post in the feed
     function showPost(post, prepend = false) {
       const postDisplay = document.getElementById("postDisplay");
 
-      // Create post element
       const postElem = document.createElement("div");
       postElem.classList.add("post");
       postElem.setAttribute("data-id", post.id);
 
       postElem.innerHTML = `
         <div class="post-info">
-          <img src="${post.avatar}" alt="Avatar" />
+          <img src="${post.avatar}" alt="${escapeHtml(post.name)}'s avatar" />
           <div>
-            <strong>${post.name}</strong><br />
-            <small>${post.date}</small>
+            <strong>${escapeHtml(post.name)}</strong><br />
+            <small>${escapeHtml(post.date)}</small>
           </div>
-          <div class="post-menu" onclick="toggleMenu(event, ${post.id})"><i class="fas fa-ellipsis-v"></i></div>
-          <div class="menu-dropdown" id="menu-${post.id}">
-            <div onclick="editPost(${post.id})">Edit</div>
-            <div onclick="deletePost(${post.id})">Delete</div>
+          <div class="post-menu" onclick="toggleMenu(event, ${post.id})" aria-label="Post menu" role="button" tabindex="0"><i class="fas fa-ellipsis-v"></i></div>
+          <div class="menu-dropdown" id="menu-${post.id}" role="menu">
+            <div role="menuitem" tabindex="0" onclick="editPost(${post.id})">Edit</div>
+            <div role="menuitem" tabindex="0" onclick="deletePost(${post.id})">Delete</div>
           </div>
         </div>
         <p>${escapeHtml(post.content)}</p>
-        ${post.image ? `<img src="${post.image}" alt="Post image" />` : ""}
-        ${post.video ? `<video controls><source src="${post.video}" type="video/mp4" /></video>` : ""}
+        ${
+          post.image
+            ? `<img src="${post.image}" alt="Post image" />`
+            : ""
+        }
+        ${
+          post.video
+            ? `<video controls><source src="${post.video}" type="video/mp4" /></video>`
+            : ""
+        }
         <div class="engagements">
-          <span onclick="toggleLike(${post.id})"><i class="fas fa-heart" style="color:${post.liked ? 'red' : '#555'}"></i> ${post.likes}</span>
+          <span onclick="toggleLike(${post.id})" role="button" tabindex="0" aria-label="Like post"><i class="fas fa-heart" style="color:${post.liked ? 'red' : '#555'}"></i> ${post.likes}</span>
           <span><i class="fas fa-comment"></i> ${post.comments}</span>
           <span><i class="fas fa-share"></i> ${post.shares}</span>
         </div>
@@ -398,144 +460,20 @@
       else postDisplay.appendChild(postElem);
     }
 
-    // Toggle menu dropdown
+    // Toggle menu dropdown visibility
     function toggleMenu(event, postId) {
       event.stopPropagation();
-      const menu = document.getElementById(`menu-${postId}`);
-      const isActive = menu.classList.contains("active");
-      document.querySelectorAll(".menu-dropdown").forEach(m => m.classList.remove("active"));
-      if (!isActive) menu.classList.add("active");
-    }
-
-    // Edit post (basic prompt)
-    function editPost(postId) {
-      const posts = JSON.parse(localStorage.getItem("posts")) || [];
-      const post = posts.find(p => p.id === postId);
-      if (!post) return alert("Post not found");
-
-      const newContent = prompt("Edit your post content:", post.content);
-      if (newContent === null) return; // Cancelled
-
-      post.content = newContent.trim();
-      localStorage.setItem("posts", JSON.stringify(posts));
-      refreshPosts();
-    }
-
-    // Delete post
-    function deletePost(postId) {
-      if (!confirm("Are you sure you want to delete this post?")) return;
-      let posts = JSON.parse(localStorage.getItem("posts")) || [];
-      posts = posts.filter(p => p.id !== postId);
-      localStorage.setItem("posts", JSON.stringify(posts));
-      refreshPosts();
-    }
-
-    // Toggle like/unlike
-    function toggleLike(postId) {
-      const posts = JSON.parse(localStorage.getItem("posts")) || [];
-      const post = posts.find(p => p.id === postId);
-      if (!post) return;
-
-      if (post.liked) {
-        post.likes--;
-        post.liked = false;
-      } else {
-        post.likes++;
-        post.liked = true;
-      }
-      localStorage.setItem("posts", JSON.stringify(posts));
-      refreshPosts();
-    }
-
-    // Reload posts UI
-    function refreshPosts() {
-      const postDisplay = document.getElementById("postDisplay");
-      postDisplay.innerHTML = "";
-      const posts = JSON.parse(localStorage.getItem("posts")) || [];
-      posts.forEach(post => showPost(post));
-    }
-
-    // Escape HTML to prevent injection in posts
-    function escapeHtml(text) {
-      return text.replace(/[&<>"']/g, function (match) {
-        switch (match) {
-          case "&": return "&amp;";
-          case "<": return "&lt;";
-          case ">": return "&gt;";
-          case '"': return "&quot;";
-          case "'": return "&#039;";
+      const menus = document.querySelectorAll(".menu-dropdown");
+      menus.forEach(menu => {
+        if (menu.id === `menu-${postId}`) {
+          menu.classList.toggle("active");
+        } else {
+          menu.classList.remove("active");
         }
       });
     }
-    window.onload = function () {
-  // Load user profile from localStorage
-  let userProfile = JSON.parse(localStorage.getItem("userProfile")) || {
-    name: "John Doe",
-    username: "@john_doe",
-    avatar: "default-avatar.png",
-    coverPicture: "default-cover.jpg",
-    email: "johndoe@example.com",
-    gender: "Male",
-    dob: "1990-01-01"
-  };
 
-  document.getElementById("userName").textContent = userProfile.name;
-  document.getElementById("userEmail").textContent = userProfile.email;
-  document.getElementById("userGender").textContent = userProfile.gender;
-  document.getElementById("userDob").textContent = userProfile.dob;
-  document.getElementById("profileImage").src = userProfile.avatar;
-  document.getElementById("coverImage").src = userProfile.coverPicture;
-
-  // Load and show saved posts
-  const posts = JSON.parse(localStorage.getItem("posts")) || [];
-  posts.forEach(post => showPost(post));
-
-  // Close dropdowns if clicked outside
-  document.addEventListener("click", () => {
-    document.querySelectorAll(".menu-dropdown.active").forEach(menu => menu.classList.remove("active"));
-  });
-};
-function showPost(post, prepend = false) {
-  const postDisplay = document.getElementById("postDisplay");
-
-  // Load current userProfile from localStorage
-  const userProfile = JSON.parse(localStorage.getItem("userProfile")) || {
-    name: "John Doe",
-    username: "@john_doe",
-    avatar: "default-avatar.png"
-  };
-
-  // Create post element
-  const postElem = document.createElement("div");
-  postElem.classList.add("post");
-  postElem.setAttribute("data-id", post.id);
-
-  postElem.innerHTML = `
-    <div class="post-info">
-      <img src="${userProfile.avatar}" alt="Avatar" />
-      <div>
-        <strong>${userProfile.name}</strong><br />
-        <small>${post.date}</small>
-      </div>
-      <div class="post-menu" onclick="toggleMenu(event, ${post.id})"><i class="fas fa-ellipsis-v"></i></div>
-      <div class="menu-dropdown" id="menu-${post.id}">
-        <div onclick="editPost(${post.id})">Edit</div>
-        <div onclick="deletePost(${post.id})">Delete</div>
-      </div>
-    </div>
-    <p>${escapeHtml(post.content)}</p>
-    ${post.image ? `<img src="${post.image}" alt="Post image" />` : ""}
-    ${post.video ? `<video controls><source src="${post.video}" type="video/mp4" /></video>` : ""}
-    <div class="engagements">
-      <span onclick="toggleLike(${post.id})"><i class="fas fa-heart" style="color:${post.liked ? 'red' : '#555'}"></i> ${post.likes}</span>
-      <span><i class="fas fa-comment"></i> ${post.comments}</span>
-      <span><i class="fas fa-share"></i> ${post.shares}</span>
-    </div>
-  `;
-
-  if (prepend) postDisplay.prepend(postElem);
-  else postDisplay.appendChild(postElem);
-}
+    // Edit post content with prompt
     function editPost(postId) {
       const posts = JSON.parse(localStorage.getItem("posts")) || [];
       const post = posts.find(p => p.id === postId);
@@ -549,6 +487,7 @@ function showPost(post, prepend = false) {
       }
     }
 
+    // Delete a post
     function deletePost(postId) {
       if (!confirm("Are you sure you want to delete this post?")) return;
       let posts = JSON.parse(localStorage.getItem("posts")) || [];
@@ -557,6 +496,7 @@ function showPost(post, prepend = false) {
       refreshPosts();
     }
 
+    // Like/unlike toggle
     function toggleLike(postId) {
       const posts = JSON.parse(localStorage.getItem("posts")) || [];
       const post = posts.find(p => p.id === postId);
@@ -564,10 +504,12 @@ function showPost(post, prepend = false) {
 
       post.liked = !post.liked;
       post.likes += post.liked ? 1 : -1;
+      if (post.likes < 0) post.likes = 0; // Prevent negative likes
       localStorage.setItem("posts", JSON.stringify(posts));
       refreshPosts();
     }
 
+    // Reload and show all posts again
     function refreshPosts() {
       const postDisplay = document.getElementById("postDisplay");
       postDisplay.innerHTML = "";
@@ -575,7 +517,9 @@ function showPost(post, prepend = false) {
       posts.forEach(post => showPost(post));
     }
 
+    // Escape HTML special characters
     function escapeHtml(text) {
+      if (!text) return "";
       return text
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -583,7 +527,21 @@ function showPost(post, prepend = false) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
     }
-   
+
+    // On page load, setup UI and event listeners
+    window.addEventListener("DOMContentLoaded", () => {
+      updateUserProfileUI();
+
+      // Load and show saved posts
+      const posts = JSON.parse(localStorage.getItem("posts")) || [];
+      posts.forEach(post => showPost(post));
+
+      // Close dropdown menus when clicking outside
+      document.addEventListener("click", () => {
+        document.querySelectorAll(".menu-dropdown.active").forEach(menu => menu.classList.remove("active"));
+      });
+    });
+    
   </script>
 </body>
 </html>
