@@ -245,9 +245,12 @@
   <div class="container">
     <div class="cover-container">
       <img id="coverImage" src="default-cover.jpg" alt="Cover" />
+      <input type="file" id="profilePicUpload" accept="image/*" style="display: none" onchange="uploadProfilePic()" />
     </div>
     <div style="text-align: center;">
   <img id="profileImage" class="profile-picture" src="https://via.placeholder.com/120" />
+  <input type="file" id="profilePicUpload" accept="image/*" style="display: none" onchange="uploadProfilePic()" />
+<button onclick="document.getElementById('profilePicUpload').click()" style="margin-top: 10px;">Change Profile Picture</button>
 </div>
 
     </div>
@@ -542,6 +545,28 @@
       });
     });
     
+    
+    
+    function uploadProfilePic() {
+  const fileInput = document.getElementById("profilePicUpload");
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const imageData = e.target.result;
+
+    // Update UI
+    document.getElementById("profileImage").src = imageData;
+
+    // Update localStorage
+    const profile = loadUserProfile();
+    profile.avatar = imageData;
+    localStorage.setItem("userProfile", JSON.stringify(profile));
+  };
+  reader.readAsDataURL(file);
+}
+
   </script>
 </body>
 </html>
