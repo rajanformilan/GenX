@@ -60,6 +60,35 @@
       font-size: 14px;
     }
 
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      margin-top: 15px;
+      width: 100%;
+      transition: background 0.3s;
+      box-sizing: border-box;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: vertical;
+      margin-top: 10px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
     .media-upload {
       text-align: center;
       margin-top: 10px;
@@ -77,17 +106,6 @@
       color: #0056b3;
     }
 
-    textarea {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      resize: vertical;
-      margin-top: 10px;
-      font-size: 15px;
-      box-sizing: border-box;
-    }
-
     .media-preview img,
     .media-preview video {
       max-width: 100%;
@@ -95,24 +113,6 @@
       border-radius: 8px;
       margin-top: 15px;
       display: block;
-    }
-
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 15px;
-      margin-top: 15px;
-      width: 100%;
-      transition: background 0.3s;
-      box-sizing: border-box;
-    }
-
-    button:hover {
-      background-color: #0056b3;
     }
 
     .post {
@@ -132,6 +132,7 @@
       align-items: center;
       gap: 10px;
       margin-bottom: 12px;
+      position: relative;
     }
 
     .post-info img {
@@ -182,6 +183,7 @@
       gap: 6px;
       color: #555;
       transition: color 0.3s;
+      user-select: none;
     }
 
     .engagements span:hover {
@@ -239,6 +241,23 @@
       background-color: #007bff;
       color: white;
     }
+
+    /* Comment section styling */
+    .comment-section textarea {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .comment-section button {
+      width: auto;
+      margin-top: 5px;
+      padding: 6px 14px;
+      font-size: 14px;
+    }
+    .comment-section div > div {
+      margin-bottom: 6px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 6px;
+    }
   </style>
 </head>
 <body>
@@ -248,13 +267,12 @@
       <input type="file" id="profilePicUpload" accept="image/*" style="display: none" onchange="uploadProfilePic()" />
     </div>
     <div style="text-align: center;">
-  <img id="profileImage" class="profile-picture" src="https://via.placeholder.com/120" />
-  <input type="file" id="profilePicUpload" accept="image/*" style="display: none" onchange="uploadProfilePic()" />
-<button onclick="document.getElementById('profilePicUpload').click()" style="margin-top: 10px;">Change Profile Picture</button>
-</div>
-
+      <img id="profileImage" class="profile-picture" src="https://via.placeholder.com/120" />
+      <button onclick="document.getElementById('profilePicUpload').click()" style="margin-top: 10px;">Change Profile Picture</button>
     </div>
+  </div>
 
+  <div class="container">
     <div class="user-details">
       <h2 id="userName">John Doe</h2>
       <p id="userEmail">johndoe@example.com</p>
@@ -359,7 +377,6 @@
       document.getElementById("userGender").textContent = userProfile.gender;
       document.getElementById("userDob").textContent = userProfile.dob;
 
-      // Defensive fallback if image URLs are empty or invalid
       document.getElementById("profileImage").src =
         userProfile.avatar || "https://via.placeholder.com/120";
       document.getElementById("coverImage").src =
@@ -397,14 +414,14 @@
         id: Date.now(),
         name: userProfile.name,
         username: userProfile.username || "",
-        avatar: userProfile.avatar || "images/default-avatar.png",
+        avatar: userProfile.avatar || "https://via.placeholder.com/120",
         content: content,
         image: mediaData.image,
         video: mediaData.video,
         date: new Date().toLocaleString(),
         likes: 0,
         liked: false,
-        comments: 0,
+        comments: [],
         shares: 0,
       };
 
@@ -426,6 +443,7 @@
 
       const postElem = document.createElement("div");
       postElem.classList.add("post");
+      postElem.id = `post-${post.id}`;
       postElem.setAttribute("data-id", post.id);
 
       postElem.innerHTML = `
@@ -441,6 +459,7 @@
             <div role="menuitem" tabindex="0" onclick="deletePost(${post.id})">Delete</div>
           </div>
         </div>
+        
         <p>${escapeHtml(post.content)}</p>
         ${
           post.image
@@ -452,10 +471,23 @@
             ? `<video controls><source src="${post.video}" type="video/mp4" /></video>`
             : ""
         }
+
         <div class="engagements">
-          <span onclick="toggleLike(${post.id})" role="button" tabindex="0" aria-label="Like post"><i class="fas fa-heart" style="color:${post.liked ? 'red' : '#555'}"></i> ${post.likes}</span>
-          <span><i class="fas fa-comment"></i> ${post.comments}</span>
-          <span><i class="fas fa-share"></i> ${post.shares}</span>
+          <span onclick="toggleLike(${post.id})" role="button" tabindex="0" aria-label="Like post">
+            <i class="fas fa-heart" style="color:${post.liked ? 'red' : '#555'}"></i> ${post.likes}
+          </span>
+          <span onclick="toggleCommentBox(${post.id})" role="button" tabindex="0" aria-label="Toggle comment box">
+            <i class="fas fa-comment"></i> ${post.comments.length || 0}
+          </span>
+          <span onclick="copyLink(${post.id})" role="button" tabindex="0" aria-label="Copy post link">
+            <i class="fas fa-share"></i> ${post.shares}
+          </span>
+        </div>
+
+        <div class="comment-section" id="comment-section-${post.id}" style="display:none; margin-top:10px;">
+          <textarea id="comment-input-${post.id}" rows="2" placeholder="Write a comment..."></textarea>
+          <button onclick="submitComment(${post.id})" style="margin-top:5px;">Submit Comment</button>
+          <div id="comments-list-${post.id}" style="margin-top:10px;"></div>
         </div>
       `;
 
@@ -512,17 +544,90 @@
       refreshPosts();
     }
 
-    // Reload and show all posts again
-    function refreshPosts() {
-      const postDisplay = document.getElementById("postDisplay");
-      postDisplay.innerHTML = "";
-      const posts = JSON.parse(localStorage.getItem("posts")) || [];
-      posts.forEach(post => showPost(post));
+    // Show/hide comment input box
+    function toggleCommentBox(postId) {
+      const section = document.getElementById(`comment-section-${postId}`);
+      if (!section) return;
+      if (section.style.display === 'none' || section.style.display === '') {
+        section.style.display = 'block';
+        loadComments(postId);
+      } else {
+        section.style.display = 'none';
+      }
     }
 
-    // Escape HTML special characters
+    // Submit a new comment
+    function submitComment(postId) {
+      const input = document.getElementById(`comment-input-${postId}`);
+      const text = input.value.trim();
+      if (!text) return alert('Please write a comment before submitting.');
+
+      const posts = JSON.parse(localStorage.getItem("posts")) || [];
+      const post = posts.find(p => p.id === postId);
+      if (!post) return alert('Post not found.');
+
+      if (!post.comments) post.comments = [];
+      post.comments.push({ text: text, date: new Date().toLocaleString() });
+
+      localStorage.setItem("posts", JSON.stringify(posts));
+      input.value = '';
+      loadComments(postId);
+      refreshPosts();
+    }
+
+    // Load and display comments under the post
+    function loadComments(postId) {
+      const posts = JSON.parse(localStorage.getItem("posts")) || [];
+      const post = posts.find(p => p.id === postId);
+      const commentsList = document.getElementById(`comments-list-${postId}`);
+      if (!post || !commentsList) return;
+
+      commentsList.innerHTML = ''; // Clear existing
+      if (!post.comments || post.comments.length === 0) {
+        commentsList.innerHTML = '<em>No comments yet.</em>';
+        return;
+      }
+
+      post.comments.forEach(comment => {
+        const div = document.createElement('div');
+        div.style.padding = '6px 8px';
+        div.style.borderBottom = '1px solid #ddd';
+        div.style.fontSize = '14px';
+        div.innerHTML = `<strong>Anonymous</strong> <small style="color:#666; font-size:11px;">${comment.date}</small><br>${escapeHtml(comment.text)}`;
+        commentsList.appendChild(div);
+      });
+    }
+
+    // Copy post link to clipboard and increase share count
+    function copyLink(postId) {
+      const posts = JSON.parse(localStorage.getItem("posts")) || [];
+      const post = posts.find(p => p.id === postId);
+      if (!post) return alert('Post not found.');
+
+      // Simulate a post link (replace with real post URLs if you have them)
+      const postUrl = location.href.split('#')[0] + `#post-${postId}`;
+      navigator.clipboard.writeText(postUrl).then(() => {
+        alert('Post link copied to clipboard!');
+      });
+
+      // Increase share count
+      post.shares = (post.shares || 0) + 1;
+      localStorage.setItem("posts", JSON.stringify(posts));
+      refreshPosts();
+    }
+
+    // Refresh all posts display from localStorage
+    function refreshPosts() {
+      const posts = JSON.parse(localStorage.getItem("posts")) || [];
+      const postDisplay = document.getElementById("postDisplay");
+      postDisplay.innerHTML = "";
+      posts.forEach(post => {
+        showPost(post);
+      });
+    }
+
+    // Simple escape to prevent HTML injection
     function escapeHtml(text) {
-      if (!text) return "";
       return text
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -531,58 +636,15 @@
         .replace(/'/g, "&#039;");
     }
 
-    // On page load, setup UI and event listeners
-    window.addEventListener("DOMContentLoaded", () => {
-      updateUserProfileUI();
+    // Close menus if clicked outside
+    window.onclick = function () {
+      const menus = document.querySelectorAll(".menu-dropdown");
+      menus.forEach(menu => menu.classList.remove("active"));
+    };
 
-      // Load and show saved posts
-      const posts = JSON.parse(localStorage.getItem("posts")) || [];
-      posts.forEach(post => showPost(post));
-
-      // Close dropdown menus when clicking outside
-      document.addEventListener("click", () => {
-        document.querySelectorAll(".menu-dropdown.active").forEach(menu => menu.classList.remove("active"));
-      });
-    });
-    
-    
-    
-    function uploadProfilePic() {
-  const fileInput = document.getElementById("profilePicUpload");
-  const file = fileInput.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const imageData = e.target.result;
-
-    // Update UI
-    document.getElementById("profileImage").src = imageData;
-
-    // Update localStorage
-    const profile = loadUserProfile();
-    profile.avatar = imageData;
-    localStorage.setItem("userProfile", JSON.stringify(profile));
-  };
-  reader.readAsDataURL(file);
-}
-function refreshPosts() {
-  const postDisplay = document.getElementById("postDisplay");
-  postDisplay.innerHTML = "";
-  const posts = JSON.parse(localStorage.getItem("posts")) || [];
-
-  posts.forEach(post => {
-    // Fix broken or missing avatar
-    if (!post.avatar) {
-      const profile = loadUserProfile();
-      post.avatar = profile.avatar || getDefaultAvatar(profile.gender);
-    }
-    showPost(post);
-  });
-
-  localStorage.setItem("posts", JSON.stringify(posts)); // Save updated avatars
-}
-
+    // Initialize page
+    updateUserProfileUI();
+    refreshPosts();
   </script>
 </body>
 </html>
