@@ -566,6 +566,22 @@
   };
   reader.readAsDataURL(file);
 }
+function refreshPosts() {
+  const postDisplay = document.getElementById("postDisplay");
+  postDisplay.innerHTML = "";
+  const posts = JSON.parse(localStorage.getItem("posts")) || [];
+
+  posts.forEach(post => {
+    // Fix broken or missing avatar
+    if (!post.avatar) {
+      const profile = loadUserProfile();
+      post.avatar = profile.avatar || getDefaultAvatar(profile.gender);
+    }
+    showPost(post);
+  });
+
+  localStorage.setItem("posts", JSON.stringify(posts)); // Save updated avatars
+}
 
   </script>
 </body>
