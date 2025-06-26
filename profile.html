@@ -645,24 +645,6 @@
     // Initialize page
     updateUserProfileUI();
     refreshPosts();
-    
-    
-    function uploadProfilePic() {
-  const input = document.getElementById("profilePicUpload");
-  const file = input.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const imageData = e.target.result;
-    document.getElementById("profileImage").src = imageData;
-
-    // Save the new profile picture to localStorage
-    userProfile.avatar = imageData;
-    localStorage.setItem("userProfile", JSON.stringify(userProfile));
-  };
-  reader.readAsDataURL(file);
-}
   </script>
 </body>
 </html>
