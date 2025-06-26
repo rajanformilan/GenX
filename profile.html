@@ -4,10 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>User Profile with Engagements</title>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -15,7 +12,6 @@
       background: #eef1f6;
       color: #333;
     }
-
     .container {
       max-width: 600px;
       margin: 20px auto;
@@ -25,14 +21,12 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       box-sizing: border-box;
     }
-
     .cover-container img {
       width: 100%;
       height: 200px;
       object-fit: cover;
       border-radius: 12px 12px 0 0;
     }
-
     .profile-picture {
       width: 120px;
       height: 120px;
@@ -42,24 +36,20 @@
       margin-top: -60px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
     }
-
     .user-details {
       text-align: center;
       margin-top: 10px;
     }
-
     .user-details h2 {
       margin: 10px 0 5px;
       font-size: 24px;
       color: #222;
     }
-
     .user-details p {
       margin: 4px 0;
       color: #666;
       font-size: 14px;
     }
-
     button {
       background-color: #007bff;
       color: white;
@@ -73,11 +63,7 @@
       transition: background 0.3s;
       box-sizing: border-box;
     }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
+    button:hover { background-color: #0056b3; }
     textarea {
       width: 100%;
       padding: 12px;
@@ -88,12 +74,10 @@
       font-size: 15px;
       box-sizing: border-box;
     }
-
     .media-upload {
       text-align: center;
       margin-top: 10px;
     }
-
     .media-upload i {
       font-size: 24px;
       color: #007bff;
@@ -101,11 +85,7 @@
       margin: 0 10px;
       transition: color 0.3s;
     }
-
-    .media-upload i:hover {
-      color: #0056b3;
-    }
-
+    .media-upload i:hover { color: #0056b3; }
     .media-preview img,
     .media-preview video {
       max-width: 100%;
@@ -114,7 +94,6 @@
       margin-top: 15px;
       display: block;
     }
-
     .post {
       background: #fafafa;
       border-radius: 12px;
@@ -126,7 +105,6 @@
       word-wrap: break-word;
       position: relative;
     }
-
     .post-info {
       display: flex;
       align-items: center;
@@ -134,30 +112,25 @@
       margin-bottom: 12px;
       position: relative;
     }
-
     .post-info img {
       width: 45px;
       height: 45px;
       border-radius: 50%;
       object-fit: cover;
     }
-
     .post-info div {
       font-size: 14px;
     }
-
     .post-info strong {
       font-size: 16px;
       color: #333;
     }
-
     .post p {
       font-size: 15px;
       color: #444;
       margin: 10px 0;
       white-space: pre-wrap;
     }
-
     .post img,
     .post video {
       max-width: 100%;
@@ -166,7 +139,6 @@
       display: block;
       margin-top: 10px;
     }
-
     .engagements {
       display: flex;
       justify-content: space-around;
@@ -175,7 +147,6 @@
       margin-top: 10px;
       font-size: 16px;
     }
-
     .engagements span {
       cursor: pointer;
       display: flex;
@@ -185,93 +156,23 @@
       transition: color 0.3s;
       user-select: none;
     }
-
-    .engagements span:hover {
-      color: #007bff;
-    }
-
-    .engagements i.fa-heart {
-      color: red;
-    }
-
-    /* Three dots menu */
-    .post-menu {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      cursor: pointer;
-      font-size: 20px;
-      color: #666;
-      user-select: none;
-    }
-
-    .post-menu:hover {
-      color: #007bff;
-    }
-
-    .menu-dropdown {
-      display: none;
-      position: absolute;
-      top: 40px;
-      right: 15px;
-      background: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      border-radius: 6px;
-      z-index: 1000;
-      min-width: 120px;
-    }
-
-    .menu-dropdown.active {
-      display: block;
-    }
-
-    .menu-dropdown div {
-      padding: 10px 15px;
-      cursor: pointer;
-      font-size: 14px;
-      color: #333;
-      border-bottom: 1px solid #eee;
-    }
-
-    .menu-dropdown div:last-child {
-      border-bottom: none;
-    }
-
-    .menu-dropdown div:hover {
-      background-color: #007bff;
-      color: white;
-    }
-
-    /* Comment section styling */
-    .comment-section textarea {
-      margin-top: 10px;
-      font-size: 14px;
-    }
-    .comment-section button {
-      width: auto;
-      margin-top: 5px;
-      padding: 6px 14px;
-      font-size: 14px;
-    }
-    .comment-section div > div {
-      margin-bottom: 6px;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 6px;
-    }
+    .engagements span:hover { color: #007bff; }
+    .engagements i.fa-heart { color: red; }
+    .comment-section textarea { margin-top: 10px; font-size: 14px; }
+    .comment-section button { width: auto; margin-top: 5px; padding: 6px 14px; font-size: 14px; }
+    .comment-section div > div { margin-bottom: 6px; border-bottom: 1px solid #ddd; padding-bottom: 6px; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="cover-container">
-      <img id="coverImage" src="default-cover.jpg" alt="Cover" />
-      <input type="file" id="profilePicUpload" accept="image/*" style="display: none" onchange="uploadProfilePic()" />
+      <img id="coverImage" src="https://via.placeholder.com/600x200?text=Cover" alt="Cover" />
     </div>
     <div style="text-align: center;">
       <img id="profileImage" class="profile-picture" src="https://via.placeholder.com/120" />
-      <button onclick="document.getElementById('profilePicUpload').click()" style="margin-top: 10px;">Change Profile Picture</button>
+      <button onclick="alert('Profile picture change not implemented in this demo')">Change Profile Picture</button>
     </div>
   </div>
-
   <div class="container">
     <div class="user-details">
       <h2 id="userName">John Doe</h2>
@@ -279,116 +180,30 @@
       <p id="userGender">Male</p>
       <p id="userDob">1990-01-01</p>
     </div>
-    <a href="authentication.html" title="Edit Profile">
-      <button
-        style="
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          border: none;
-          background-color: #eee;
-          font-size: 20px;
-          cursor: pointer;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        "
-      >
-        🔏
-      </button>
+    <a href="#" title="Edit Profile">
+      <button style="width: 40px; height: 40px; border-radius: 50%; border: none; background-color: #eee; font-size: 20px; cursor: pointer; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">🔏</button>
     </a>
   </div>
-
   <div class="container">
     <h3>Create a Post</h3>
-    <textarea
-      id="postContent"
-      rows="4"
-      placeholder="What's on your mind?"
-      aria-label="Write your post content"
-    ></textarea>
+    <textarea id="postContent" rows="4" placeholder="What's on your mind?" aria-label="Write your post content"></textarea>
     <div class="media-upload" aria-label="Upload media">
-      <i
-        class="fas fa-image"
-        role="button"
-        tabindex="0"
-        aria-label="Upload image"
-        onclick="document.getElementById('imageUpload').click()"
-        onkeydown="if(event.key==='Enter'){document.getElementById('imageUpload').click()}"
-      ></i>
-      <i
-        class="fas fa-video"
-        role="button"
-        tabindex="0"
-        aria-label="Upload video"
-        onclick="document.getElementById('videoUpload').click()"
-        onkeydown="if(event.key==='Enter'){document.getElementById('videoUpload').click()}"
-      ></i>
+      <i class="fas fa-image" role="button" tabindex="0" aria-label="Upload image" onclick="document.getElementById('imageUpload').click()" onkeydown="if(event.key==='Enter'){document.getElementById('imageUpload').click()}"></i>
+      <i class="fas fa-video" role="button" tabindex="0" aria-label="Upload video" onclick="document.getElementById('videoUpload').click()" onkeydown="if(event.key==='Enter'){document.getElementById('videoUpload').click()}"></i>
     </div>
-    <input
-      type="file"
-      id="imageUpload"
-      accept="image/*"
-      style="display: none"
-      onchange="previewMedia('image')"
-    />
-    <input
-      type="file"
-      id="videoUpload"
-      accept="video/*"
-      style="display: none"
-      onchange="previewMedia('video')"
-    />
+    <input type="file" id="imageUpload" accept="image/*" style="display: none" onchange="previewMedia('image')" />
+    <input type="file" id="videoUpload" accept="video/*" style="display: none" onchange="previewMedia('video')" />
     <div class="media-preview" id="mediaPreview" aria-live="polite"></div>
     <button onclick="createPost()">Post</button>
   </div>
-
   <div class="container" id="postDisplay" aria-live="polite"></div>
-
   <script>
     let mediaData = { image: null, video: null };
 
-    // Load user profile from localStorage or default fallback
-    function loadUserProfile() {
-      const defaultProfile = {
-        name: "John Doe",
-        username: "@john_doe",
-        avatar: "https://via.placeholder.com/120",
-        coverPicture: "default-cover.jpg",
-        email: "johndoe@example.com",
-        gender: "Male",
-        dob: "1990-01-01",
-      };
-      const storedProfile = localStorage.getItem("userProfile");
-      if (storedProfile) {
-        try {
-          return JSON.parse(storedProfile);
-        } catch {
-          return defaultProfile;
-        }
-      } else {
-        return defaultProfile;
-      }
-    }
-
-    const userProfile = loadUserProfile();
-
-    function updateUserProfileUI() {
-      document.getElementById("userName").textContent = userProfile.name;
-      document.getElementById("userEmail").textContent = userProfile.email;
-      document.getElementById("userGender").textContent = userProfile.gender;
-      document.getElementById("userDob").textContent = userProfile.dob;
-
-      document.getElementById("profileImage").src =
-        userProfile.avatar || "https://via.placeholder.com/120";
-      document.getElementById("coverImage").src =
-        userProfile.coverPicture || "default-cover.jpg";
-    }
-
-    // Preview uploaded media
     function previewMedia(type) {
       const input = document.getElementById(type === "image" ? "imageUpload" : "videoUpload");
       const file = input.files[0];
       if (!file) return;
-
       const reader = new FileReader();
       reader.onload = function (e) {
         mediaData.image = type === "image" ? e.target.result : null;
@@ -401,20 +216,17 @@
       reader.readAsDataURL(file);
     }
 
-    // Create new post
     function createPost() {
       const contentInput = document.getElementById("postContent");
       const content = contentInput.value.trim();
-      if (!content) {
-        alert("Please write something before posting!");
+      if (!content && !mediaData.image && !mediaData.video) {
+        alert("Please write something or add media before posting!");
         return;
       }
-
       const newPost = {
         id: Date.now(),
-        name: userProfile.name,
-        username: userProfile.username || "",
-        avatar: userProfile.avatar || "https://via.placeholder.com/120",
+        name: "John Doe",
+        avatar: "https://via.placeholder.com/120",
         content: content,
         image: mediaData.image,
         video: mediaData.video,
@@ -424,28 +236,21 @@
         comments: [],
         shares: 0,
       };
-
       const posts = JSON.parse(localStorage.getItem("posts")) || [];
       posts.unshift(newPost);
       localStorage.setItem("posts", JSON.stringify(posts));
-
-      // Reset input and preview
       contentInput.value = "";
       document.getElementById("mediaPreview").innerHTML = "";
       mediaData = { image: null, video: null };
-
-      showPost(newPost, true);
+      refreshPosts();
     }
 
-    // Show a post in the feed
     function showPost(post, prepend = false) {
       const postDisplay = document.getElementById("postDisplay");
-
       const postElem = document.createElement("div");
       postElem.classList.add("post");
       postElem.id = `post-${post.id}`;
       postElem.setAttribute("data-id", post.id);
-
       postElem.innerHTML = `
         <div class="post-info">
           <img src="${post.avatar}" alt="${escapeHtml(post.name)}'s avatar" />
@@ -453,98 +258,39 @@
             <strong>${escapeHtml(post.name)}</strong><br />
             <small>${escapeHtml(post.date)}</small>
           </div>
-          <div class="post-menu" onclick="toggleMenu(event, ${post.id})" aria-label="Post menu" role="button" tabindex="0"><i class="fas fa-ellipsis-v"></i></div>
-          <div class="menu-dropdown" id="menu-${post.id}" role="menu">
-            <div role="menuitem" tabindex="0" onclick="editPost(${post.id})">Edit</div>
-            <div role="menuitem" tabindex="0" onclick="deletePost(${post.id})">Delete</div>
-          </div>
         </div>
-        
         <p>${escapeHtml(post.content)}</p>
-        ${
-          post.image
-            ? `<img src="${post.image}" alt="Post image" />`
-            : ""
-        }
-        ${
-          post.video
-            ? `<video controls><source src="${post.video}" type="video/mp4" /></video>`
-            : ""
-        }
-
+        ${post.image ? `<img src="${post.image}" alt="Post image" />` : ""}
+        ${post.video ? `<video controls><source src="${post.video}" type="video/mp4" /></video>` : ""}
         <div class="engagements">
           <span onclick="toggleLike(${post.id})" role="button" tabindex="0" aria-label="Like post">
             <i class="fas fa-heart" style="color:${post.liked ? 'red' : '#555'}"></i> ${post.likes}
           </span>
           <span onclick="toggleCommentBox(${post.id})" role="button" tabindex="0" aria-label="Toggle comment box">
-            <i class="fas fa-comment"></i> ${post.comments.length || 0}
-          </span>
-          <span onclick="copyLink(${post.id})" role="button" tabindex="0" aria-label="Copy post link">
-            <i class="fas fa-share"></i> ${post.shares}
+            <i class="fas fa-comment"></i> ${(post.comments ? post.comments.length : 0)}
           </span>
         </div>
-
         <div class="comment-section" id="comment-section-${post.id}" style="display:none; margin-top:10px;">
           <textarea id="comment-input-${post.id}" rows="2" placeholder="Write a comment..."></textarea>
           <button onclick="submitComment(${post.id})" style="margin-top:5px;">Submit Comment</button>
           <div id="comments-list-${post.id}" style="margin-top:10px;"></div>
         </div>
       `;
-
       if (prepend) postDisplay.prepend(postElem);
       else postDisplay.appendChild(postElem);
     }
 
-    // Toggle menu dropdown visibility
-    function toggleMenu(event, postId) {
-      event.stopPropagation();
-      const menus = document.querySelectorAll(".menu-dropdown");
-      menus.forEach(menu => {
-        if (menu.id === `menu-${postId}`) {
-          menu.classList.toggle("active");
-        } else {
-          menu.classList.remove("active");
-        }
-      });
-    }
-
-    // Edit post content with prompt
-    function editPost(postId) {
-      const posts = JSON.parse(localStorage.getItem("posts")) || [];
-      const post = posts.find(p => p.id === postId);
-      if (!post) return alert("Post not found");
-
-      const newContent = prompt("Edit your post:", post.content);
-      if (newContent !== null) {
-        post.content = newContent.trim();
-        localStorage.setItem("posts", JSON.stringify(posts));
-        refreshPosts();
-      }
-    }
-
-    // Delete a post
-    function deletePost(postId) {
-      if (!confirm("Are you sure you want to delete this post?")) return;
-      let posts = JSON.parse(localStorage.getItem("posts")) || [];
-      posts = posts.filter(p => p.id !== postId);
-      localStorage.setItem("posts", JSON.stringify(posts));
-      refreshPosts();
-    }
-
-    // Like/unlike toggle
     function toggleLike(postId) {
       const posts = JSON.parse(localStorage.getItem("posts")) || [];
       const post = posts.find(p => p.id === postId);
       if (!post) return;
-
       post.liked = !post.liked;
       post.likes += post.liked ? 1 : -1;
-      if (post.likes < 0) post.likes = 0; // Prevent negative likes
+      if (post.likes < 0) post.likes = 0;
       localStorage.setItem("posts", JSON.stringify(posts));
       refreshPosts();
     }
 
-    // Show/hide comment input box
     function toggleCommentBox(postId) {
       const section = document.getElementById(`comment-section-${postId}`);
       if (!section) return;
@@ -556,38 +302,31 @@
       }
     }
 
-    // Submit a new comment
     function submitComment(postId) {
       const input = document.getElementById(`comment-input-${postId}`);
       const text = input.value.trim();
       if (!text) return alert('Please write a comment before submitting.');
-
       const posts = JSON.parse(localStorage.getItem("posts")) || [];
       const post = posts.find(p => p.id === postId);
       if (!post) return alert('Post not found.');
-
       if (!post.comments) post.comments = [];
       post.comments.push({ text: text, date: new Date().toLocaleString() });
-
       localStorage.setItem("posts", JSON.stringify(posts));
       input.value = '';
       loadComments(postId);
       refreshPosts();
     }
 
-    // Load and display comments under the post
     function loadComments(postId) {
       const posts = JSON.parse(localStorage.getItem("posts")) || [];
       const post = posts.find(p => p.id === postId);
       const commentsList = document.getElementById(`comments-list-${postId}`);
       if (!post || !commentsList) return;
-
-      commentsList.innerHTML = ''; // Clear existing
+      commentsList.innerHTML = '';
       if (!post.comments || post.comments.length === 0) {
         commentsList.innerHTML = '<em>No comments yet.</em>';
         return;
       }
-
       post.comments.forEach(comment => {
         const div = document.createElement('div');
         div.style.padding = '6px 8px';
@@ -598,25 +337,6 @@
       });
     }
 
-    // Copy post link to clipboard and increase share count
-    function copyLink(postId) {
-      const posts = JSON.parse(localStorage.getItem("posts")) || [];
-      const post = posts.find(p => p.id === postId);
-      if (!post) return alert('Post not found.');
-
-      // Simulate a post link (replace with real post URLs if you have them)
-      const postUrl = location.href.split('#')[0] + `#post-${postId}`;
-      navigator.clipboard.writeText(postUrl).then(() => {
-        alert('Post link copied to clipboard!');
-      });
-
-      // Increase share count
-      post.shares = (post.shares || 0) + 1;
-      localStorage.setItem("posts", JSON.stringify(posts));
-      refreshPosts();
-    }
-
-    // Refresh all posts display from localStorage
     function refreshPosts() {
       const posts = JSON.parse(localStorage.getItem("posts")) || [];
       const postDisplay = document.getElementById("postDisplay");
@@ -626,8 +346,8 @@
       });
     }
 
-    // Simple escape to prevent HTML injection
     function escapeHtml(text) {
+      if (!text) return "";
       return text
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -636,14 +356,7 @@
         .replace(/'/g, "&#039;");
     }
 
-    // Close menus if clicked outside
-    window.onclick = function () {
-      const menus = document.querySelectorAll(".menu-dropdown");
-      menus.forEach(menu => menu.classList.remove("active"));
-    };
-
     // Initialize page
-    updateUserProfileUI();
     refreshPosts();
   </script>
 </body>
