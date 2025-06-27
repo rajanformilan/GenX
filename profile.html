@@ -3,15 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>User Profile</title>
+  <title>User Profile with Three Dots Edit/Delete</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 400px;
-      margin: 50px auto;
-      padding: 20px;
-      background: #eef1f6;
-      border-radius: 10px;
+      max-width: 600px;
+      margin: 20px auto;
+      background: #f0f2f5;
+      padding: 10px;
       text-align: center;
     }
     img.profile-pic {
@@ -42,74 +41,113 @@
     button:hover {
       background-color: #0056b3;
     }
-    body {
-    font-family: Arial, sans-serif;
-    max-width: 600px;
-    margin: 20px auto;
-    background: #f0f2f5;
-    padding: 10px;
-  }
-  #postForm {
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  }
-  #postForm textarea {
-    width: 100%;
-    resize: vertical;
-    min-height: 60px;
-    padding: 8px;
-    font-size: 14px;
-  }
-  #postForm input[type="file"] {
-    margin-top: 8px;
-  }
-  #postForm button {
-    margin-top: 10px;
-    padding: 8px 16px;
-    background-color: #1877f2;
-    border: none;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  .post {
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  }
-  .post-text {
-    margin-bottom: 10px;
-    white-space: pre-wrap;
-  }
-  .post-image {
-    max-width: 100%;
-    border-radius: 8px;
-    margin-bottom: 10px;
-  }
-  .post-actions {
-    display: flex;
-    gap: 15px;
-    font-size: 14px;
-  }
-  .post-actions button {
-    background: none;
-    border: none;
-    color: #606770;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .post-actions button.liked {
-    color: #1877f2;
-    font-weight: bold;
-  }
+
+    #postForm {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    #postForm textarea {
+      width: 100%;
+      resize: vertical;
+      min-height: 60px;
+      padding: 8px;
+      font-size: 14px;
+    }
+    #postForm input[type="file"] {
+      margin-top: 8px;
+    }
+    #postForm button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      background-color: #1877f2;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .post {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      text-align: left;
+      position: relative;
+    }
+    .post strong {
+      font-size: 16px;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .post-text {
+      margin-bottom: 10px;
+      white-space: pre-wrap;
+    }
+    .post-image {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 15px;
+      font-size: 14px;
+    }
+    .post-actions button {
+      background: none;
+      border: none;
+      color: #606770;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .post-actions button.liked {
+      color: #1877f2;
+      font-weight: bold;
+    }
+
+    .menu-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  font-weight: bold;
+  color: black;
+  cursor: pointer;
+}
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 35px;
+      right: 10px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 99;
+    }
+    .dropdown button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+    }
+    .dropdown button:hover {
+      background: #f5f5f5;
+    }
   </style>
 </head>
 <body>
@@ -118,17 +156,18 @@
   <p><strong>Email:</strong> <span id="userEmail"></span></p>
   <p><strong>Gender:</strong> <span id="userGender"></span></p>
   <p><strong>Date of Birth:</strong> <span id="userDob"></span></p>
-
   <button onclick="editProfile()">Edit Profile</button>
-<h2>Create Post</h2>
-<form id="postForm">
-  <textarea id="postText" placeholder="What's on your mind?" required></textarea>
-  <input type="file" id="postImage" accept="image/*" />
-  <button type="submit">Post</button>
-</form>
 
-<h2>News Feed</h2>
-<div id="feed"></div>
+  <h2>Create Post</h2>
+  <form id="postForm">
+    <textarea id="postText" placeholder="What's on your mind?" required></textarea>
+    <input type="file" id="postImage" accept="image/*" />
+    <button type="submit">Post</button>
+  </form>
+
+  <h2>News Feed</h2>
+  <div id="feed"></div>
+
   <script>
     function loadProfile() {
       const storedProfile = localStorage.getItem('userProfile');
@@ -137,9 +176,7 @@
         window.location.href = 'authentication.html';
         return;
       }
-
       const profile = JSON.parse(storedProfile);
-
       document.getElementById('profileImage').src = profile.avatar || 'https://via.placeholder.com/120';
       document.getElementById('userName').textContent = profile.name || 'Unknown';
       document.getElementById('userEmail').textContent = profile.email || '';
@@ -152,97 +189,112 @@
     }
 
     loadProfile();
+
     const postForm = document.getElementById('postForm');
-  const postText = document.getElementById('postText');
-  const postImage = document.getElementById('postImage');
-  const feed = document.getElementById('feed');
+    const postText = document.getElementById('postText');
+    const postImage = document.getElementById('postImage');
+    const feed = document.getElementById('feed');
 
-  // Load posts from localStorage on page load
-  let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
+    let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
 
-  function renderPosts() {
-    feed.innerHTML = '';
-    posts.forEach((post, idx) => {
-      const postDiv = document.createElement('div');
-      postDiv.className = 'post';
+    function renderPosts() {
+      feed.innerHTML = '';
+      posts.forEach((post, idx) => {
+        const postDiv = document.createElement('div');
+        postDiv.className = 'post';
 
-      let imgHTML = '';
-      if (post.image) {
-        imgHTML = `<img src="${post.image}" alt="Post Image" class="post-image" />`;
+        const imgHTML = post.image ? `<img src="${post.image}" class="post-image" />` : '';
+        const likedClass = post.liked ? 'liked' : '';
+
+        postDiv.innerHTML = `
+          <button class="menu-button" onclick="toggleMenu(event, ${idx})">⋮</button>
+          <div class="dropdown" id="dropdown-${idx}">
+            <button onclick="editPost(${idx})">✏️ Edit</button>
+            <button onclick="deletePost(${idx})">🗑️ Delete</button>
+          </div>
+          <strong>${post.name}</strong>
+          <div class="post-text">${post.text}</div>
+          ${imgHTML}
+          <div class="post-actions">
+            <button class="like-btn ${likedClass}" data-index="${idx}">
+              <span>👍</span> <span class="like-count">${post.likes}</span> Like
+            </button>
+            <button class="comment-btn">💬 Comment</button>
+            <button class="share-btn">🔗 Share</button>
+          </div>
+        `;
+        feed.appendChild(postDiv);
+      });
+      attachEventListeners();
+    }
+
+    function toggleMenu(e, idx) {
+      e.stopPropagation();
+      document.querySelectorAll('.dropdown').forEach(d => d.style.display = 'none');
+      const dropdown = document.getElementById(`dropdown-${idx}`);
+      dropdown.style.display = 'block';
+    }
+
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.dropdown').forEach(d => d.style.display = 'none');
+    });
+
+    function attachEventListeners() {
+      document.querySelectorAll('.like-btn').forEach(btn => {
+        btn.onclick = function () {
+          const idx = this.getAttribute('data-index');
+          posts[idx].liked = !posts[idx].liked;
+          posts[idx].likes += posts[idx].liked ? 1 : -1;
+          saveAndRender();
+        };
+      });
+    }
+
+    function saveAndRender() {
+      localStorage.setItem('fbPosts', JSON.stringify(posts));
+      renderPosts();
+    }
+
+    postForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const text = postText.value.trim();
+      const profile = JSON.parse(localStorage.getItem('userProfile'));
+      if (!text) return alert('Please enter some text.');
+
+      const file = postImage.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          addPost(text, event.target.result, profile.name);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        addPost(text, null, profile.name);
       }
-
-      const likedClass = post.liked ? 'liked' : '';
-
-      postDiv.innerHTML = `
-        <div class="post-text">${post.text}</div>
-        ${imgHTML}
-        <div class="post-actions">
-          <button class="like-btn ${likedClass}" data-index="${idx}">
-            <span>👍</span> <span class="like-count">${post.likes}</span> Like
-          </button>
-          <button class="comment-btn" data-index="${idx}">💬 Comment</button>
-          <button class="share-btn" data-index="${idx}">🔗 Share</button>
-        </div>
-      `;
-
-      feed.appendChild(postDiv);
     });
-    attachEventListeners();
-  }
 
-  // Attach event listeners for like buttons
-  function attachEventListeners() {
-    document.querySelectorAll('.like-btn').forEach(btn => {
-      btn.onclick = function() {
-        const idx = this.getAttribute('data-index');
-        posts[idx].liked = !posts[idx].liked;
-        posts[idx].likes += posts[idx].liked ? 1 : -1;
+    function addPost(text, image, name) {
+      posts.unshift({ name: name || 'Unknown', text, image, likes: 0, liked: false });
+      postForm.reset();
+      saveAndRender();
+    }
+
+    function deletePost(index) {
+      if (confirm('Delete this post?')) {
+        posts.splice(index, 1);
         saveAndRender();
-      };
-    });
-    // You can add comment and share handlers here
-  }
+      }
+    }
 
-  // Save posts to localStorage and re-render feed
-  function saveAndRender() {
-    localStorage.setItem('fbPosts', JSON.stringify(posts));
+    function editPost(index) {
+      const newText = prompt('Edit your post:', posts[index].text);
+      if (newText !== null && newText.trim() !== '') {
+        posts[index].text = newText.trim();
+        saveAndRender();
+      }
+    }
+
     renderPosts();
-  }
-
-  postForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    if (!postText.value.trim()) {
-      alert('Please enter some text.');
-      return;
-    }
-
-    const file = postImage.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        addPost(postText.value.trim(), event.target.result);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      addPost(postText.value.trim(), null);
-    }
-  });
-
-  function addPost(text, image) {
-    posts.unshift({
-      text,
-      image,
-      likes: 0,
-      liked: false
-    });
-    postForm.reset();
-    saveAndRender();
-  }
-
-  // Initial render
-  renderPosts();
   </script>
 </body>
 </html>
