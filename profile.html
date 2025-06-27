@@ -3,361 +3,223 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>User Profile with Engagements</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <title>Facebook Profile with Posts</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
       margin: 0;
-      background: #eef1f6;
-      color: #333;
+      background: #f0f2f5;
     }
-    .container {
-      max-width: 600px;
-      margin: 20px auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      box-sizing: border-box;
-    }
-    .cover-container img {
-      width: 100%;
+
+    .cover {
+      background: url('https://via.placeholder.com/800x200') center/cover no-repeat;
       height: 200px;
-      object-fit: cover;
-      border-radius: 12px 12px 0 0;
+      position: relative;
     }
-    .profile-picture {
-      width: 120px;
-      height: 120px;
+
+    .profile-pic {
+      position: absolute;
+      bottom: -50px;
+      left: 20px;
+      width: 100px;
+      height: 100px;
+      border: 4px solid white;
       border-radius: 50%;
-      object-fit: cover;
-      border: 4px solid #fff;
-      margin-top: -60px;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+      background: url('https://via.placeholder.com/100') center/cover no-repeat;
     }
-    .user-details {
+
+    .profile-info {
+      background: white;
+      padding: 60px 20px 20px;
       text-align: center;
-      margin-top: 10px;
     }
-    .user-details h2 {
-      margin: 10px 0 5px;
-      font-size: 24px;
-      color: #222;
+
+    .profile-info h2 {
+      margin: 0;
     }
-    .user-details p {
-      margin: 4px 0;
-      color: #666;
-      font-size: 14px;
+
+    .post-box {
+      background: white;
+      padding: 15px;
+      margin: 15px;
+      border-radius: 10px;
     }
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      cursor: pointer;
+
+    .post-box textarea {
+      width: 100%;
+      padding: 10px;
       font-size: 15px;
-      margin-top: 15px;
-      width: 100%;
-      transition: background 0.3s;
-      box-sizing: border-box;
-    }
-    button:hover { background-color: #0056b3; }
-    textarea {
-      width: 100%;
-      padding: 12px;
       border-radius: 8px;
       border: 1px solid #ccc;
       resize: vertical;
-      margin-top: 10px;
-      font-size: 15px;
-      box-sizing: border-box;
     }
-    .media-upload {
-      text-align: center;
+
+    .post-box button {
       margin-top: 10px;
-    }
-    .media-upload i {
-      font-size: 24px;
-      color: #007bff;
+      padding: 10px 15px;
+      background: #1877f2;
+      color: white;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
-      margin: 0 10px;
-      transition: color 0.3s;
     }
-    .media-upload i:hover { color: #0056b3; }
-    .media-preview img,
-    .media-preview video {
-      max-width: 100%;
-      max-height: 300px;
-      border-radius: 8px;
-      margin-top: 15px;
-      display: block;
-    }
+
     .post {
-      background: #fafafa;
-      border-radius: 12px;
+      background: white;
+      margin: 15px;
       padding: 15px;
-      margin-top: 20px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-      box-sizing: border-box;
-      overflow-wrap: break-word;
-      word-wrap: break-word;
-      position: relative;
+      border-radius: 10px;
     }
-    .post-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-      position: relative;
+
+    .post h4 {
+      margin: 0 0 5px;
     }
-    .post-info img {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-    .post-info div {
-      font-size: 14px;
-    }
-    .post-info strong {
-      font-size: 16px;
-      color: #333;
-    }
-    .post p {
-      font-size: 15px;
-      color: #444;
-      margin: 10px 0;
-      white-space: pre-wrap;
-    }
-    .post img,
-    .post video {
-      max-width: 100%;
-      max-height: 350px;
-      border-radius: 8px;
-      display: block;
-      margin-top: 10px;
-    }
+
     .engagements {
       display: flex;
-      justify-content: space-around;
-      padding-top: 10px;
-      border-top: 1px solid #ddd;
+      justify-content: space-between;
       margin-top: 10px;
-      font-size: 16px;
+      font-size: 14px;
+      color: #555;
     }
+
     .engagements span {
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: #555;
-      transition: color 0.3s;
-      user-select: none;
     }
-    .engagements span:hover { color: #007bff; }
-    .engagements i.fa-heart { color: red; }
-    .comment-section textarea { margin-top: 10px; font-size: 14px; }
-    .comment-section button { width: auto; margin-top: 5px; padding: 6px 14px; font-size: 14px; }
-    .comment-section div > div { margin-bottom: 6px; border-bottom: 1px solid #ddd; padding-bottom: 6px; }
+
+    .comment-box {
+      margin-top: 10px;
+    }
+
+    .comment-box input {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .comments {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .comments div {
+      border-top: 1px solid #eee;
+      padding: 5px 0;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="cover-container">
-      <img id="coverImage" src="https://via.placeholder.com/600x200?text=Cover" alt="Cover" />
-    </div>
-    <div style="text-align: center;">
-      <img id="profileImage" class="profile-picture" src="https://via.placeholder.com/120" />
-      <button onclick="alert('Profile picture change not implemented in this demo')">Change Profile Picture</button>
-    </div>
+
+  <div class="cover">
+    <div class="profile-pic"></div>
   </div>
-  <div class="container">
-    <div class="user-details">
-      <h2 id="userName">John Doe</h2>
-      <p id="userEmail">johndoe@example.com</p>
-      <p id="userGender">Male</p>
-      <p id="userDob">1990-01-01</p>
-    </div>
-    <a href="#" title="Edit Profile">
-      <button style="width: 40px; height: 40px; border-radius: 50%; border: none; background-color: #eee; font-size: 20px; cursor: pointer; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">🔏</button>
-    </a>
+
+  <div class="profile-info">
+    <h2>John Doe</h2>
+    <p>@johndoe | johndoe@example.com</p>
   </div>
-  <div class="container">
-    <h3>Create a Post</h3>
-    <textarea id="postContent" rows="4" placeholder="What's on your mind?" aria-label="Write your post content"></textarea>
-    <div class="media-upload" aria-label="Upload media">
-      <i class="fas fa-image" role="button" tabindex="0" aria-label="Upload image" onclick="document.getElementById('imageUpload').click()" onkeydown="if(event.key==='Enter'){document.getElementById('imageUpload').click()}"></i>
-      <i class="fas fa-video" role="button" tabindex="0" aria-label="Upload video" onclick="document.getElementById('videoUpload').click()" onkeydown="if(event.key==='Enter'){document.getElementById('videoUpload').click()}"></i>
-    </div>
-    <input type="file" id="imageUpload" accept="image/*" style="display: none" onchange="previewMedia('image')" />
-    <input type="file" id="videoUpload" accept="video/*" style="display: none" onchange="previewMedia('video')" />
-    <div class="media-preview" id="mediaPreview" aria-live="polite"></div>
+
+  <div class="post-box">
+    <textarea id="postContent" rows="3" placeholder="What's on your mind?"></textarea>
     <button onclick="createPost()">Post</button>
   </div>
-  <div class="container" id="postDisplay" aria-live="polite"></div>
-  <script>
-    let mediaData = { image: null, video: null };
 
-    function previewMedia(type) {
-      const input = document.getElementById(type === "image" ? "imageUpload" : "videoUpload");
-      const file = input.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        mediaData.image = type === "image" ? e.target.result : null;
-        mediaData.video = type === "video" ? e.target.result : null;
-        document.getElementById("mediaPreview").innerHTML =
-          type === "image"
-            ? `<img src="${e.target.result}" alt="Uploaded image preview" />`
-            : `<video controls><source src="${e.target.result}" type="${file.type}" /></video>`;
-      };
-      reader.readAsDataURL(file);
+  <div id="postFeed"></div>
+
+  <script>
+    let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
+
+    function savePosts() {
+      localStorage.setItem('fbPosts', JSON.stringify(posts));
     }
 
     function createPost() {
-      const contentInput = document.getElementById("postContent");
-      const content = contentInput.value.trim();
-      if (!content && !mediaData.image && !mediaData.video) {
-        alert("Please write something or add media before posting!");
-        return;
-      }
-      const newPost = {
+      const content = document.getElementById('postContent').value.trim();
+      if (!content) return alert('Write something to post.');
+      const post = {
         id: Date.now(),
-        name: "John Doe",
-        avatar: "https://via.placeholder.com/120",
+        name: 'John Doe',
         content: content,
-        image: mediaData.image,
-        video: mediaData.video,
-        date: new Date().toLocaleString(),
         likes: 0,
         liked: false,
-        comments: [],
-        shares: 0,
+        comments: []
       };
-      const posts = JSON.parse(localStorage.getItem("posts")) || [];
-      posts.unshift(newPost);
-      localStorage.setItem("posts", JSON.stringify(posts));
-      contentInput.value = "";
-      document.getElementById("mediaPreview").innerHTML = "";
-      mediaData = { image: null, video: null };
-      refreshPosts();
+      posts.unshift(post);
+      savePosts();
+      document.getElementById('postContent').value = '';
+      renderPosts();
     }
 
-    function showPost(post, prepend = false) {
-      const postDisplay = document.getElementById("postDisplay");
-      const postElem = document.createElement("div");
-      postElem.classList.add("post");
-      postElem.id = `post-${post.id}`;
-      postElem.setAttribute("data-id", post.id);
-      postElem.innerHTML = `
-        <div class="post-info">
-          <img src="${post.avatar}" alt="${escapeHtml(post.name)}'s avatar" />
-          <div>
-            <strong>${escapeHtml(post.name)}</strong><br />
-            <small>${escapeHtml(post.date)}</small>
-          </div>
-        </div>
-        <p>${escapeHtml(post.content)}</p>
-        ${post.image ? `<img src="${post.image}" alt="Post image" />` : ""}
-        ${post.video ? `<video controls><source src="${post.video}" type="video/mp4" /></video>` : ""}
-        <div class="engagements">
-          <span onclick="toggleLike(${post.id})" role="button" tabindex="0" aria-label="Like post">
-            <i class="fas fa-heart" style="color:${post.liked ? 'red' : '#555'}"></i> ${post.likes}
-          </span>
-          <span onclick="toggleCommentBox(${post.id})" role="button" tabindex="0" aria-label="Toggle comment box">
-            <i class="fas fa-comment"></i> ${(post.comments ? post.comments.length : 0)}
-          </span>
-        </div>
-        <div class="comment-section" id="comment-section-${post.id}" style="display:none; margin-top:10px;">
-          <textarea id="comment-input-${post.id}" rows="2" placeholder="Write a comment..."></textarea>
-          <button onclick="submitComment(${post.id})" style="margin-top:5px;">Submit Comment</button>
-          <div id="comments-list-${post.id}" style="margin-top:10px;"></div>
-        </div>
-      `;
-      if (prepend) postDisplay.prepend(postElem);
-      else postDisplay.appendChild(postElem);
-    }
-
-    function toggleLike(postId) {
-      const posts = JSON.parse(localStorage.getItem("posts")) || [];
-      const post = posts.find(p => p.id === postId);
+    function toggleLike(id) {
+      const post = posts.find(p => p.id === id);
       if (!post) return;
       post.liked = !post.liked;
       post.likes += post.liked ? 1 : -1;
-      if (post.likes < 0) post.likes = 0;
-      localStorage.setItem("posts", JSON.stringify(posts));
-      refreshPosts();
+      savePosts();
+      renderPosts();
     }
 
-    function toggleCommentBox(postId) {
-      const section = document.getElementById(`comment-section-${postId}`);
-      if (!section) return;
-      if (section.style.display === 'none' || section.style.display === '') {
-        section.style.display = 'block';
-        loadComments(postId);
-      } else {
-        section.style.display = 'none';
-      }
-    }
-
-    function submitComment(postId) {
-      const input = document.getElementById(`comment-input-${postId}`);
+    function addComment(id) {
+      const input = document.getElementById(`comment-${id}`);
       const text = input.value.trim();
-      if (!text) return alert('Please write a comment before submitting.');
-      const posts = JSON.parse(localStorage.getItem("posts")) || [];
-      const post = posts.find(p => p.id === postId);
-      if (!post) return alert('Post not found.');
-      if (!post.comments) post.comments = [];
-      post.comments.push({ text: text, date: new Date().toLocaleString() });
-      localStorage.setItem("posts", JSON.stringify(posts));
+      if (!text) return;
+      const post = posts.find(p => p.id === id);
+      if (!post) return;
+      post.comments.push(text);
       input.value = '';
-      loadComments(postId);
-      refreshPosts();
+      savePosts();
+      renderPosts();
     }
 
-    function loadComments(postId) {
-      const posts = JSON.parse(localStorage.getItem("posts")) || [];
-      const post = posts.find(p => p.id === postId);
-      const commentsList = document.getElementById(`comments-list-${postId}`);
-      if (!post || !commentsList) return;
-      commentsList.innerHTML = '';
-      if (!post.comments || post.comments.length === 0) {
-        commentsList.innerHTML = '<em>No comments yet.</em>';
-        return;
-      }
-      post.comments.forEach(comment => {
-        const div = document.createElement('div');
-        div.style.padding = '6px 8px';
-        div.style.borderBottom = '1px solid #ddd';
-        div.style.fontSize = '14px';
-        div.innerHTML = `<strong>Anonymous</strong> <small style="color:#666; font-size:11px;">${comment.date}</small><br>${escapeHtml(comment.text)}`;
-        commentsList.appendChild(div);
-      });
-    }
-
-    function refreshPosts() {
-      const posts = JSON.parse(localStorage.getItem("posts")) || [];
-      const postDisplay = document.getElementById("postDisplay");
-      postDisplay.innerHTML = "";
+    function renderPosts() {
+      const postFeed = document.getElementById('postFeed');
+      postFeed.innerHTML = '';
       posts.forEach(post => {
-        showPost(post);
+        const div = document.createElement('div');
+        div.className = 'post';
+        div.innerHTML = `
+          <h4>${post.name}</h4>
+          <p>${post.content}</p>
+          <div class="engagements">
+            <span onclick="toggleLike(${post.id})">
+              <i class="fas fa-thumbs-up"></i> ${post.likes} Like
+            </span>
+            <span onclick="document.getElementById('comment-${post.id}').focus()">
+              <i class="fas fa-comment"></i> ${post.comments.length} Comment
+            </span>
+            <span onclick="navigator.clipboard.writeText(location.href + '#post-${post.id}'); alert('Link copied!')">
+              <i class="fas fa-share"></i> Share
+            </span>
+          </div>
+          <div class="comment-box">
+            <input type="text" id="comment-${post.id}" placeholder="Write a comment..." onkeydown="if(event.key==='Enter') addComment(${post.id})" />
+          </div>
+          <div class="comments">
+            ${post.comments.map(c => `<div>🗨️ ${c}</div>`).join('')}
+          </div>
+        `;
+        postFeed.appendChild(div);
       });
     }
 
-    function escapeHtml(text) {
-      if (!text) return "";
-      return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
+    renderPosts();
+    // Load user from localStorage
+const user = JSON.parse(localStorage.getItem("fbUser")) || {
+  name: "Guest",
+  email: "guest@example.com",
+  username: "@guest",
+  avatar: "https://via.placeholder.com/100"
+};
 
-    // Initialize page
-    refreshPosts();
+// Display it on the page
+document.querySelector('.profile-info h2').textContent = user.name;
+document.querySelector('.profile-info p').innerHTML = `${user.username} | ${user.email}`;
+document.querySelector('.profile-pic').style.backgroundImage = `url('${user.avatar}')`;
+
   </script>
 </body>
 </html>
