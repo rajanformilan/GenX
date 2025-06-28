@@ -314,44 +314,27 @@ function attachEventListeners() {
       const idx = this.getAttribute('data-index');
       const comment = prompt('Enter your comment:');
       if (comment) {
-        alert('Comment added (not saved yet in this version).');
-        // You can store comments later in localStorage
+        alert('Comment added (not saved in this version).');
       }
     };
   });
 
-  // SHARE
+  // SHARE (copy link)
   document.querySelectorAll('.share-btn').forEach(btn => {
     btn.onclick = function () {
       const idx = this.getAttribute('data-index');
-      const post = posts[idx];
-      const shareText = post.text || '';
+      const shareLink = `${window.location.origin}${window.location.pathname}?post=${idx}`;
 
-      if (navigator.share) {
-        navigator.share({
-          title: 'GenX Post',
-          text: shareText,
-          url: window.location.href
-        }).then(() => {
-          console.log('Shared successfully');
-        }).catch(err => {
-          fallbackCopy(shareText);
-        });
-      } else {
-        fallbackCopy(shareText);
-      }
+      const temp = document.createElement('textarea');
+      temp.value = shareLink;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+
+      alert('Post link copied to clipboard!');
     };
   });
-
-  function fallbackCopy(text) {
-    const temp = document.createElement('textarea');
-    temp.value = text;
-    document.body.appendChild(temp);
-    temp.select();
-    document.execCommand('copy');
-    document.body.removeChild(temp);
-    alert('Link or text copied to clipboard!');
-  }
 }
 
 
