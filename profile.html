@@ -3,3583 +3,588 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GenX Home Feed</title>
-  <link
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    rel="stylesheet"
-  />
+  <title>User Profile</title>
   <style>
-    /* General styles */
     body {
       font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 20px auto;
       background: #f0f2f5;
-      margin: 0;
-      padding: 0;
-      max-width: 900px;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    img.profile-pic {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #007bff;
+      margin-bottom: 20px;
+      display: block;
       margin-left: auto;
       margin-right: auto;
     }
-    nav.navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #007bff;
-      color: white;
-      padding: 10px 20px;
-      flex-wrap: wrap;
-    }
-    nav .logo {
-      font-weight: bold;
-      font-size: 24px;
-    }
-    nav .search-container {
-      display: flex;
-      align-items: center;
-      margin: 10px 0;
-    }
-    nav .search-container input {
-      padding: 6px 10px;
-      border-radius: 4px 0 0 4px;
-      border: none;
-      outline: none;
-      width: 200px;
-    }
-    nav .search-container button {
-      background: white;
-      border: none;
-      padding: 7px 12px;
-      border-radius: 0 4px 4px 0;
-      cursor: pointer;
-      color: #007bff;
-      font-size: 16px;
-    }
-    nav .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 15px;
-      padding: 0;
-      margin: 0;
-      flex-wrap: wrap;
-    }
-    nav .nav-links li a {
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    nav .burger {
-      display: none; /* For mobile later */
-      cursor: pointer;
-    }
-    nav .burger .line {
-      width: 25px;
-      height: 3px;
-      background-color: white;
-      margin: 4px 0;
-    }
-nav.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  position: relative; /* Important */
-  z-index: 1000;
-}
-
-/* Responsive dropdown menu */
-@media (max-width: 768px) {
-  nav .nav-links {
-    position: absolute;     /* Keep it floating */
-    top: 60px;              /* Position just below navbar */
-    right: 0;
-    left: 0;
-    background-color: #007bff;
-    display: none;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px 20px;
-    z-index: 999;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  }
-
-  nav .nav-links.active {
-    display: flex;
-  }
-
-  nav .burger {
-    display: block;
-  }
-}
-
-
-    h2.section-title {
+    h2 {
+      margin-bottom: 5px;
       text-align: center;
-      margin: 25px 0 10px 0;
-      color: #333;
+    }
+    p {
+      margin: 5px 0;
+      color: #555;
+      text-align: center;
+    }
+    button {
+      background-color: #007bff;
+      border: none;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      font-size: 16px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    button:hover {
+      background-color: #0056b3;
     }
 
-    /* Post and property styles */
-    .post, .property-item {
+    /* Post form */
+    #postForm {
       background: white;
       padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-      position: relative;
+      border-radius: 8px;
+      margin: 25px 0 20px 0;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    #postForm textarea {
+      width: 100%;
+      resize: vertical;
+      min-height: 60px;
+      padding: 8px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    #postForm input[type="file"] {
+      margin-top: 8px;
+      width: 100%;
+    }
+    #postForm label[for="postPrivacy"] {
+      display: block;
+      font-weight: 600;
+      margin: 12px 0 6px 0;
+      color: #333;
+      font-size: 14px;
+    }
+    #postPrivacy {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: white;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    #postPrivacy:hover,
+    #postPrivacy:focus {
+      border-color: #1877f2;
+      outline: none;
+      box-shadow: 0 0 5px rgba(24, 119, 242, 0.5);
+    }
+    #postForm button[type="submit"] {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #1877f2;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      width: 100%;
+    }
+    #postForm button[type="submit"]:hover {
+      background-color: #155db2;
     }
 
-    /* Social Post styles */
-    .post-info {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-      gap: 10px;
-    }
-    .post-info img.avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-    .post-info .name {
-      font-weight: 700;
-      color: #1877f2;
+    /* Posts */
+    .post {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      text-align: left;
+      position: relative;
+      word-wrap: break-word;
+      white-space: pre-wrap;
     }
     .post-text {
-      white-space: pre-wrap;
       margin-bottom: 10px;
-      font-size: 15px;
-      color: #222;
     }
-    .post img.post-image, .post video.post-video {
+    .post-image {
       max-width: 100%;
       border-radius: 8px;
       margin-bottom: 10px;
+      display: block;
     }
-
     .post-actions {
       display: flex;
       gap: 15px;
       font-size: 14px;
-      color: #606770;
+      align-items: center;
     }
     .post-actions button {
       background: none;
       border: none;
+      color: #606770;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
-      color: #606770;
-      font-weight: 600;
-      transition: color 0.2s ease;
-      position: relative;
+      gap: 5px;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    .post-actions button:hover {
+      background-color: #e4e6eb;
     }
     .post-actions button.liked {
       color: #1877f2;
-    }
-    .post-actions button:hover {
-      color: #1877f2;
+      font-weight: bold;
     }
 
     /* Three dots menu */
-    .menu-button {
+    .post-menu-btn {
       position: absolute;
       top: 10px;
       right: 10px;
       background: none;
       border: none;
       font-size: 22px;
-      font-weight: bold;
-      color: black;
       cursor: pointer;
+      color: #606770;
+      padding: 0;
+      line-height: 1;
     }
-
-    /* Dropdown for edit/delete */
-    .menu-dropdown {
+    .post-menu {
       display: none;
       position: absolute;
-      top: 38px;
+      top: 35px;
       right: 10px;
-      background: white;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-      border-radius: 6px;
-      overflow: hidden;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
       z-index: 10;
-      min-width: 100px;
-    }
-    .menu-dropdown button {
-      width: 100%;
-      padding: 8px 10px;
-      border: none;
-      background: white;
-      cursor: pointer;
+      min-width: 140px;
       font-size: 14px;
-      text-align: left;
-      color: #444;
-      transition: background-color 0.2s ease;
     }
-    .menu-dropdown button:hover {
+    .post-menu .privacy-display {
+      padding: 8px 12px;
+      font-size: 13px;
+      color: #444;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 6px;
+      user-select: none;
+    }
+    .post-menu button {
+      display: block;
+      width: 100%;
+      padding: 8px 12px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      text-align: left;
+      font-size: 14px;
+      color: #606770;
+      border-radius: 0;
+      font-weight: normal;
+    }
+    .post-menu button:hover {
       background-color: #f0f0f0;
     }
-
-    /* Property Listing styles */
-    .property-item img {
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-      object-fit: cover;
-      margin-bottom: 10px;
+    .post-menu button.delete-post-btn {
+      color: red;
+      font-weight: bold;
     }
-    .property-info h3 {
-      margin: 5px 0;
-      color: #333;
-    }
-    .property-info p {
-      margin: 3px 0;
-      color: #555;
-    }
-    .location {
-      font-size: 14px;
-      color: #888;
-    }
-    .map-container {
-      margin-top: 10px;
-      height: 180px;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .btn {
-      display: inline-block;
-      background-color: #007bff;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 5px;
-      text-decoration: none;
-      margin-top: 10px;
+    .post-menu button.change-privacy-btn {
+      color: #1877f2;
       font-weight: 600;
     }
-/* Hide nav links and show burger on small screens */
-@media (max-width: 768px) {
-  nav .nav-links {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    background-color: #007bff;
-  }
-  nav .nav-links.active {
-    display: flex;
-  }
-  nav .burger {
-    display: block;
-  }
-}
-.comments-section {
-  border-top: 1px solid #ccc;
-  margin-top: 10px;
-  padding-top: 10px;
-}
 
-.comments-list .comment-item {
-  background: #eee;
-  padding: 6px 10px;
-  margin-bottom: 6px;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.comment-input {
-  display: flex;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.comment-input input[type="text"] {
-  flex-grow: 1;
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.comment-input button {
-  background: #1877f2;
-  border: none;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-
+    /* Comments */
+    .comments-section {
+      margin-top: 10px;
+      border-top: 1px solid #ddd;
+      padding-top: 10px;
+    }
+    .comments-list {
+      max-height: 150px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+    .comment-item {
+      background: #f0f2f5;
+      border-radius: 20px;
+      padding: 6px 12px;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #050505;
+      word-wrap: break-word;
+      white-space: normal;
+    }
+    .comment-input {
+      display: flex;
+      gap: 6px;
+    }
+    .comment-input input[type="text"] {
+      flex-grow: 1;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .comment-input button {
+      background-color: #1877f2;
+      border: none;
+      color: white;
+      border-radius: 20px;
+      padding: 6px 16px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+    .comment-input button:hover {
+      background-color: #155db2;
+    }
   </style>
 </head>
 <body>
 
-  <nav class="navbar">
-    <div class="logo">GenX</div>
-
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Search for profiles...">
-      <button onclick="searchProfile()"><i class="fas fa-search"></i></button>
-    </div>
-
-    <ul class="nav-links">
-      <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-      <li><a href="authentication.html"><i class="fas fa-sign-in-alt"></i> Signup/Login</a></li>
-      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
-      <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
-      <li><a href="services.html"><i class="fas fa-cogs"></i> Services</a></li>
-      <li><a href="contact.html"><i class="fas fa-phone-alt"></i> Contact</a></li>
-    </ul>
-    <div class="burger" onclick="toggleMenu()">
-  <div class="line"></div>
-  <div class="line"></div>
-  <div class="line"></div>
-</div>
-
-  </nav>
-
-  <h2 class="section-title">News Feed</h2>
-  <div id="feedContainer"></div>
-
-  <h2 class="section-title">Property Listings</h2>
-  <div class="property-list">
-    <!-- Example static property 1 -->
-    <div class="property-item" id="property-1">
-      <img src="property1.jpg" alt="Property Image" />
-      <div class="property-info">
-        <h3>Beautiful Land in Downtown Area</h3>
-        <p>Price: NPR 30,00,000</p>
-        <p>Size: 5 Ropani, 3 Katta</p>
-        <p class="location">Location: Downtown, City</p>
-        <div class="map-container">
-          <iframe
-            src="https://maps.google.com/maps?q=Downtown%20City&t=&z=13&ie=UTF8&iwloc=&output=embed"
-            width="100%"
-            height="100%"
-            frameborder="0"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <a href="property1-detail.html" class="btn">View Details</a>
-      </div>
-      <div class="user-info">
-        <strong>Posted by:</strong> <span>JohnDoe123</span>
-      </div>
-      <div class="engagements">
-        <strong>Engagements:</strong>
-        <span id="likes-1">Likes: 120</span> |
-        <span>Comments: 35</span> |
-        <span>Shares: 15</span>
-      </div>
-    </div>
-
-    <!-- Example static property 2 -->
-    <div class="property-item" id="property-2">
-      <img src="property2.jpg" alt="Property Image" />
-      <div class="property-info">
-        <h3>Luxury 3-Bedroom Home in Riverside</h3>
-        <p>Price: NPR 45,00,000</p>
-        <p>Size: 1500 sqft</p>
-        <p class="location">Location: Riverside, City</p>
-        <div class="map-container">
-          <iframe
-            src="https://maps.google.com/maps?q=Riverside%20City&t=&z=13&ie=UTF8&iwloc=&output=embed"
-            width="100%"
-            height="100%"
-            frameborder="0"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <a href="property2-detail.html" class="btn">View Details</a>
-      </div>
-      <div class="user-info">
-        <strong>Posted by:</strong> <span>Alice_Properties</span>
-      </div>
-      <div class="engagements">
-        <strong>Engagements:</strong>
-        <span id="likes-2">Likes: 85</span> |
-        <span>Comments: 25</span> |
-        <span>Shares: 10</span>
-      </div>
-    </div>
-  </div>
-
-
-<div class="property-item" id="property-3">
-  <img src="https://images.unsplash.com/photo-1572120360610-d971b9c21a17?auto=format&fit=crop&w=600&q=80" alt="Modern Apartment" />
-  <div class="property-info">
-    <h3>Modern 2-Bedroom Apartment in New Baneshwor</h3>
-    <p>Price: NPR 25,00,000</p>
-    <p>Size: 1100 sqft</p>
-    <p class="location">Location: New Baneshwor, Kathmandu</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=New%20Baneshwor%20Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%"
-        height="100%"
-        frameborder="0"
-        allowfullscreen
-      ></iframe>
-    </div>
-    <a href="property3-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>UrbanEstates</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span id="likes-3">Likes: 78</span> |
-    <span>Comments: 14</span> |
-    <span>Shares: 8</span>
-  </div>
-</div>
-
-<div class="property-item" id="property-4">
-  <img src="https://images.unsplash.com/photo-1501183638714-0f1f7f2b92f8?auto=format&fit=crop&w=600&q=80" alt="Cozy Cottage" />
-  <div class="property-info">
-    <h3>Cozy Cottage near Pashupatinath</h3>
-    <p>Price: NPR 15,00,000</p>
-    <p>Size: 3 Ropani</p>
-    <p class="location">Location: Pashupatinath, Kathmandu</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Pashupatinath%20Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%"
-        height="100%"
-        frameborder="0"
-        allowfullscreen
-      ></iframe>
-    </div>
-    <a href="property4-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>HimalayanHomes</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span id="likes-4">Likes: 52</span> |
-    <span>Comments: 7</span> |
-    <span>Shares: 3</span>
-  </div>
-</div>
-
-<div class="property-item" id="property-5">
-  <img src="https://images.unsplash.com/photo-1560448204-8e0a68d4a47d?auto=format&fit=crop&w=600&q=80" alt="Luxury Villa" />
-  <div class="property-info">
-    <h3>Luxury Villa with Garden in Lalitpur</h3>
-    <p>Price: NPR 1,20,00,000</p>
-    <p>Size: 12 Katta</p>
-    <p class="location">Location: Lalitpur, Kathmandu Valley</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Lalitpur%20Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%"
-        height="100%"
-        frameborder="0"
-        allowfullscreen
-      ></iframe>
-    </div>
-    <a href="property5-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>EliteEstates</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span id="likes-5">Likes: 98</span> |
-    <span>Comments: 20</span> |
-    <span>Shares: 12</span>
-  </div>
-</div>
-
-<div class="property-item" id="property-6">
-  <img src="https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=600&q=80" alt="Office Space" />
-  <div class="property-info">
-    <h3>Spacious Commercial Office Space in Thamel</h3>
-    <p>Price: NPR 60,00,000</p>
-    <p>Size: 2000 sqft</p>
-    <p class="location">Location: Thamel, Kathmandu</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Thamel%20Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%"
-        height="100%"
-        frameborder="0"
-        allowfullscreen
-      ></iframe>
-    </div>
-    <a href="property6-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>BizRentals</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span id="likes-6">Likes: 45</span> |
-    <span>Comments: 11</span> |
-    <span>Shares: 4</span>
-  </div>
-</div>
-
-<div class="property-item" id="property-7">
-  <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80" alt="Rental Room" />
-  <div class="property-info">
-    <h3>Affordable Rental Room in Patan</h3>
-    <p>Price: NPR 7,000 / month</p>
-    <p>Size: 1 Room</p>
-    <p class="location">Location: Patan, Lalitpur</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Patan%20Lalitpur&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%"
-        height="100%"
-        frameborder="0"
-        allowfullscreen
-      ></iframe>
-    </div>
-    <a href="property7-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>EasyRentals</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span id="likes-7">Likes: 30</span> |
-    <span>Comments: 5</span> |
-    <span>Shares: 2</span>
-  </div>
-</div>
-
-<div class="property-item" id="property-8">
-  <img src="https://images.unsplash.com/photo-1502672023488-70e25813eb80?auto=format&fit=crop&w=600&q=80" alt="Hotel Room" />
-  <div class="property-info">
-    <h3>Comfortable Hotel Room in Pokhara</h3>
-    <p>Price: NPR 3,500 / night</p>
-    <p>Size: 1 Room</p>
-    <p class="location">Location: Lakeside, Pokhara</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Pokhara%20Lakeside&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%"
-        height="100%"
-        frameborder="0"
-        allowfullscreen
-      ></iframe>
-    </div>
-    <a href="property8-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>LakeViewHotels</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span id="likes-8">Likes: 66</span> |
-    <span>Comments: 12</span> |
-    <span>Shares: 5</span>
-  </div>
-</div>
-
-<div class="property-item" id="property-9">
-  <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" alt="Restaurant Space" />
-  <div class="property-info">
-    <h3>Restaurant Space for Lease in New Road</h3>
-    <p>Price: NPR 50,000 / month</p>
-    <p>Size: 1500 sqft</p>
-    <p class="location">Location: New Road, Kathmandu</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=New%20Road%20Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%"
-        height="100%"
-        frameborder="0"
-        allowfullscreen
-      ></iframe>
-    </div>
-    <a href="property9-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>FoodiesHub</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span id="likes-9">Likes: 38</span> |
-    <span>Comments: 6</span> |
-    <span>Shares: 3</span>
-  </div>
-</div>
-
-<div class="property-item" id="property-10">
-  <img src="https://images.unsplash.com/photo-1494522358652-b4cfe7b7c3f2?auto=format&fit=crop&w=600&q=80" alt="Shared Office" />
-  <div class="property-info">
-    <h3>Shared Office Space for Freelancers in Jawalakhel</h3>
-    <p>Price: NPR 15,000 / month</p>
-    <p>Size: 500 sqft</p>
-    <p class="location">Location: Jawalakhel, Lalitpur</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Jawalakhel%20Lalitpur&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%"
-        height="100%"
-        frameborder="0"
-        allowfullscreen
-      ></iframe>
-    </div>
-    <a href="property10-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>CoWorkSpaces</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span id="likes-10">Likes: 27</span> |
-    <span>Comments: 4</span> |
-    <span>Shares: 1</span>
-  </div>
-</div>
-
-
-
-
-<!-- Property 11 -->
-<div class="property-item" id="property-11">
-  <img src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=600&q=80" alt="Commercial Storefront" />
-  <div class="property-info">
-    <h3>Prime Commercial Storefront on Main Street</h3>
-    <p>Price: NPR 75,00,000</p>
-    <p>Size: 1200 sqft</p>
-    <p class="location">Location: Main Street, Kathmandu</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Main%20Street%20Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="property11-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>BizCommercials</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-11">Likes: 90</span> | <span>Comments: 18</span> | <span>Shares: 9</span></div>
-</div>
-
-<!-- Property 12 -->
-<div class="property-item" id="property-12">
-  <img src="https://images.unsplash.com/photo-1560184897-45876f53c4b6?auto=format&fit=crop&w=600&q=80" alt="E-commerce Warehouse" />
-  <div class="property-info">
-    <h3>Large E-commerce Warehouse Space for Rent</h3>
-    <p>Price: NPR 1,50,00,000</p>
-    <p>Size: 5000 sqft</p>
-    <p class="location">Location: Industrial Area, Biratnagar</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Biratnagar%20Industrial%20Area&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="property12-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>EComSpaces</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-12">Likes: 110</span> | <span>Comments: 22</span> | <span>Shares: 15</span></div>
-</div>
-
-<!-- Property 13 -->
-<div class="property-item" id="property-13">
-  <img src="https://images.unsplash.com/photo-1532635245-471a9b10a51e?auto=format&fit=crop&w=600&q=80" alt="Teacher Job Ad" />
-  <div class="property-info">
-    <h3>Part-time Teacher Needed at Local School</h3>
-    <p>Salary: NPR 15,000 / month</p>
-    <p>Subject: English & Math</p>
-    <p class="location">Location: Bhaktapur</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Bhaktapur&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="job13-detail.html" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>EduHire</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-13">Likes: 60</span> | <span>Comments: 12</span> | <span>Shares: 4</span></div>
-</div>
-
-<!-- Property 14 -->
-<div class="property-item" id="property-14">
-  <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80" alt="Law Office Space" />
-  <div class="property-info">
-    <h3>Office Space for Lawyers in Central Kathmandu</h3>
-    <p>Price: NPR 40,00,000</p>
-    <p>Size: 900 sqft</p>
-    <p class="location">Location: Central Kathmandu</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Kathmandu%20Central&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="property14-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>LegalSpaces</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-14">Likes: 42</span> | <span>Comments: 7</span> | <span>Shares: 2</span></div>
-</div>
-
-<!-- Property 15 -->
-<div class="property-item" id="property-15">
-  <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80" alt="Engineer Job Posting" />
-  <div class="property-info">
-    <h3>Civil Engineer Wanted for Bridge Project</h3>
-    <p>Salary: NPR 80,000 / month</p>
-    <p>Experience: 3+ Years</p>
-    <p class="location">Location: Kathmandu Valley</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Kathmandu%20Valley&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="job15-detail.html" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>BuildPro</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-15">Likes: 70</span> | <span>Comments: 15</span> | <span>Shares: 5</span></div>
-</div>
-
-<!-- Property 16 -->
-<div class="property-item" id="property-16">
-  <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80" alt="Pilot Job" />
-  <div class="property-info">
-    <h3>Commercial Pilot Job Opening</h3>
-    <p>Salary: NPR 2,00,000 / month</p>
-    <p>License Required: CPL</p>
-    <p class="location">Location: Tribhuvan International Airport, Kathmandu</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Tribhuvan%20International%20Airport%20Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="job16-detail.html" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>FlyHighAirlines</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-16">Likes: 85</span> | <span>Comments: 10</span> | <span>Shares: 6</span></div>
-</div>
-
-<!-- Property 17 -->
-<div class="property-item" id="property-17">
-  <img src="https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?auto=format&fit=crop&w=600&q=80" alt="Doctor Job" />
-  <div class="property-info">
-    <h3>Experienced General Practitioner Needed</h3>
-    <p>Salary: NPR 1,00,000 / month</p>
-    <p>Location: Birgunj Hospital</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Birgunj%20Hospital&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="job17-detail.html" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>HealthCarePlus</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-17">Likes: 55</span> | <span>Comments: 9</span> | <span>Shares: 3</span></div>
-</div>
-
-<!-- Property 18 -->
-<div class="property-item" id="property-18">
-  <img src="https://images.unsplash.com/photo-1556741533-f6acd647d2fb?auto=format&fit=crop&w=600&q=80" alt="Driver Job" />
-  <div class="property-info">
-    <h3>Driver Required for Food Delivery Service</h3>
-    <p>Salary: NPR 20,000 / month</p>
-    <p>Shift: Day & Night</p>
-    <p class="location">Location: Kathmandu Metropolitan</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Kathmandu%20Metropolitan&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="job18-detail.html" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>QuickEats</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-18">Likes: 65</span> | <span>Comments: 7</span> | <span>Shares: 4</span></div>
-</div>
-
-<!-- Property 19 -->
-<div class="property-item" id="property-19">
-  <img src="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&fit=crop&w=600&q=80" alt="Food Delivery Vehicle" />
-  <div class="property-info">
-    <h3>Food Delivery Motorbike for Rent</h3>
-    <p>Price: NPR 6,000 / month</p>
-    <p>Condition: Excellent</p>
-    <p class="location">Location: Lalitpur</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Lalitpur&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="property19-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>Rentals4U</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-19">Likes: 40</span> | <span>Comments: 5</span> | <span>Shares: 1</span></div>
-</div>
-
-<!-- Property 20 -->
-<div class="property-item" id="property-20">
-  <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80" alt="Social Media Advertising Office" />
-  <div class="property-info">
-    <h3>Office Space for Social Media Marketing Startup</h3>
-    <p>Price: NPR 35,00,000</p>
-    <p>Size: 850 sqft</p>
-    <p class="location">Location: Gongabu, Kathmandu</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Gongabu%20Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="property20-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>AdMarketers</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-20">Likes: 75</span> | <span>Comments: 14</span> | <span>Shares: 6</span></div>
-</div>
-
-<!-- Property 21 -->
-<div class="property-item" id="property-21">
-  <img src="https://images.unsplash.com/photo-1494522358652-b4cfe7b7c3f2?auto=format&fit=crop&w=600&q=80" alt="Rental Home" />
-  <div class="property-info">
-    <h3>Family Rental Home Near Schools</h3>
-    <p>Price: NPR 20,000 / month</p>
-    <p>Size: 3 Bedrooms, 2 Bathrooms</p>
-    <p class="location">Location: Kirtipur</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Kirtipur&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="property21-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>HomeRentals</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-21">Likes: 50</span> | <span>Comments: 8</span> | <span>Shares: 4</span></div>
-</div>
-
-<!-- Property 22 -->
-<div class="property-item" id="property-22">
-  <img src="https://images.unsplash.com/photo-1486308510493-cb6f4c9d29b4?auto=format&fit=crop&w=600&q=80" alt="Hotel Room" />
-  <div class="property-info">
-    <h3>Hotel Room for Tourists in Chitwan</h3>
-    <p>Price: NPR 5,000 / night</p>
-    <p>Size: 1 Room, Queen Bed</p>
-    <p class="location">Location: Chitwan National Park</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Chitwan%20National%20Park&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="property22-detail.html" class="btn">Book Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>SafariHotels</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-22">Likes: 48</span> | <span>Comments: 9</span> | <span>Shares: 3</span></div>
-</div>
-
-<!-- Property 23 -->
-<div class="property-item" id="property-23">
-  <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80" alt="Studio Apartment" />
-  <div class="property-info">
-    <h3>Affordable Studio Apartment for Students</h3>
-    <p>Price: NPR 8,000 / month</p>
-    <p>Size: 1 Room</p>
-    <p class="location">Location: Jawalakhel, Lalitpur</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Jawalakhel%20Lalitpur&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="property23-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>StudentHomes</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-23">Likes: 40</span> | <span>Comments: 5</span> | <span>Shares: 2</span></div>
-</div>
-
-<!-- Property 24 -->
-<div class="property-item" id="property-24">
-  <img src="https://images.unsplash.com/photo-1486308510493-cb6f4c9d29b4?auto=format&fit=crop&w=600&q=80" alt="E-commerce Office" />
-  <div class="property-info">
-    <h3>E-commerce Business Office with Warehouse</h3>
-    <p>Price: NPR 80,00,000</p>
-    <p>Size: 4000 sqft</p>
-    <p class="location">Location: Kathmandu</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="property24-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>ShopOnline</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-24">Likes: 95</span> | <span>Comments: 20</span> | <span>Shares: 10</span></div>
-</div>
-
-<!-- Property 25 -->
-<div class="property-item" id="property-25">
-  <img src="https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=600&q=80" alt="Driver Job Ad" />
-  <div class="property-info">
-    <h3>Delivery Driver Needed for Courier Company</h3>
-    <p>Salary: NPR 22,000 / month</p>
-    <p>Vehicle Provided</p>
-    <p class="location">Location: Kathmandu</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="job25-detail.html" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>SpeedyCouriers</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-25">Likes: 58</span> | <span>Comments: 11</span> | <span>Shares: 5</span></div>
-</div>
-
-<!-- Property 26 -->
-<div class="property-item" id="property-26">
-  <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80" alt="Food Delivery Vehicle" />
-  <div class="property-info">
-    <h3>Food Delivery Service Looking for Riders</h3>
-    <p>Salary: NPR 18,000 / month + Tips</p>
-    <p>Flexible Hours</p>
-    <p class="location">Location: Lalitpur</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Lalitpur&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="job26-detail.html" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>FastFoodExpress</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-26">Likes: 70</span> | <span>Comments: 13</span> | <span>Shares: 7</span></div>
-</div>
-
-<!-- Property 27 -->
-<div class="property-item" id="property-27">
-  <img src="https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?auto=format&fit=crop&w=600&q=80" alt="Social Media Ad Agency" />
-  <div class="property-info">
-    <h3>Social Media Advertising Agency for Lease</h3>
-    <p>Price: NPR 30,00,000</p>
-    <p>Size: 900 sqft</p>
-    <p class="location">Location: New Baneshwor, Kathmandu</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=New%20Baneshwor%20Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="property27-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>AdWorld</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-27">Likes: 55</span> | <span>Comments: 10</span> | <span>Shares: 5</span></div>
-</div>
-
-<!-- Property 28 -->
-<div class="property-item" id="property-28">
-  <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" alt="Startup Office" />
-  <div class="property-info">
-    <h3>Co-working Space for Startups</h3>
-    <p>Price: NPR 18,000 / month</p>
-    <p>Size: 400 sqft</p>
-    <p class="location">Location: Patan, Lalitpur</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Patan%20Lalitpur&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="property28-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>StartHub</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-28">Likes: 45</span> | <span>Comments: 8</span> | <span>Shares: 4</span></div>
-</div>
-
-<!-- Property 29 -->
-<div class="property-item" id="property-29">
-  <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80" alt="Student Rental" />
-  <div class="property-info">
-    <h3>Affordable Rental for Students</h3>
-    <p>Price: NPR 6,500 / month</p>
-    <p>Size: 1 Room</p>
-    <p class="location">Location: Jawalakhel</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Jawalakhel&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="property29-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>EduRentals</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-29">Likes: 35</span> | <span>Comments: 6</span> | <span>Shares: 2</span></div>
-</div>
-
-<!-- Property 30 -->
-<div class="property-item" id="property-30">
-  <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=600&q=80" alt="Business Office" />
-  <div class="property-info">
-    <h3>Office Space for Small Enterprises</h3>
-    <p>Price: NPR 28,00,000</p>
-    <p>Size: 1100 sqft</p>
-    <p class="location">Location: Thapathali, Kathmandu</p>
-    <div class="map-container">
-      <iframe
-        src="https://maps.google.com/maps?q=Thapathali%20Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="property30-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>EnterpriseSpaces</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-30">Likes: 63</span> | <span>Comments: 11</span> | <span>Shares: 5</span></div>
-</div>
-
-
-<!-- Job Post 31 -->
-<div class="property-item" id="job-31">
-  <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80" alt="Software Developer Job" />
-  <div class="property-info">
-    <h3>Software Developer Needed - Full Time</h3>
-    <p>Salary: NPR 80,000 / month</p>
-    <p>Skills: JavaScript, React, Node.js</p>
-    <p>Experience: 2+ years</p>
-    <p class="location">Location: Kathmandu</p>
-    <div class="map-container">
-      <iframe src="https://maps.google.com/maps?q=Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="job31-detail.html" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>TechSolutions</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-31">Likes: 75</span> | <span>Comments: 20</span> | <span>Shares: 10</span></div>
-</div>
-
-<!-- Commercial Ad 32 -->
-<div class="property-item" id="ad-32">
-  <img src="https://images.unsplash.com/photo-1542831371-d531d36971e6?auto=format&fit=crop&w=600&q=80" alt="Commercial Warehouse" />
-  <div class="property-info">
-    <h3>Commercial Warehouse for Rent</h3>
-    <p>Price: NPR 2,00,000 / month</p>
-    <p>Size: 7000 sqft, with loading docks</p>
-    <p class="location">Location: Butwal Industrial Area</p>
-    <div class="map-container">
-      <iframe src="https://maps.google.com/maps?q=Butwal&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="ad32-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>BizRentals</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-32">Likes: 50</span> | <span>Comments: 5</span> | <span>Shares: 3</span></div>
-</div>
-
-<!-- Social Media Marketing Ad 33 -->
-<div class="property-item" id="sm-33">
-  <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80" alt="Social Media Marketing" />
-  <div class="property-info">
-    <h3>Boost Your Business with Our Social Media Marketing</h3>
-    <p>Services: Facebook Ads, Instagram Growth, Content Creation</p>
-    <p>Starting at NPR 15,000 / month</p>
-    <p class="location">Location: Lalitpur</p>
-    <div class="map-container">
-      <iframe src="https://maps.google.com/maps?q=Lalitpur&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="sm33-detail.html" class="btn">Contact Us</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>SocialBoost</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-33">Likes: 110</span> | <span>Comments: 25</span> | <span>Shares: 15</span></div>
-</div>
-
-<!-- E-commerce Listing 34 -->
-<div class="property-item" id="ecom-34">
-  <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80" alt="E-commerce Product" />
-  <div class="property-info">
-    <h3>Organic Honey - 500g Jar</h3>
-    <p>Price: NPR 900</p>
-    <p>Fresh and Pure, Sourced from Himalayan Farms</p>
-    <p class="location">Location: Dhulikhel</p>
-    <div class="map-container">
-      <iframe src="https://maps.google.com/maps?q=Dhulikhel&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="product34-detail.html" class="btn">Buy Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>HimalayanGoods</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-34">Likes: 85</span> | <span>Comments: 10</span> | <span>Shares: 7</span></div>
-</div>
-
-<!-- Delivery Service 35 -->
-<div class="property-item" id="delivery-35">
-  <img src="https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=600&q=80" alt="Food Delivery" />
-  <div class="property-info">
-    <h3>Food Delivery Service Available 24/7</h3>
-    <p>Service Areas: Kathmandu Valley</p>
-    <p>Fast and Reliable Delivery with Live Tracking</p>
-    <p class="location">Location: Kathmandu</p>
-    <div class="map-container">
-      <iframe src="https://maps.google.com/maps?q=Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="delivery35-detail.html" class="btn">Order Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>QuickEats</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-35">Likes: 120</span> | <span>Comments: 30</span> | <span>Shares: 20</span></div>
-</div>
-
-<!-- Job Post 36 -->
-<div class="property-item" id="job-36">
-  <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80" alt="Customer Support Job" />
-  <div class="property-info">
-    <h3>Customer Support Executive Required</h3>
-    <p>Salary: NPR 25,000 / month</p>
-    <p>Skills: Good Communication, Problem Solving</p>
-    <p class="location">Location: Lalitpur</p>
-    <div class="map-container">
-      <iframe src="https://maps.google.com/maps?q=Lalitpur&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="job36-detail.html" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>HelpDesk Ltd</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-36">Likes: 40</span> | <span>Comments: 5</span> | <span>Shares: 2</span></div>
-</div>
-
-<!-- Commercial Ad 37 -->
-<div class="property-item" id="ad-37">
-  <img src="https://images.unsplash.com/photo-1560184897-45876f53c4b6?auto=format&fit=crop&w=600&q=80" alt="Office Rental" />
-  <div class="property-info">
-    <h3>Modern Office Space for Rent</h3>
-    <p>Price: NPR 50,000 / month</p>
-    <p>Size: 1000 sqft, fully furnished</p>
-    <p class="location">Location: New Baneshwor, Kathmandu</p>
-    <div class="map-container">
-      <iframe src="https://maps.google.com/maps?q=New%20Baneshwor%20Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="ad37-detail.html" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>OfficeRentals</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-37">Likes: 55</span> | <span>Comments: 8</span> | <span>Shares: 5</span></div>
-</div>
-
-<!-- Social Media Marketing Ad 38 -->
-<div class="property-item" id="sm-38">
-  <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80" alt="Social Media Campaign" />
-  <div class="property-info">
-    <h3>Complete Social Media Campaign Management</h3>
-    <p>Platforms: Facebook, Instagram, TikTok</p>
-    <p>Starting Price: NPR 20,000 / month</p>
-    <p class="location">Location: Kathmandu</p>
-    <div class="map-container">
-      <iframe src="https://maps.google.com/maps?q=Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="sm38-detail.html" class="btn">Contact Us</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>MarketPro</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-38">Likes: 90</span> | <span>Comments: 20</span> | <span>Shares: 8</span></div>
-</div>
-
-<!-- E-commerce Listing 39 -->
-<div class="property-item" id="ecom-39">
-  <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" alt="Handmade Jewelry" />
-  <div class="property-info">
-    <h3>Handmade Silver Jewelry Collection</h3>
-    <p>Price: NPR 1,200 - 3,000 per piece</p>
-    <p>Ethical and Unique Designs</p>
-    <p class="location">Location: Pokhara</p>
-    <div class="map-container">
-      <iframe src="https://maps.google.com/maps?q=Pokhara&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="product39-detail.html" class="btn">Buy Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>SilverCraft</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-39">Likes: 60</span> | <span>Comments: 7</span> | <span>Shares: 3</span></div>
-</div>
-
-<!-- Delivery Service 40 -->
-<div class="property-item" id="delivery-40">
-  <img src="https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?auto=format&fit=crop&w=600&q=80" alt="Parcel Delivery" />
-  <div class="property-info">
-    <h3>Reliable Parcel Delivery Across Nepal</h3>
-    <p>Service: Nationwide Courier & Logistics</p>
-    <p>Tracking & Insurance Available</p>
-    <p class="location">Location: Nepalgunj</p>
-    <div class="map-container">
-      <iframe src="https://maps.google.com/maps?q=Nepalgunj&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <a href="delivery40-detail.html" class="btn">Book Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>SwiftParcel</span></div>
-  <div class="engagements"><strong>Engagements:</strong> <span id="likes-40">Likes: 70</span> | <span>Comments: 8</span> | <span>Shares: 4</span></div>
-</div>
-<!-- Jobs -->
-<div class="property-item" id="job-1">
-  <h3>Software Developer Needed</h3>
-  <p><strong>Company:</strong> Tech Innovators Ltd.</p>
-  <p><strong>Location:</strong> Kathmandu</p>
-  <p><strong>Salary:</strong> NPR 50,000 - 80,000/month</p>
-  <p><strong>Description:</strong> Looking for a passionate software developer with 2+ years experience in JavaScript and Python.</p>
-  <p><strong>Contact:</strong> hr@techinnovators.com</p>
-</div>
-
-<div class="property-item" id="job-2">
-  <h3>Highway Truck Driver Wanted</h3>
-  <p><strong>Company:</strong> Mountain Freight</p>
-  <p><strong>Location:</strong> Pokhara</p>
-  <p><strong>Salary:</strong> NPR 40,000/month</p>
-  <p><strong>Description:</strong> Experienced truck driver required for long-distance highway freight deliveries.</p>
-  <p><strong>Contact:</strong> jobs@mountainfreight.com</p>
-</div>
-
-<div class="property-item" id="job-3">
-  <h3>English Teacher for Online Classes</h3>
-  <p><strong>School:</strong> Global English Academy</p>
-  <p><strong>Location:</strong> Remote</p>
-  <p><strong>Salary:</strong> NPR 30,000/month</p>
-  <p><strong>Description:</strong> Teach English online to students aged 10-18 years. Fluent English and teaching certificate required.</p>
-  <p><strong>Contact:</strong> apply@globalenglish.com</p>
-</div>
-
-<div class="property-item" id="job-4">
-  <h3>Graphic Designer Position</h3>
-  <p><strong>Company:</strong> Creative Minds Studio</p>
-  <p><strong>Location:</strong> Lalitpur</p>
-  <p><strong>Salary:</strong> NPR 45,000/month</p>
-  <p><strong>Description:</strong> Skilled graphic designer wanted for branding and digital marketing campaigns.</p>
-  <p><strong>Contact:</strong> hr@creativeminds.com</p>
-</div>
-
-<div class="property-item" id="job-5">
-  <h3>Hospital Nurse Needed</h3>
-  <p><strong>Hospital:</strong> City Care Hospital</p>
-  <p><strong>Location:</strong> Biratnagar</p>
-  <p><strong>Salary:</strong> NPR 55,000/month</p>
-  <p><strong>Description:</strong> Licensed nurse required for general patient care and emergency support.</p>
-  <p><strong>Contact:</strong> nursing@citycare.com</p>
-</div>
-
-<!-- Commercial Ads -->
-<div class="property-item" id="ad-1">
-  <h3>Best Mobile Phone Deals</h3>
-  <img src="https://via.placeholder.com/400x200?text=Mobile+Sale" alt="Mobile Phone Sale" />
-  <p><strong>Store:</strong> Gadget World</p>
-  <p><strong>Offer:</strong> Up to 25% off on latest smartphones this week only!</p>
-  <p><strong>Location:</strong> Kathmandu Mall</p>
-  <a href="https://gadgetworld.com/deals" class="btn" target="_blank">Shop Now</a>
-</div>
-
-<div class="property-item" id="ad-2">
-  <h3>Organic Food Market</h3>
-  <img src="https://via.placeholder.com/400x200?text=Organic+Food" alt="Organic Food Market" />
-  <p><strong>Market:</strong> Green Harvest</p>
-  <p>Fresh organic vegetables and fruits delivered to your doorstep.</p>
-  <a href="https://greenharvest.com" class="btn" target="_blank">Order Now</a>
-</div>
-
-<div class="property-item" id="ad-3">
-  <h3>Car Rental Service</h3>
-  <img src="https://via.placeholder.com/400x200?text=Car+Rental" alt="Car Rental" />
-  <p><strong>Company:</strong> EasyRide Rentals</p>
-  <p>Affordable daily and weekly car rentals with driver options.</p>
-  <a href="https://easyriderentals.com" class="btn" target="_blank">Book Today</a>
-</div>
-
-<div class="property-item" id="ad-4">
-  <h3>Fitness Center Membership</h3>
-  <img src="https://via.placeholder.com/400x200?text=Fitness+Center" alt="Fitness Center" />
-  <p><strong>Gym:</strong> PowerHouse Gym</p>
-  <p>Join now and get 1 month free! Modern equipment and personal trainers available.</p>
-  <a href="https://powerhousegym.com" class="btn" target="_blank">Join Now</a>
-</div>
-
-<div class="property-item" id="ad-5">
-  <h3>New Café Opening</h3>
-  <img src="https://via.placeholder.com/400x200?text=Coffee+Cafe" alt="Coffee Cafe" />
-  <p><strong>Café:</strong> Aroma Brew</p>
-  <p>Grand opening this Saturday. Free coffee samples and live music.</p>
-  <a href="https://aromabrew.com" class="btn" target="_blank">Visit Us</a>
-</div>
-
-<!-- Social Media Marketing Ads -->
-<div class="property-item" id="smm-1">
-  <h3>Boost Your Business on Instagram</h3>
-  <p>Get real followers and likes to increase your brand visibility. Packages starting at NPR 1000.</p>
-  <p><strong>Contact:</strong> smm@genxmarketing.com</p>
-</div>
-
-<div class="property-item" id="smm-2">
-  <h3>Facebook Ad Campaigns</h3>
-  <p>Professional ad management services to maximize ROI. Target your ideal audience easily.</p>
-  <p><strong>Contact:</strong> ads@genxmarketing.com</p>
-</div>
-
-<div class="property-item" id="smm-3">
-  <h3>YouTube Channel Promotion</h3>
-  <p>Increase your video views and subscribers organically. Affordable plans available.</p>
-  <p><strong>Contact:</strong> youtube@genxmarketing.com</p>
-</div>
-
-<div class="property-item" id="smm-4">
-  <h3>Content Creation Services</h3>
-  <p>Professional content writing, graphics, and video editing for your social media platforms.</p>
-  <p><strong>Contact:</strong> content@genxmarketing.com</p>
-</div>
-
-<div class="property-item" id="smm-5">
-  <h3>Social Media Strategy Consultation</h3>
-  <p>Get expert advice on how to grow your brand and engage your audience effectively.</p>
-  <p><strong>Contact:</strong> strategy@genxmarketing.com</p>
-</div>
-
-<!-- E-commerce -->
-<div class="property-item" id="ecom-1">
-  <h3>Handmade Jewelry Store</h3>
-  <img src="https://via.placeholder.com/400x200?text=Jewelry" alt="Handmade Jewelry" />
-  <p>Unique handmade earrings, necklaces, and bracelets. Free shipping on orders over NPR 2000.</p>
-  <a href="https://handmadejewelry.com" class="btn" target="_blank">Shop Now</a>
-</div>
-
-<div class="property-item" id="ecom-2">
-  <h3>Traditional Nepali Clothing</h3>
-  <img src="https://via.placeholder.com/400x200?text=Nepali+Clothing" alt="Nepali Clothing" />
-  <p>Authentic Dhaka topis and sarees made by local artisans.</p>
-  <a href="https://nepaliclothing.com" class="btn" target="_blank">Browse Collection</a>
-</div>
-
-<div class="property-item" id="ecom-3">
-  <h3>Electronics Online Shop</h3>
-  <img src="https://via.placeholder.com/400x200?text=Electronics" alt="Electronics Shop" />
-  <p>Latest smartphones, laptops, and accessories at unbeatable prices.</p>
-  <a href="https://electronicsstore.com" class="btn" target="_blank">Buy Now</a>
-</div>
-
-<div class="property-item" id="ecom-4">
-  <h3>Book Store</h3>
-  <img src="https://via.placeholder.com/400x200?text=Books" alt="Book Store" />
-  <p>Wide range of educational and fiction books delivered right to your door.</p>
-  <a href="https://bookstore.com" class="btn" target="_blank">Order Books</a>
-</div>
-
-<div class="property-item" id="ecom-5">
-  <h3>Home Decor Items</h3>
-  <img src="https://via.placeholder.com/400x200?text=Home+Decor" alt="Home Decor" />
-  <p>Beautiful handcrafted decorations and furniture to beautify your home.</p>
-  <a href="https://homedecor.com" class="btn" target="_blank">Shop Decor</a>
-</div>
-
-<!-- Delivery Services -->
-<div class="property-item" id="delivery-1">
-  <h3>Fast Food Delivery</h3>
-  <img src="https://via.placeholder.com/400x200?text=Food+Delivery" alt="Food Delivery" />
-  <p>Order your favorite meals from top restaurants delivered fast to your doorstep.</p>
-  <a href="https://fastfooddelivery.com" class="btn" target="_blank">Order Now</a>
-</div>
-
-<div class="property-item" id="delivery-2">
-  <h3>Grocery Delivery Service</h3>
-  <img src="https://via.placeholder.com/400x200?text=Grocery+Delivery" alt="Grocery Delivery" />
-  <p>Fresh groceries and essentials delivered within 2 hours.</p>
-  <a href="https://groceryexpress.com" class="btn" target="_blank">Shop Groceries</a>
-</div>
-
-<div class="property-item" id="delivery-3">
-  <h3>Parcel Courier Service</h3>
-  <p>Reliable parcel delivery across Nepal with real-time tracking.</p>
-  <p><strong>Contact:</strong> courier@nepalparcel.com</p>
-</div>
-
-<div class="property-item" id="delivery-4">
-  <h3>Medicine Delivery</h3>
-  <p>Order medicines online and get them delivered safely to your home.</p>
-  <p><strong>Contact:</strong> meds@healthcare.com</p>
-</div>
-
-<div class="property-item" id="delivery-5">
-  <h3>Flower Delivery</h3>
-  <p>Send fresh flowers to your loved ones anywhere in Nepal.</p>
-  <a href="https://flowershop.com" class="btn" target="_blank">Order Flowers</a>
-</div>
-
-<!-- Students -->
-<div class="property-item" id="student-1">
-  <h3>Computer Science Study Group</h3>
-  <p>Join our weekly study sessions to improve coding skills and knowledge.</p>
-  <p><strong>Contact:</strong> csstudygroup@university.edu</p>
-</div>
-
-<div class="property-item" id="student-2">
-  <h3>Scholarship for Engineering Students</h3>
-  <p>Apply for merit-based scholarships for the upcoming academic year.</p>
-  <a href="https://university.edu/scholarships" class="btn" target="_blank">Apply Now</a>
-</div>
-
-<div class="property-item" id="student-3">
-  <h3>Online Math Tutoring</h3>
-  <p>Professional tutors available for online math classes from grade 6 to 12.</p>
-  <p><strong>Contact:</strong> mathhelp@tutoring.com</p>
-</div>
-
-<div class="property-item" id="student-4">
-  <h3>Internship Opportunity</h3>
-  <p>Get hands-on experience in software development with leading tech firms.</p>
-  <p><strong>Contact:</strong> internships@techcompany.com</p>
-</div>
-
-<div class="property-item" id="student-5">
-  <h3>Student Accommodation Available</h3>
-  <p>Affordable rooms near Tribhuvan University for rent.</p>
-  <p><strong>Contact:</strong> housing@tribhuvan.edu</p>
-</div>
-
-<!-- Teachers -->
-<div class="property-item" id="teacher-1">
-  <h3>Science Teacher Required</h3>
-  <p><strong>School:</strong> Sunshine Academy</p>
-  <p><strong>Location:</strong> Bharatpur</p>
-  <p><strong>Salary:</strong> NPR 35,000/month</p>
-  <p><strong>Description:</strong> Looking for a dedicated science teacher for grades 9-12.</p>
-  <p><strong>Contact:</strong> jobs@sunshineacademy.com</p>
-</div>
-
-<div class="property-item" id="teacher-2">
-  <h3>Math Tutor for High School</h3>
-  <p><strong>Location:</strong> Bhaktapur</p>
-  <p><strong>Salary:</strong> NPR 25,000/month</p>
-  <p><strong>Description:</strong> Experienced math tutor wanted for high school students.</p>
-  <p><strong>Contact:</strong> tutor@mathhelp.com</p>
-</div>
-
-<div class="property-item" id="teacher-3">
-  <h3>English Language Instructor</h3>
-  <p><strong>Institute:</strong> Language Pro</p>
-  <p><strong>Location:</strong> Kathmandu</p>
-  <p><strong>Salary:</strong> NPR 30,000/month</p>
-  <p><strong>Description:</strong> Teach conversational and business English to adults.</p>
-  <p><strong>Contact:</strong> info@languagepro.com</p>
-</div>
-
-<div class="property-item" id="teacher-4">
-  <h3>Art Teacher Needed</h3>
-  <p><strong>School:</strong> Creative Kids</p>
-  <p><strong>Location:</strong> Lalitpur</p>
-  <p><strong>Salary:</strong> NPR 28,000/month</p>
-  <p><strong>Description:</strong> Looking for an art teacher for primary school children.</p>
-  <p><strong>Contact:</strong> hr@creativekids.com</p>
-</div>
-
-<div class="property-item" id="teacher-5">
-  <h3>Physical Education Coach</h3>
-  <p><strong>School:</strong> Rising Star School</p>
-  <p><strong>Location:</strong> Pokhara</p>
-  <p><strong>Salary:</strong> NPR 32,000/month</p>
-  <p><strong>Description:</strong> PE coach needed for all grades with sports training experience.</p>
-  <p><strong>Contact:</strong> contact@risingstar.com</p>
-</div>
-
-<!-- Lawyers -->
-<div class="property-item" id="lawyer-1">
-  <h3>Legal Advisor Required</h3>
-  <p><strong>Firm:</strong> Justice & Partners</p>
-  <p><strong>Location:</strong> Kathmandu</p>
-  <p><strong>Salary:</strong> NPR 60,000/month</p>
-  <p><strong>Description:</strong> Experienced legal advisor for corporate law and contracts.</p>
-  <p><strong>Contact:</strong> hr@justicepartners.com</p>
-</div>
-
-<div class="property-item" id="lawyer-2">
-  <h3>Criminal Defense Lawyer</h3>
-  <p><strong>Firm:</strong> Law & Order</p>
-  <p><strong>Location:</strong> Lalitpur</p>
-  <p><strong>Salary:</strong> NPR 70,000/month</p>
-  <p><strong>Description:</strong> Skilled criminal defense attorney with minimum 5 years experience.</p>
-  <p><strong>Contact:</strong> careers@lawandorder.com</p>
-</div>
-
-<div class="property-item" id="lawyer-3">
-  <h3>Family Law Specialist</h3>
-  <p><strong>Firm:</strong> Peace Legal Services</p>
-  <p><strong>Location:</strong> Pokhara</p>
-  <p><strong>Salary:</strong> NPR 55,000/month</p>
-  <p><strong>Description:</strong> Seeking lawyer specialized in divorce and child custody cases.</p>
-  <p><strong>Contact:</strong> info@peacelegal.com</p>
-</div>
-
-<div class="property-item" id="lawyer-4">
-  <h3>Corporate Lawyer</h3>
-  <p><strong>Firm:</strong> Business Law Associates</p>
-  <p><strong>Location:</strong> Biratnagar</p>
-  <p><strong>Salary:</strong> NPR 65,000/month</p>
-  <p><strong>Description:</strong> Corporate lawyer with experience in mergers and acquisitions.</p>
-  <p><strong>Contact:</strong> hr@businesslaw.com</p>
-</div>
-
-<div class="property-item" id="lawyer-5">
-  <h3>Legal Internships Available</h3>
-  <p><strong>Firm:</strong> National Legal Aid</p>
-  <p><strong>Location:</strong> Kathmandu</p>
-  <p><strong>Salary:</strong> Unpaid/ Stipend</p>
-  <p><strong>Description:</strong> Internship program for law students with mentoring opportunities.</p>
-  <p><strong>Contact:</strong> internships@legalaid.com</p>
-</div>
-
-<!-- Engineers -->
-<div class="property-item" id="engineer-1">
-  <h3>Civil Engineer Position</h3>
-  <p><strong>Company:</strong> BuildWell Construction</p>
-  <p><strong>Location:</strong> Kathmandu</p>
-  <p><strong>Salary:</strong> NPR 70,000/month</p>
-  <p><strong>Description:</strong> Experienced civil engineer needed for urban infrastructure projects.</p>
-  <p><strong>Contact:</strong> careers@buildwell.com</p>
-</div>
-
-<div class="property-item" id="engineer-2">
-  <h3>Electrical Engineer Job</h3>
-  <p><strong>Company:</strong> PowerGrid Nepal</p>
-  <p><strong>Location:</strong> Pokhara</p>
-  <p><strong>Salary:</strong> NPR 65,000/month</p>
-  <p><strong>Description:</strong> Electrical engineer for power distribution and maintenance.</p>
-  <p><strong>Contact:</strong> hr@powergrid.com</p>
-</div>
-
-<div class="property-item" id="engineer-3">
-  <h3>Mechanical Engineer Required</h3>
-  <p><strong>Company:</strong> AutoTech Solutions</p>
-  <p><strong>Location:</strong> Biratnagar</p>
-  <p><strong>Salary:</strong> NPR 60,000/month</p>
-  <p><strong>Description:</strong> Skilled mechanical engineer for automotive design and repair.</p>
-  <p><strong>Contact:</strong> jobs@autotech.com</p>
-</div>
-
-<div class="property-item" id="engineer-4">
-  <h3>Software Engineer Internships</h3>
-  <p><strong>Company:</strong> CodeMasters</p>
-  <p><strong>Location:</strong> Kathmandu</p>
-  <p><strong>Salary:</strong> Unpaid/ Stipend</p>
-  <p><strong>Description:</strong> Internships for software engineering students to work on real projects.</p>
-  <p><strong>Contact:</strong> internships@codemasters.com</p>
-</div>
-
-<div class="property-item" id="engineer-5">
-  <h3>Environmental Engineer</h3>
-  <p><strong>Company:</strong> GreenEarth Consulting</p>
-  <p><strong>Location:</strong> Lalitpur</p>
-  <p><strong>Salary:</strong> NPR 68,000/month</p>
-  <p><strong>Description:</strong> Help develop sustainable solutions for local industries.</p>
-  <p><strong>Contact:</strong> hr@greenearth.com</p>
-</div>
-
-<!-- Pilots -->
-<div class="property-item" id="pilot-1">
-  <h3>Commercial Pilot Position</h3>
-  <p><strong>Airline:</strong> Nepal Airlines</p>
-  <p><strong>Location:</strong> Kathmandu</p>
-  <p><strong>Salary:</strong> Competitive</p>
-  <p><strong>Description:</strong> Licensed commercial pilot needed for domestic and international flights.</p>
-  <p><strong>Contact:</strong> recruitment@nepalairlines.com</p>
-</div>
-
-<div class="property-item" id="pilot-2">
-  <h3>Flight Instructor</h3>
-  <p><strong>Flight School:</strong> Everest Aviation</p>
-  <p><strong>Location:</strong> Pokhara</p>
-  <p><strong>Salary:</strong> NPR 90,000/month</p>
-  <p><strong>Description:</strong> Experienced flight instructor for pilot training programs.</p>
-  <p><strong>Contact:</strong> info@everestaviation.com</p>
-</div>
-
-<div class="property-item" id="pilot-3">
-  <h3>Helicopter Pilot Needed</h3>
-  <p><strong>Company:</strong> Mountain Rescue Helicopters</p>
-  <p><strong>Location:</strong> Lukla</p>
-  <p><strong>Salary:</strong> NPR 85,000/month</p>
-  <p><strong>Description:</strong> Skilled helicopter pilot for rescue and transport missions.</p>
-  <p><strong>Contact:</strong> hr@mountainrescue.com</p>
-</div>
-
-<div class="property-item" id="pilot-4">
-  <h3>Private Jet Pilot</h3>
-  <p><strong>Company:</strong> VIP Air Services</p>
-  <p><strong>Location:</strong> Kathmandu</p>
-  <p><strong>Salary:</strong> Negotiable</p>
-  <p><strong>Description:</strong> Private jet pilot needed for executive travel.</p>
-  <p><strong>Contact:</strong> jobs@vipair.com</p>
-</div>
-
-<div class="property-item" id="pilot-5">
-  <h3>Drone Pilot for Surveying</h3>
-  <p><strong>Company:</strong> GeoSurvey Tech</p>
-  <p><strong>Location:</strong> Lalitpur</p>
-  <p><strong>Salary:</strong> NPR 50,000/month</p>
-  <p><strong>Description:</strong> Certified drone pilot to assist in land and infrastructure surveys.</p>
-  <p><strong>Contact:</strong> careers@geosurvey.com</p>
-</div>
-
-<!-- Doctors -->
-<div class="property-item" id="doctor-1">
-  <h3>General Physician Wanted</h3>
-  <p><strong>Hospital:</strong> Sunrise Medical Center</p>
-  <p><strong>Location:</strong> Kathmandu</p>
-  <p><strong>Salary:</strong> NPR 80,000/month</p>
-  <p><strong>Description:</strong> General physician with 3+ years experience required for outpatient care.</p>
-  <p><strong>Contact:</strong> hr@sunrisemedical.com</p>
-</div>
-
-<div class="property-item" id="doctor-2">
-  <h3>Pediatrician Position</h3>
-  <p><strong>Hospital:</strong> Children's Care Hospital</p>
-  <p><strong>Location:</strong> Biratnagar</p>
-  <p><strong>Salary:</strong> NPR 85,000/month</p>
-  <p><strong>Description:</strong> Pediatrician needed for child healthcare and wellness programs.</p>
-  <p><strong>Contact:</strong> careers@childrenscare.com</p>
-</div>
-
-<div class="property-item" id="doctor-3">
-  <h3>Surgeon Needed</h3>
-  <p><strong>Hospital:</strong> City Hospital</p>
-  <p><strong>Location:</strong> Pokhara</p>
-  <p><strong>Salary:</strong> NPR 120,000/month</p>
-  <p><strong>Description:</strong> Experienced surgeon required for multi-specialty hospital.</p>
-  <p><strong>Contact:</strong> recruitment@cityhospital.com</p>
-</div>
-
-<div class="property-item" id="doctor-4">
-  <h3>Dentist Position</h3>
-  <p><strong>Clinic:</strong> Smile Dental Care</p>
-  <p><strong>Location:</strong> Kathmandu</p>
-  <p><strong>Salary:</strong> NPR 60,000/month</p>
-  <p><strong>Description:</strong> Dentist wanted for general dental services and orthodontics.</p>
-  <p><strong>Contact:</strong> info@smiledental.com</p>
-</div>
-
-<div class="property-item" id="doctor-5">
-  <h3>Pharmacist Required</h3>
-  <p><strong>Pharmacy:</strong> HealthPlus Pharmacy</p>
-  <p><strong>Location:</strong> Lalitpur</p>
-  <p><strong>Salary:</strong> NPR 40,000/month</p>
-  <p><strong>Description:</strong> Pharmacist needed to manage medicines and customer consultations.</p>
-  <p><strong>Contact:</strong> contact@healthplus.com</p>
-</div>
-
-<!-- Drivers -->
-<div class="property-item" id="driver-1">
-  <h3>Taxi Driver Needed</h3>
-  <p><strong>Company:</strong> City Taxi Service</p>
-  <p><strong>Location:</strong> Kathmandu</p>
-  <p><strong>Salary:</strong> NPR 35,000/month</p>
-  <p><strong>Description:</strong> Experienced taxi driver for local city routes.</p>
-  <p><strong>Contact:</strong> hr@citytaxi.com</p>
-</div>
-
-<div class="property-item" id="driver-2">
-  <h3>Delivery Driver for E-commerce</h3>
-  <p><strong>Company:</strong> QuickShip</p>
-  <p><strong>Location:</strong> Lalitpur</p>
-  <p><strong>Salary:</strong> NPR 30,000/month</p>
-  <p><strong>Description:</strong> Delivery driver for local e-commerce parcel deliveries.</p>
-  <p><strong>Contact:</strong> jobs@quickship.com</p>
-</div>
-
-<div class="property-item" id="driver-3">
-  <h3>Food Delivery Rider</h3>
-  <p><strong>Company:</strong> FoodFast</p>
-  <p><strong>Location:</strong> Pokhara</p>
-  <p><strong>Salary:</strong> NPR 25,000 + tips</p>
-  <p><strong>Description:</strong> Food delivery rider needed with a motorbike and valid license.</p>
-  <p><strong>Contact:</strong> apply@foodfast.com</p>
-</div>
-
-<div class="property-item" id="driver-4">
-  <h3>Courier Bike Rider</h3>
-  <p><strong>Company:</strong> ParcelGo</p>
-  <p><strong>Location:</strong> Bharatpur</p>
-  <p><strong>Salary:</strong> NPR 28,000/month</p>
-  <p><strong>Description:</strong> Courier rider for express parcel delivery services.</p>
-  <p><strong>Contact:</strong> hr@parcelgo.com</p>
-</div>
-
-<div class="property-item" id="driver-5">
-  <h3>Personal Driver for VIP</h3>
-  <p><strong>Location:</strong> Kathmandu</p>
-  <p><strong>Salary:</strong> NPR 45,000/month</p>
-  <p><strong>Description:</strong> Experienced personal driver for VIP transport with good communication skills.</p>
-  <p><strong>Contact:</strong> vipdriver@service.com</p>
-</div>
-
-<!-- Social Media Ads -->
-<div class="property-item" id="social-1">
-  <h3>Grow Your Facebook Page</h3>
-  <p>Get 1000+ targeted followers in 7 days with our Facebook growth service.</p>
-  <p><strong>Contact:</strong> facebookgrowth@genxads.com</p>
-</div>
-
-<div class="property-item" id="social-2">
-  <h3>Instagram Story Ads</h3>
-  <p>Create eye-catching Instagram story ads to boost your engagement.</p>
-  <p><strong>Contact:</strong> instaads@genxads.com</p>
-</div>
-
-<div class="property-item" id="social-3">
-  <h3>Twitter Promotion Services</h3>
-  <p>Increase your tweet impressions and followers with our promotional packages.</p>
-  <p><strong>Contact:</strong> twitterpromo@genxads.com</p>
-</div>
-
-<div class="property-item" id="social-4">
-  <h3>LinkedIn B2B Marketing</h3>
-  <p>Reach decision-makers with targeted LinkedIn campaigns.</p>
-  <p><strong>Contact:</strong> linkedin@genxads.com</p>
-</div>
-
-<div class="property-item" id="social-5">
-  <h3>Youtube Video Marketing</h3>
-  <p>Boost views and engagement on your YouTube channel with our video marketing strategies.</p>
-  <p><strong>Contact:</strong> youtube@genxads.com</p>
-</div>
-
-<!-- Feed Template -->
-<div class="feed">
-
-  <!-- 1. Tech Job -->
-  <div class="feed-item" id="job-1">
-    <img src="https://via.placeholder.com/400x200?text=Tech+Job" alt="Tech Job" />
-    <h3>Software Engineer @ InnovateX</h3>
-    <p><strong>Position:</strong> Full‑Stack Developer<br>
-       <strong>Location:</strong> Kathmandu, Nepal<br>
-       <strong>Requirements:</strong> JS, Node.js, React, 3+ yrs experience</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-
-  <!-- 2. Rental Listing -->
-  <div class="feed-item" id="rent-1">
-    <img src="https://via.placeholder.com/400x200?text=Apartment+Rent" alt="Apartment For Rent" />
-    <h3>2-Bedroom Apartment in Lazimpat</h3>
-    <p><strong>Rent:</strong> NPR 25,000/mo<br>
-       <strong>Size:</strong> 900 sqft<br>
-       <strong>Amenities:</strong> Furnished, parking, water backup</p>
-    <a href="#" class="btn">View Details</a>
-  </div>
-
-  <!-- 3. Online Course -->
-  <div class="feed-item" id="course-1">
-    <img src="https://via.placeholder.com/400x200?text=Online+Course" alt="Computer Science Course" />
-    <h3>Machine Learning Bootcamp</h3>
-    <p><strong>Provider:</strong> DataGuru<br>
-       <strong>Format:</strong> 6-week online, live sessions<br>
-       <strong>Level:</strong> Intermediate+</p>
-    <a href="#" class="btn">Enroll Now</a>
-  </div>
-
-  <!-- 4. Fitness Ad -->
-  <div class="feed-item" id="ad-1">
-    <img src="https://via.placeholder.com/400x200?text=Fitness+Center" alt="Fitness Center" />
-    <h3>PowerHouse Gym Membership</h3>
-    <p>Get 1 month FREE! Modern equipment + personal trainers available.</p>
-    <a href="#" class="btn">Join Now</a>
-  </div>
-
-  <!-- 5. Café Opening -->
-  <div class="feed-item" id="ad-2">
-    <img src="https://via.placeholder.com/400x200?text=Coffee+Cafe" alt="Coffee Café" />
-    <h3>Aroma Brew Grand Opening</h3>
-    <p>Free samples & live music this Saturday. All welcome!</p>
-    <a href="#" class="btn">Visit Us</a>
-  </div>
-
-  <!-- 6. E-commerce Deal -->
-  <div class="feed-item" id="ecomm-1">
-    <img src="https://via.placeholder.com/400x200?text=Sale+on+Laptops" alt="Laptops Sale" />
-    <h3>30% off on Ultrabc Pro</h3>
-    <p>High-performance laptop, ideal for students & professionals.</p>
-    <a href="#" class="btn">Shop Now</a>
-  </div>
-
-  <!-- 7. Food Delivery -->
-  <div class="feed-item" id="delivery-1">
-    <img src="https://via.placeholder.com/400x200?text=Pizza+Delivery" alt="Pizza Delivery" />
-    <h3>Fast Pizza Delivery 🍕</h3>
-    <p>Order within 30 min and get 20% off. Use code FAST20.</p>
-    <a href="#" class="btn">Order Now</a>
-  </div>
-
-  <!-- 8. Driving Job -->
-  <div class="feed-item" id="job-2">
-    <img src="https://via.placeholder.com/400x200?text=Driver+Job" alt="Driver Job" />
-    <h3>Delivery Driver Needed</h3>
-    <p><strong>Company:</strong> SpeedyRides<br>
-       <strong>Requirements:</strong> Valid license, smartphone, good record</p>
-    <a href="#" class="btn">Apply Here</a>
-  </div>
-
-  <!-- 9. Doctor Consulting -->
-  <div class="feed-item" id="service-1">
-    <img src="https://via.placeholder.com/400x200?text=Doctor+Consulting" alt="Doctor Consulting" />
-    <h3>Online Consultation: Dr. Meera Sharma</h3>
-    <p><strong>Specialty:</strong> Pediatrics<br>
-       <strong>Fee:</strong> NPR 800 per consultation</p>
-    <a href="#" class="btn">Book Now</a>
-  </div>
-
-  <!-- 10. Pilot Training -->
-  <div class="feed-item" id="course-2">
-    <img src="https://via.placeholder.com/400x200?text=Pilot+Training" alt="Pilot Training" />
-    <h3>Commercial Pilot Ground School</h3>
-    <p>Complete your ground theory in 12 weeks with experienced instructors.</p>
-    <a href="#" class="btn">Enroll Now</a>
-  </div>
-
-  <!-- 11. Lawyer Consultation -->
-  <div class="feed-item" id="service-2">
-    <img src="https://via.placeholder.com/400x200?text=Legal+Aid" alt="Legal Aid" />
-    <h3>Legal Advice: Divorce & Custody</h3>
-    <p><strong>Consultant:</strong> Adv. Ramesh Gupta<br>
-       <strong>Fee:</strong> NPR 1500 / session</p>
-    <a href="#" class="btn">Book Session</a>
-  </div>
-
-  <!-- 12. Engineering Internship -->
-  <div class="feed-item" id="job-3">
-    <img src="https://via.placeholder.com/400x200?text=Engineering+Intern" alt="Engineering Intern" />
-    <h3>Civil Engineering Intern</h3>
-    <p><strong>Company:</strong> BuildIt Co.<br>
-       <strong>Duration:</strong> 3 months, stipend NPR 20,000</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-
-  <!-- 13. Student Exchange -->
-  <div class="feed-item" id="program-1">
-    <img src="https://via.placeholder.com/400x200?text=Exchange+Program" alt="Exchange Program" />
-    <h3>Study Abroad: MIT Summer</h3>
-    <p>STEM research program in US, 6 weeks. Scholarships available.</p>
-    <a href="#" class="btn">Learn More</a>
-  </div>
-
-  <!-- 14. Chef Services -->
-  <div class="feed-item" id="service-3">
-    <img src="https://via.placeholder.com/400x200?text=Chef+Service" alt="Chef Service" />
-    <h3>Personal Chef for Dinner Parties</h3>
-    <p>Experienced chef available for events & private dinners</p>
-    <a href="#" class="btn">Book Chef</a>
-  </div>
-
-  <!-- 15. Online Tutoring -->
-  <div class="feed-item" id="service-4">
-    <img src="https://via.placeholder.com/400x200?text=Online+Tutor" alt="Online Tutor" />
-    <h3>Math Tutor for Grades 6–12</h3>
-    <p>Experienced teacher, one-on-one sessions, 1 hr = NPR 600</p>
-    <a href="#" class="btn">Book Session</a>
-  </div>
-
-  <!-- 16. Fashion Sale -->
-  <div class="feed-item" id="ecomm-2">
-    <img src="https://via.placeholder.com/400x200?text=Fashion+Sale" alt="Fashion Sale" />
-    <h3>Boot Sale: Sneakers & Hoodies</h3>
-    <p>Up to 50% off on streetwear fashion. Limited stock.</p>
-    <a href="#" class="btn">Shop Now</a>
-  </div>
-
-  <!-- 17. Hotel Deal -->
-  <div class="feed-item" id="stay-1">
-    <img src="https://via.placeholder.com/400x200?text=Hotel+Stay" alt="Hotel Stay" />
-    <h3>3-Night Stay @ Pokhara Lakeside</h3>
-    <p><strong>Price:</strong> NPR 12,000<br>
-       <strong>Amenities:</strong> Free breakfast & Wi‑Fi</p>
-    <a href="#" class="btn">Book Now</a>
-  </div>
-
-  <!-- 18. Pilotged Gadget -->
-  <div class="feed-item" id="ecomm-3">
-    <img src="https://via.placeholder.com/400x200?text=Drone+Camera" alt="Drone Camera" />
-    <h3>Pro Drone X5 – 20% Off</h3>
-    <p>4K camera drone, 30 min flight time. Limited-time offer!</p>
-    <a href="#" class="btn">Buy Now</a>
-  </div>
-
-  <!-- 19. Childcare Service -->
-  <div class="feed-item" id="service-5">
-    <img src="https://via.placeholder.com/400x200?text=Childcare+Service" alt="Childcare Service" />
-    <h3>Certified Nanny Available</h3>
-    <p>Experienced with infants & toddlers, hourly and live-in support</p>
-    <a href="#" class="btn">Contact</a>
-  </div>
-
-  <!-- 20. Environmental Project -->
-  <div class="feed-item" id="volunteer-1">
-    <img src="https://via.placeholder.com/400x200?text=Plant+Trees" alt="Plant Trees" />
-    <h3>Volunteer: Tree Plantation Drive</h3>
-    <p>Join our weekend event to plant 1000+ trees. All supplies provided.</p>
-    <a href="#" class="btn">Join Us</a>
-  </div>
-
-</div>
-<div class="property-item" id="job-1">
-  <img src="https://loremflickr.com/400/200/software,developer" alt="Software Developer Job" />
-  <div class="property-info">
-    <h3>Software Developer Needed</h3>
-    <p><strong>Company:</strong> Tech Solutions Pvt Ltd</p>
-    <p>Location: Kathmandu, Nepal</p>
-    <p>Salary: NPR 60,000 - 80,000</p>
-    <p>Experience: 2+ years in full-stack development</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>HR_TechSolutions</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span>Likes: 45</span> |
-    <span>Comments: 12</span> |
-    <span>Shares: 5</span>
-  </div>
-</div>
-
-<div class="property-item" id="rent-1">
-  <img src="https://placehold.co/400x200/apartment?text=Apartment+Rent" alt="Apartment Rent" />
-  <div class="property-info">
-    <h3>2 BHK Apartment for Rent</h3>
-    <p>Price: NPR 25,000/month</p>
-    <p>Location: Lalitpur, near Patan Durbar Square</p>
-    <p>Furnished with parking and security</p>
-    <a href="#" class="btn">View Details</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>Rentals_Lalitpur</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span>Likes: 38</span> |
-    <span>Comments: 9</span> |
-    <span>Shares: 3</span>
-  </div>
-</div>
-
-<div class="property-item" id="hotel-1">
-  <img src="https://fpoimg.com/400x200?text=Hotel+Room" alt="Hotel Room" />
-  <div class="property-info">
-    <h3>Deluxe Rooms at Hotel Everest</h3>
-    <p>Price: NPR 4000/night</p>
-    <p>Location: Thamel, Kathmandu</p>
-    <p>Free Wi-Fi, breakfast included</p>
-    <a href="#" class="btn">Book Now</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>HotelEverest</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span>Likes: 60</span> |
-    <span>Comments: 15</span> |
-    <span>Shares: 8</span>
-  </div>
-</div>
-
-<div class="property-item" id="commercial-1">
-  <img src="https://loremflickr.com/400/200/commercial,building" alt="Commercial Building" />
-  <div class="property-info">
-    <h3>Office Space for Lease</h3>
-    <p>Location: New Baneshwor, Kathmandu</p>
-    <p>Area: 1200 sqft, Parking Available</p>
-    <p>Rent: NPR 80,000/month</p>
-    <a href="#" class="btn">Contact Now</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>BaneshworCommercial</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span>Likes: 25</span> |
-    <span>Comments: 6</span> |
-    <span>Shares: 4</span>
-  </div>
-</div>
-
-<div class="property-item" id="ecommerce-1">
-  <img src="https://placehold.co/400x200?text=E-Commerce+Store" alt="E-Commerce Store" />
-  <div class="property-info">
-    <h3>Online Electronics Store</h3>
-    <p>Wide range of gadgets, free shipping in Nepal</p>
-    <p>Special discounts this month</p>
-    <a href="https://example-ecommerce.com" target="_blank" class="btn">Shop Now</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>ElectroShop</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span>Likes: 70</span> |
-    <span>Comments: 20</span> |
-    <span>Shares: 10</span>
-  </div>
-</div>
-
-<div class="property-item" id="delivery-1">
-  <img src="https://loremflickr.com/400/200/food,delivery" alt="Food Delivery" />
-  <div class="property-info">
-    <h3>Food Delivery Service</h3>
-    <p>Fast and fresh meals delivered to your door</p>
-    <p>Available in Kathmandu and Lalitpur</p>
-    <a href="#" class="btn">Order Now</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>QuickEats</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span>Likes: 50</span> |
-    <span>Comments: 11</span> |
-    <span>Shares: 7</span>
-  </div>
-</div>
-
-<div class="property-item" id="socialmedia-1">
-  <img src="https://placehold.co/400x200?text=Social+Media+Marketing" alt="Social Media Marketing" />
-  <div class="property-info">
-    <h3>Social Media Marketing Agency</h3>
-    <p>Boost your brand presence on Facebook, Instagram & Twitter</p>
-    <p>Custom campaigns for your business</p>
-    <a href="#" class="btn">Get Started</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>SocialBuzz</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span>Likes: 40</span> |
-    <span>Comments: 8</span> |
-    <span>Shares: 5</span>
-  </div>
-</div>
-
-<div class="property-item" id="education-1">
-  <img src="https://loremflickr.com/400/200/student,education" alt="Education" />
-  <div class="property-info">
-    <h3>Online Computer Science Course</h3>
-    <p>Learn programming and data science from experts</p>
-    <p>Flexible timing, affordable fees</p>
-    <a href="#" class="btn">Enroll Now</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>CodeAcademy</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span>Likes: 65</span> |
-    <span>Comments: 18</span> |
-    <span>Shares: 9</span>
-  </div>
-</div>
-
-<div class="property-item" id="healthcare-1">
-  <img src="https://placehold.co/400x200?text=Healthcare" alt="Healthcare" />
-  <div class="property-info">
-    <h3>General Physician Clinic</h3>
-    <p>Open Mon-Sat, 9AM - 6PM</p>
-    <p>Walk-ins welcome or book an appointment</p>
-    <a href="#" class="btn">Book Now</a>
-  </div>
-  <div class="user-info">
-    <strong>Posted by:</strong> <span>CityHealthClinic</span>
-  </div>
-  <div class="engagements">
-    <strong>Engagements:</strong>
-    <span>Likes: 55</span> |
-    <span>Comments: 14</span> |
-    <span>Shares: 6</span>
-  </div>
-</div>
-
-<style>
-  .property-item {
-    max-width: 450px;
-    margin: 20px auto;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    overflow: hidden;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  .property-item img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    border-bottom: 1px solid #ddd;
-  }
-  .property-info {
-    padding: 15px 20px;
-  }
-  .property-info h3 {
-    margin: 0 0 10px;
-    font-weight: 700;
-    color: #2c3e50;
-  }
-  .property-info p {
-    margin: 5px 0;
-    color: #555;
-    font-size: 14px;
-  }
-  .btn {
-    display: inline-block;
-    margin-top: 15px;
-    padding: 10px 18px;
-    background: #3498db;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 600;
-    transition: background 0.3s ease;
-  }
-  .btn:hover {
-    background: #2980b9;
-  }
-  .user-info, .engagements {
-    padding: 12px 20px;
-    background: #f7f9fc;
-    font-size: 13px;
-    color: #666;
-    border-top: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
-  }
-</style>
-
-<div class="property-item" id="job-2">
-  <img src="https://loremflickr.com/450/220/software,developer" alt="Software Developer Job" />
-  <div class="property-info">
-    <h3>Full-Stack Developer Wanted</h3>
-    <p><strong>Company:</strong> Innovatech Pvt Ltd</p>
-    <p>Location: Kathmandu</p>
-    <p>Salary: NPR 70,000 - 90,000</p>
-    <p>Experience: 3+ years</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>InnovatechHR</span></div>
-  <div class="engagements"><span>Likes: 78</span> | <span>Comments: 22</span> | <span>Shares: 12</span></div>
-</div>
-
-<div class="property-item" id="rent-2">
-  <img src="https://placehold.co/450x220/apartment?text=Modern+Apartment" alt="Apartment Rent" />
-  <div class="property-info">
-    <h3>Luxury 3 BHK Apartment for Rent</h3>
-    <p>Price: NPR 35,000/month</p>
-    <p>Location: Lalitpur, near Patan</p>
-    <p>Fully furnished with parking</p>
-    <a href="#" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>RentalsLalitpur</span></div>
-  <div class="engagements"><span>Likes: 65</span> | <span>Comments: 18</span> | <span>Shares: 9</span></div>
-</div>
-
-<div class="property-item" id="hotel-2">
-  <img src="https://fpoimg.com/450x220?text=Hotel+Luxury" alt="Hotel Room" />
-  <div class="property-info">
-    <h3>Deluxe Room at Hotel Himalaya</h3>
-    <p>Price: NPR 5000/night</p>
-    <p>Location: Thamel, Kathmandu</p>
-    <p>Includes breakfast and Wi-Fi</p>
-    <a href="#" class="btn">Book Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>HotelHimalaya</span></div>
-  <div class="engagements"><span>Likes: 90</span> | <span>Comments: 25</span> | <span>Shares: 15</span></div>
-</div>
-
-<div class="property-item" id="commercial-2">
-  <img src="https://loremflickr.com/450/220/office,building" alt="Office Space" />
-  <div class="property-info">
-    <h3>Spacious Office Space for Lease</h3>
-    <p>Area: 1000 sqft</p>
-    <p>Location: New Baneshwor, Kathmandu</p>
-    <p>Rent: NPR 90,000/month</p>
-    <a href="#" class="btn">Contact Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>BaneshworSpaces</span></div>
-  <div class="engagements"><span>Likes: 34</span> | <span>Comments: 8</span> | <span>Shares: 6</span></div>
-</div>
-
-<div class="property-item" id="ecommerce-2">
-  <img src="https://placehold.co/450x220?text=Online+Store" alt="E-commerce Store" />
-  <div class="property-info">
-    <h3>Gadget Store Online</h3>
-    <p>New arrivals, free shipping all over Nepal</p>
-    <p>Up to 30% off on all items</p>
-    <a href="https://example-gadgets.com" target="_blank" class="btn">Shop Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>GadgetWorld</span></div>
-  <div class="engagements"><span>Likes: 100</span> | <span>Comments: 32</span> | <span>Shares: 20</span></div>
-</div>
-
-<div class="property-item" id="delivery-2">
-  <img src="https://loremflickr.com/450/220/food,delivery" alt="Food Delivery" />
-  <div class="property-info">
-    <h3>Fast Food Delivery Service</h3>
-    <p>Serving Kathmandu and Lalitpur</p>
-    <p>Order online and get 10% off first order</p>
-    <a href="#" class="btn">Order Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>FoodDash</span></div>
-  <div class="engagements"><span>Likes: 72</span> | <span>Comments: 19</span> | <span>Shares: 13</span></div>
-</div>
-
-<div class="property-item" id="socialmedia-2">
-  <img src="https://placehold.co/450x220?text=Marketing+Agency" alt="Social Media Marketing" />
-  <div class="property-info">
-    <h3>Social Media Growth Experts</h3>
-    <p>Get your brand viral on Facebook & Instagram</p>
-    <p>Custom ad campaigns and analytics</p>
-    <a href="#" class="btn">Get Started</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>BrandBoosters</span></div>
-  <div class="engagements"><span>Likes: 55</span> | <span>Comments: 14</span> | <span>Shares: 9</span></div>
-</div>
-
-<div class="property-item" id="education-2">
-  <img src="https://loremflickr.com/450/220/students,classroom" alt="Online Education" />
-  <div class="property-info">
-    <h3>Advanced Computer Science Course</h3>
-    <p>Live classes, expert instructors</p>
-    <p>Flexible schedule & certification</p>
-    <a href="#" class="btn">Enroll Today</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>CodeMasters</span></div>
-  <div class="engagements"><span>Likes: 82</span> | <span>Comments: 20</span> | <span>Shares: 10</span></div>
-</div>
-
-<div class="property-item" id="healthcare-2">
-  <img src="https://placehold.co/450x220?text=Healthcare+Clinic" alt="Healthcare" />
-  <div class="property-info">
-    <h3>General Health Clinic</h3>
-    <p>Experienced doctors, friendly staff</p>
-    <p>Open Mon-Sat, 9AM - 6PM</p>
-    <a href="#" class="btn">Book Appointment</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>CityHealthCare</span></div>
-  <div class="engagements"><span>Likes: 60</span> | <span>Comments: 15</span> | <span>Shares: 7</span></div>
-</div>
-
-<div class="property-item" id="lawyer-1">
-  <img src="https://loremflickr.com/450/220/law,justice" alt="Lawyer Service" />
-  <div class="property-info">
-    <h3>Experienced Lawyer for Civil Cases</h3>
-    <p>Free consultation first 30 mins</p>
-    <p>Location: Kathmandu</p>
-    <a href="#" class="btn">Contact Lawyer</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>LegalAidKathmandu</span></div>
-  <div class="engagements"><span>Likes: 48</span> | <span>Comments: 10</span> | <span>Shares: 5</span></div>
-</div>
-
-<div class="property-item" id="pilot-1">
-  <img src="https://placehold.co/450x220?text=Pilot+Job" alt="Pilot Job" />
-  <div class="property-info">
-    <h3>Commercial Pilot Position Available</h3>
-    <p>Location: Tribhuvan International Airport</p>
-    <p>Salary: Competitive</p>
-    <a href="#" class="btn">Apply Here</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>NepalAirlines</span></div>
-  <div class="engagements"><span>Likes: 35</span> | <span>Comments: 7</span> | <span>Shares: 4</span></div>
-</div>
-
-<div class="property-item" id="doctor-1">
-  <img src="https://loremflickr.com/450/220/doctor,healthcare" alt="Doctor Clinic" />
-  <div class="property-info">
-    <h3>Pediatrician Clinic Open</h3>
-    <p>Mon-Fri 10AM - 5PM</p>
-    <p>Walk-in & appointments welcome</p>
-    <a href="#" class="btn">Book Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>HealthyKidsClinic</span></div>
-  <div class="engagements"><span>Likes: 55</span> | <span>Comments: 16</span> | <span>Shares: 8</span></div>
-</div>
-
-<div class="property-item" id="driver-1">
-  <img src="https://placehold.co/450x220?text=Driver+Job" alt="Driver Job" />
-  <div class="property-info">
-    <h3>Driver Required for Delivery Service</h3>
-    <p>Location: Kathmandu</p>
-    <p>Full-time, competitive pay</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>SpeedyDeliveries</span></div>
-  <div class="engagements"><span>Likes: 40</span> | <span>Comments: 9</span> | <span>Shares: 6</span></div>
-</div>
-
-<div class="property-item" id="food-1">
-  <img src="https://loremflickr.com/450/220/food,cuisine" alt="Food Delivery" />
-  <div class="property-info">
-    <h3>Authentic Nepali Food Delivery</h3>
-    <p>Delicious and fresh, delivered fast</p>
-    <p>Order now and get 15% off</p>
-    <a href="#" class="btn">Order Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>TastyTreats</span></div>
-  <div class="engagements"><span>Likes: 80</span> | <span>Comments: 20</span> | <span>Shares: 15</span></div>
-</div>
-<!-- Job Posts -->
-<div class="property-item" id="job-1">
-  <img src="https://loremflickr.com/450/220/software,developer?random=101" alt="Software Developer Job" />
-  <div class="property-info">
-    <h3>Full-Stack Developer Wanted</h3>
-    <p><strong>Company:</strong> Innovatech Pvt Ltd</p>
-    <p>Location: Kathmandu</p>
-    <p>Salary: NPR 70,000 - 90,000</p>
-    <p>Experience: 3+ years</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>InnovatechHR</span></div>
-  <div class="engagements"><span>Likes: 78</span> | <span>Comments: 22</span> | <span>Shares: 12</span></div>
-</div>
-
-<div class="property-item" id="job-2">
-  <img src="https://loremflickr.com/450/220/teacher,classroom?random=102" alt="Teacher Job" />
-  <div class="property-info">
-    <h3>High School Math Teacher Needed</h3>
-    <p><strong>School:</strong> Everest Academy</p>
-    <p>Location: Lalitpur</p>
-    <p>Salary: NPR 45,000/month</p>
-    <p>Qualification: Bachelor's in Education</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>EverestHR</span></div>
-  <div class="engagements"><span>Likes: 55</span> | <span>Comments: 15</span> | <span>Shares: 5</span></div>
-</div>
-
-<div class="property-item" id="job-3">
-  <img src="https://loremflickr.com/450/220/lawyer,court?random=103" alt="Lawyer Job" />
-  <div class="property-info">
-    <h3>Legal Associate Required</h3>
-    <p><strong>Firm:</strong> Justice & Partners</p>
-    <p>Location: Kathmandu</p>
-    <p>Experience: 2+ years</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>JusticeHR</span></div>
-  <div class="engagements"><span>Likes: 40</span> | <span>Comments: 8</span> | <span>Shares: 4</span></div>
-</div>
-
-<div class="property-item" id="job-4">
-  <img src="https://loremflickr.com/450/220/engineer,construction?random=104" alt="Civil Engineer Job" />
-  <div class="property-info">
-    <h3>Civil Engineer Vacancy</h3>
-    <p><strong>Company:</strong> BuildRight Constructions</p>
-    <p>Location: Bhaktapur</p>
-    <p>Salary: NPR 65,000/month</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>BuildRightHR</span></div>
-  <div class="engagements"><span>Likes: 30</span> | <span>Comments: 7</span> | <span>Shares: 3</span></div>
-</div>
-
-<div class="property-item" id="job-5">
-  <img src="https://loremflickr.com/450/220/pilot,airplane?random=105" alt="Pilot Job" />
-  <div class="property-info">
-    <h3>Commercial Pilot Needed</h3>
-    <p><strong>Airline:</strong> SkyHigh Airways</p>
-    <p>Location: Kathmandu</p>
-    <p>Experience: 5+ years</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>SkyHighHR</span></div>
-  <div class="engagements"><span>Likes: 50</span> | <span>Comments: 12</span> | <span>Shares: 6</span></div>
-</div>
-
-<!-- Rentals -->
-<div class="property-item" id="rent-1">
-  <img src="https://loremflickr.com/450/220/apartment,interior?random=201" alt="Apartment for Rent" />
-  <div class="property-info">
-    <h3>Luxury 3 BHK Apartment for Rent</h3>
-    <p>Price: NPR 35,000/month</p>
-    <p>Location: Lalitpur, near Patan</p>
-    <p>Fully furnished with parking</p>
-    <a href="#" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>RentalsLalitpur</span></div>
-  <div class="engagements"><span>Likes: 65</span> | <span>Comments: 18</span> | <span>Shares: 9</span></div>
-</div>
-
-<div class="property-item" id="rent-2">
-  <img src="https://loremflickr.com/450/220/house,garden?random=202" alt="House for Rent" />
-  <div class="property-info">
-    <h3>Cozy 2 Bedroom House for Rent</h3>
-    <p>Price: NPR 20,000/month</p>
-    <p>Location: Bhaktapur</p>
-    <p>Garden and spacious kitchen included</p>
-    <a href="#" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>BhaktapurRentals</span></div>
-  <div class="engagements"><span>Likes: 40</span> | <span>Comments: 10</span> | <span>Shares: 4</span></div>
-</div>
-
-<div class="property-item" id="rent-3">
-  <img src="https://loremflickr.com/450/220/flat,balcony?random=203" alt="Flat for Rent" />
-  <div class="property-info">
-    <h3>Modern 1 BHK Flat Available</h3>
-    <p>Price: NPR 18,000/month</p>
-    <p>Location: Kathmandu</p>
-    <p>Near public transport and market</p>
-    <a href="#" class="btn">View Details</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>CityFlats</span></div>
-  <div class="engagements"><span>Likes: 55</span> | <span>Comments: 15</span> | <span>Shares: 5</span></div>
-</div>
-
-<!-- Hotels -->
-<div class="property-item" id="hotel-1">
-  <img src="https://loremflickr.com/450/220/hotel,room?random=301" alt="Hotel Room" />
-  <div class="property-info">
-    <h3>Deluxe Room at Hotel Himalaya</h3>
-    <p>Price: NPR 5000/night</p>
-    <p>Location: Thamel, Kathmandu</p>
-    <p>Includes breakfast and Wi-Fi</p>
-    <a href="#" class="btn">Book Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>HotelHimalaya</span></div>
-  <div class="engagements"><span>Likes: 90</span> | <span>Comments: 25</span> | <span>Shares: 15</span></div>
-</div>
-
-<div class="property-item" id="hotel-2">
-  <img src="https://loremflickr.com/450/220/resort,swimming?random=302" alt="Resort" />
-  <div class="property-info">
-    <h3>Mountain View Resort</h3>
-    <p>Price: NPR 7,500/night</p>
-    <p>Location: Pokhara</p>
-    <p>Pool, spa, and restaurant included</p>
-    <a href="#" class="btn">Book Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>PokharaResorts</span></div>
-  <div class="engagements"><span>Likes: 105</span> | <span>Comments: 30</span> | <span>Shares: 18</span></div>
-</div>
-
-<!-- Commercial Office Spaces -->
-<div class="property-item" id="commercial-1">
-  <img src="https://loremflickr.com/450/220/office,building?random=401" alt="Office Space" />
-  <div class="property-info">
-    <h3>Spacious Office Space for Lease</h3>
-    <p>Area: 1000 sqft</p>
-    <p>Location: New Baneshwor, Kathmandu</p>
-    <p>Rent: NPR 90,000/month</p>
-    <a href="#" class="btn">Contact Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>BaneshworSpaces</span></div>
-  <div class="engagements"><span>Likes: 34</span> | <span>Comments: 8</span> | <span>Shares: 6</span></div>
-</div>
-
-<div class="property-item" id="commercial-2">
-  <img src="https://loremflickr.com/450/220/store,shop?random=402" alt="Retail Shop" />
-  <div class="property-info">
-    <h3>Retail Shop for Rent in City Center</h3>
-    <p>Size: 500 sqft</p>
-    <p>Location: New Road, Kathmandu</p>
-    <p>Ideal for boutique or cafe</p>
-    <a href="#" class="btn">Contact Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>CityRetail</span></div>
-  <div class="engagements"><span>Likes: 47</span> | <span>Comments: 13</span> | <span>Shares: 7</span></div>
-</div>
-
-<!-- Social Media Marketing Ads -->
-<div class="property-item" id="social-1">
-  <img src="https://loremflickr.com/450/220/socialmedia,marketing?random=501" alt="Social Media Marketing" />
-  <div class="property-info">
-    <h3>Boost Your Brand with Social Media Ads</h3>
-    <p>Service: Expert social media marketing campaigns</p>
-    <p>Reach thousands on Facebook, Instagram, and TikTok</p>
-    <a href="#" class="btn">Get Started</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>AdProAgency</span></div>
-  <div class="engagements"><span>Likes: 120</span> | <span>Comments: 45</span> | <span>Shares: 20</span></div>
-</div>
-
-<div class="property-item" id="social-2">
-  <img src="https://loremflickr.com/450/220/advertisement,online?random=502" alt="Online Ads" />
-  <div class="property-info">
-    <h3>Online Advertisement Services</h3>
-    <p>Customized ad campaigns for businesses of all sizes</p>
-    <p>Special discount for new clients</p>
-    <a href="#" class="btn">Contact Us</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>MarketBuzz</span></div>
-  <div class="engagements"><span>Likes: 98</span> | <span>Comments: 27</span> | <span>Shares: 14</span></div>
-</div>
-
-<!-- E-commerce Product Posts -->
-<div class="property-item" id="ecommerce-1">
-  <img src="https://loremflickr.com/450/220/ecommerce,product?random=601" alt="Wool Sweater" />
-  <div class="property-info">
-    <h3>Handmade Wool Sweaters</h3>
-    <p>Price: NPR 2500 each</p>
-    <p>Comfortable, warm, and stylish winter sweaters</p>
-    <a href="#" class="btn">Shop Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>WoolCrafts</span></div>
-  <div class="engagements"><span>Likes: 75</span> | <span>Comments: 12</span> | <span>Shares: 8</span></div>
-</div>
-
-<div class="property-item" id="ecommerce-2">
-  <img src="https://loremflickr.com/450/220/handmade,jewelry?random=602" alt="Handmade Jewelry" />
-  <div class="property-info">
-    <h3>Handcrafted Silver Jewelry</h3>
-    <p>Price: NPR 3500 onwards</p>
-    <p>Unique designs, perfect for gifts</p>
-    <a href="#" class="btn">Shop Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>SilverDesigns</span></div>
-  <div class="engagements"><span>Likes: 85</span> | <span>Comments: 18</span> | <span>Shares: 10</span></div>
-</div>
-
-<!-- Food Delivery Service -->
-<div class="property-item" id="delivery-1">
-  <img src="https://loremflickr.com/450/220/food,delivery?random=701" alt="Food Delivery" />
-  <div class="property-info">
-    <h3>Fast & Reliable Food Delivery</h3>
-    <p>Service: Order from your favorite restaurants and get delivered fast</p>
-    <p>Available in Kathmandu valley</p>
-    <a href="#" class="btn">Order Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>QuickEats</span></div>
-  <div class="engagements"><span>Likes: 150</span> | <span>Comments: 60</span> | <span>Shares: 30</span></div>
-</div>
-
-<div class="property-item" id="delivery-2">
-  <img src="https://loremflickr.com/450/220/delivery,driver?random=702" alt="Delivery Driver" />
-  <div class="property-info">
-    <h3>Hiring Delivery Drivers</h3>
-    <p>Company: Speedy Couriers</p>
-    <p>Location: Kathmandu</p>
-    <p>Flexible shifts, competitive pay</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>SpeedyHR</span></div>
-  <div class="engagements"><span>Likes: 60</span> | <span>Comments: 14</span> | <span>Shares: 6</span></div>
-</div>
-
-<!-- Doctor Appointments -->
-<div class="property-item" id="doctor-1">
-  <img src="https://loremflickr.com/450/220/doctor,clinic?random=801" alt="Doctor Appointment" />
-  <div class="property-info">
-    <h3>Experienced General Physician</h3>
-    <p>Clinic: HealthFirst Medical Center</p>
-    <p>Location: Patan</p>
-    <p>Book your appointment now</p>
-    <a href="#" class="btn">Book Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>HealthFirst</span></div>
-  <div class="engagements"><span>Likes: 45</span> | <span>Comments: 10</span> | <span>Shares: 5</span></div>
-</div>
-
-<div class="property-item" id="doctor-2">
-  <img src="https://loremflickr.com/450/220/hospital,nurse?random=802" alt="Hospital Nurse" />
-  <div class="property-info">
-    <h3>Hiring Registered Nurses</h3>
-    <p>Hospital: CityCare</p>
-    <p>Location: Kathmandu</p>
-    <p>Full-time and part-time available</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>CityCareHR</span></div>
-  <div class="engagements"><span>Likes: 50</span> | <span>Comments: 13</span> | <span>Shares: 7</span></div>
-</div>
-
-<!-- Engineer Hiring -->
-<div class="property-item" id="engineer-1">
-  <img src="https://loremflickr.com/450/220/engineer,construction?random=901" alt="Engineer Hiring" />
-  <div class="property-info">
-    <h3>Hiring Civil Engineer</h3>
-    <p>Company: BuildRight Constructions</p>
-    <p>Location: Bhaktapur</p>
-    <p>Salary: NPR 65,000/month</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>BuildRightHR</span></div>
-  <div class="engagements"><span>Likes: 30</span> | <span>Comments: 7</span> | <span>Shares: 3</span></div>
-</div>
-
-<div class="property-item" id="engineer-2">
-  <img src="https://loremflickr.com/450/220/engineer,mechanical?random=902" alt="Mechanical Engineer" />
-  <div class="property-info">
-    <h3>Mechanical Engineer Vacancy</h3>
-    <p>Company: TechMech Solutions</p>
-    <p>Location: Kathmandu</p>
-    <p>Salary: NPR 70,000/month</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>TechMechHR</span></div>
-  <div class="engagements"><span>Likes: 40</span> | <span>Comments: 10</span> | <span>Shares: 5</span></div>
-</div>
-
-<!-- Pilot Jobs -->
-<div class="property-item" id="pilot-1">
-  <img src="https://loremflickr.com/450/220/airplane,pilot?random=1001" alt="Pilot Job" />
-  <div class="property-info">
-    <h3>Airline Pilot Position Open</h3>
-    <p>Company: Nepal Wings</p>
-    <p>Location: Kathmandu</p>
-    <p>Experience: 5+ years</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>NepalWingsHR</span></div>
-  <div class="engagements"><span>Likes: 48</span> | <span>Comments: 11</span> | <span>Shares: 6</span></div>
-</div>
-
-<div class="property-item" id="pilot-2">
-  <img src="https://loremflickr.com/450/220/aircraft,flight?random=1002" alt="Pilot Job" />
-  <div class="property-info">
-    <h3>Private Jet Pilot Needed</h3>
-    <p>Company: LuxAir Services</p>
-    <p>Location: Kathmandu</p>
-    <p>Competitive Salary and Benefits</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>LuxAirHR</span></div>
-  <div class="engagements"><span>Likes: 38</span> | <span>Comments: 8</span> | <span>Shares: 4</span></div>
-</div>
-
-<div class="property-item" id="fitness-1">
-  <img src="https://placehold.co/450x220?text=Fitness+Gym" alt="Fitness Gym" />
-  <div class="property-info">
-    <h3>Join Power Gym Today</h3>
-    <p>Modern equipment and personal trainers</p>
-    <p>Get 1 month free membership</p>
-    <a href="#" class="btn">Join Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>PowerGym</span></div>
-  <div class="engagements"><span>Likes: 75</span> | <span>Comments: 18</span> | <span>Shares: 10</span></div>
-</div>
-
-<div class="property-item" id="education-3">
-  <img src="https://loremflickr.com/450/220/online,learning" alt="Online Learning" />
-  <div class="property-info">
-    <h3>Data Science Online Bootcamp</h3>
-    <p>6 weeks intensive course</p>
-    <p>Certificate awarded</p>
-    <a href="#" class="btn">Register Now</a>
-  </div>
-  <div class="user-info"><strong>Posted by:</strong> <span>DataCampNepal</span></div>
-  <div class="engagements"><span>Likes: 90</span> | <span>Comments: 22</span> | <span>Shares: 12</span></div>
-</div>
-<!-- 1. Software Developer Job -->
-<div class="property-item" id="job-1">
-  <img src="https://loremflickr.com/450/220/software,developer?random=1" alt="Software Developer" />
-  <div class="property-info">
-    <h3>Full-Stack Developer Wanted</h3>
-    <p><strong>Company:</strong> Innovatech Pvt Ltd</p>
-    <p>Location: Kathmandu</p>
-    <p>Salary: NPR 70,000 - 90,000</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-</div>
-
-<!-- 2. Teacher Job -->
-<div class="property-item" id="job-2">
-  <img src="https://loremflickr.com/450/220/teacher,classroom?random=2" alt="Teacher" />
-  <div class="property-info">
-    <h3>High School Math Teacher</h3>
-    <p><strong>School:</strong> Everest Academy</p>
-    <p>Location: Lalitpur</p>
-    <p>Salary: NPR 45,000/month</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-</div>
-
-<!-- 3. Lawyer Job -->
-<div class="property-item" id="job-3">
-  <img src="https://loremflickr.com/450/220/lawyer,court?random=3" alt="Lawyer" />
-  <div class="property-info">
-    <h3>Legal Associate Required</h3>
-    <p><strong>Firm:</strong> Justice & Partners</p>
-    <p>Location: Kathmandu</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-</div>
-
-<!-- 4. Civil Engineer Job -->
-<div class="property-item" id="job-4">
-  <img src="https://loremflickr.com/450/220/engineer,construction?random=4" alt="Civil Engineer" />
-  <div class="property-info">
-    <h3>Civil Engineer Vacancy</h3>
-    <p><strong>Company:</strong> BuildRight Constructions</p>
-    <p>Location: Bhaktapur</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-</div>
-
-<!-- 5. Pilot Job -->
-<div class="property-item" id="job-5">
-  <img src="https://loremflickr.com/450/220/pilot,airplane?random=5" alt="Pilot" />
-  <div class="property-info">
-    <h3>Commercial Pilot Needed</h3>
-    <p><strong>Airline:</strong> SkyHigh Airways</p>
-    <p>Location: Kathmandu</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-</div>
-
-<!-- 6. Apartment Rental -->
-<div class="property-item" id="rent-1">
-  <img src="https://loremflickr.com/450/220/apartment,interior?random=6" alt="Apartment for Rent" />
-  <div class="property-info">
-    <h3>Luxury 3 BHK Apartment</h3>
-    <p>Price: NPR 35,000/month</p>
-    <p>Location: Lalitpur</p>
-    <a href="#" class="btn">View Details</a>
-  </div>
-</div>
-
-<!-- 7. House Rental -->
-<div class="property-item" id="rent-2">
-  <img src="https://loremflickr.com/450/220/house,garden?random=7" alt="House for Rent" />
-  <div class="property-info">
-    <h3>Cozy 2 Bedroom House</h3>
-    <p>Price: NPR 20,000/month</p>
-    <p>Location: Bhaktapur</p>
-    <a href="#" class="btn">View Details</a>
-  </div>
-</div>
-
-<!-- 8. Hotel Room -->
-<div class="property-item" id="hotel-1">
-  <img src="https://loremflickr.com/450/220/hotel,room?random=8" alt="Hotel Room" />
-  <div class="property-info">
-    <h3>Deluxe Room at Hotel Himalaya</h3>
-    <p>Price: NPR 5,000/night</p>
-    <p>Location: Thamel, Kathmandu</p>
-    <a href="#" class="btn">Book Now</a>
-  </div>
-</div>
-
-<!-- 9. Resort -->
-<div class="property-item" id="hotel-2">
-  <img src="https://loremflickr.com/450/220/resort,swimming?random=9" alt="Resort" />
-  <div class="property-info">
-    <h3>Mountain View Resort</h3>
-    <p>Price: NPR 7,500/night</p>
-    <p>Location: Pokhara</p>
-    <a href="#" class="btn">Book Now</a>
-  </div>
-</div>
-
-<!-- 10. Commercial Office Space -->
-<div class="property-item" id="commercial-1">
-  <img src="https://loremflickr.com/450/220/office,building?random=10" alt="Office Space" />
-  <div class="property-info">
-    <h3>Spacious Office for Lease</h3>
-    <p>Area: 1000 sqft</p>
-    <p>Location: New Baneshwor</p>
-    <a href="#" class="btn">Contact Now</a>
-  </div>
-</div>
-
-<!-- 11. Retail Shop -->
-<div class="property-item" id="commercial-2">
-  <img src="https://loremflickr.com/450/220/store,shop?random=11" alt="Retail Shop" />
-  <div class="property-info">
-    <h3>Retail Shop in City Center</h3>
-    <p>Size: 500 sqft</p>
-    <p>Location: New Road, Kathmandu</p>
-    <a href="#" class="btn">Contact Now</a>
-  </div>
-</div>
-
-<!-- 12. Social Media Marketing -->
-<div class="property-item" id="social-1">
-  <img src="https://loremflickr.com/450/220/socialmedia,marketing?random=12" alt="Social Media Marketing" />
-  <div class="property-info">
-    <h3>Boost Your Brand Online</h3>
-    <p>Expert social media campaigns for Facebook, Instagram, TikTok</p>
-    <a href="#" class="btn">Get Started</a>
-  </div>
-</div>
-
-<!-- 13. Online Ads Service -->
-<div class="property-item" id="social-2">
-  <img src="https://loremflickr.com/450/220/advertisement,online?random=13" alt="Online Ads" />
-  <div class="property-info">
-    <h3>Custom Online Advertisement</h3>
-    <p>Special discounts for new clients</p>
-    <a href="#" class="btn">Contact Us</a>
-  </div>
-</div>
-
-<!-- 14. Handmade Wool Sweaters -->
-<div class="property-item" id="ecommerce-1">
-  <img src="https://loremflickr.com/450/220/ecommerce,product?random=14" alt="Wool Sweater" />
-  <div class="property-info">
-    <h3>Handmade Wool Sweaters</h3>
-    <p>Price: NPR 2,500 each</p>
-    <a href="#" class="btn">Shop Now</a>
-  </div>
-</div>
-
-<!-- 15. Silver Jewelry -->
-<div class="property-item" id="ecommerce-2">
-  <img src="https://loremflickr.com/450/220/handmade,jewelry?random=15" alt="Handmade Jewelry" />
-  <div class="property-info">
-    <h3>Handcrafted Silver Jewelry</h3>
-    <p>Price: NPR 3,500 onwards</p>
-    <a href="#" class="btn">Shop Now</a>
-  </div>
-</div>
-
-<!-- 16. Food Delivery -->
-<div class="property-item" id="delivery-1">
-  <img src="https://loremflickr.com/450/220/food,delivery?random=16" alt="Food Delivery" />
-  <div class="property-info">
-    <h3>Fast Food Delivery Service</h3>
-    <p>Order from your favorite restaurants with quick delivery</p>
-    <a href="#" class="btn">Order Now</a>
-  </div>
-</div>
-
-<!-- 17. Delivery Driver Job -->
-<div class="property-item" id="delivery-2">
-  <img src="https://loremflickr.com/450/220/delivery,driver?random=17" alt="Delivery Driver" />
-  <div class="property-info">
-    <h3>Hiring Delivery Drivers</h3>
-    <p>Flexible shifts and competitive pay</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-</div>
-
-<!-- 18. General Physician -->
-<div class="property-item" id="doctor-1">
-  <img src="https://loremflickr.com/450/220/doctor,clinic?random=18" alt="General Physician" />
-  <div class="property-info">
-    <h3>Experienced General Physician</h3>
-    <p>Book appointments at HealthFirst Medical Center</p>
-    <a href="#" class="btn">Book Now</a>
-  </div>
-</div>
-
-<!-- 19. Nurse Hiring -->
-<div class="property-item" id="doctor-2">
-  <img src="https://loremflickr.com/450/220/hospital,nurse?random=19" alt="Nurse" />
-  <div class="property-info">
-    <h3>Hiring Registered Nurses</h3>
-    <p>CityCare Hospital, Kathmandu</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-</div>
-
-<!-- 20. Mechanical Engineer -->
-<div class="property-item" id="engineer-1">
-  <img src="https://loremflickr.com/450/220/engineer,mechanical?random=20" alt="Mechanical Engineer" />
-  <div class="property-info">
-    <h3>Mechanical Engineer Vacancy</h3>
-    <p>TechMech Solutions, Kathmandu</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-</div>
-
-<!-- 21. Private Jet Pilot -->
-<div class="property-item" id="pilot-1">
-  <img src="https://loremflickr.com/450/220/aircraft,flight?random=21" alt="Private Jet Pilot" />
-  <div class="property-info">
-    <h3>Private Jet Pilot Needed</h3>
-    <p>LuxAir Services, Kathmandu</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-</div>
-
-<!-- 22. Taxi Driver Job -->
-<div class="property-item" id="driver-1">
-  <img src="https://loremflickr.com/450/220/taxi,driver?random=22" alt="Taxi Driver" />
-  <div class="property-info">
-    <h3>Taxi Driver Required</h3>
-    <p>Location: Kathmandu</p>
-    <p>Full-time job, competitive salary</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-</div>
-
-<!-- 23. Truck Driver Job -->
-<div class="property-item" id="driver-2">
-  <img src="https://loremflickr.com/450/220/truck,driver?random=23" alt="Truck Driver" />
-  <div class="property-info">
-    <h3>Experienced Truck Driver Needed</h3>
-    <p>Location: Kathmandu</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-</div>
-
-<!-- 24. Online Tutor -->
-<div class="property-item" id="education-1">
-  <img src="https://loremflickr.com/450/220/online,tutor?random=24" alt="Online Tutor" />
-  <div class="property-info">
-    <h3>Math Tutor for Online Classes</h3>
-    <p>Experience with high school students</p>
-    <a href="#" class="btn">Contact Now</a>
-  </div>
-</div>
-
-<!-- 25. Language School -->
-<div class="property-item" id="education-2">
-  <img src="https://loremflickr.com/450/220/language,classroom?random=25" alt="Language School" />
-  <div class="property-info">
-    <h3>Join Our English Language Classes</h3>
-    <p>Beginner to advanced levels</p>
-    <a href="#" class="btn">Enroll Now</a>
-  </div>
-</div>
-
-<!-- 26. Commercial Warehouse -->
-<div class="property-item" id="commercial-3">
-  <img src="https://loremflickr.com/450/220/warehouse,storage?random=26" alt="Warehouse" />
-  <div class="property-info">
-    <h3>Warehouse Space for Rent</h3>
-    <p>Location: Industrial Area, Kathmandu</p>
-    <p>Area: 2000 sqft</p>
-    <a href="#" class="btn">Contact Now</a>
-  </div>
-</div>
-
-<!-- 27. Event Marketing -->
-<div class="property-item" id="social-3">
-  <img src="https://loremflickr.com/450/220/event,marketing?random=27" alt="Event Marketing" />
-  <div class="property-info">
-    <h3>Event Marketing Campaigns</h3>
-    <p>Promote your events to thousands</p>
-    <a href="#" class="btn">Get Started</a>
-  </div>
-</div>
-
-<!-- 28. Clothing E-commerce -->
-<div class="property-item" id="ecommerce-3">
-  <img src="https://loremflickr.com/450/220/clothing,fashion?random=28" alt="Clothing" />
-  <div class="property-info">
-    <h3>Trendy Fashion Wear</h3>
-    <p>Affordable prices, latest styles</p>
-    <a href="#" class="btn">Shop Now</a>
-  </div>
-</div>
-
-<!-- 29. Organic Food Delivery -->
-<div class="property-item" id="delivery-3">
-  <img src="https://loremflickr.com/450/220/organic,food?random=29" alt="Organic Food Delivery" />
-  <div class="property-info">
-    <h3>Fresh Organic Food Delivered</h3>
-    <p>Daily fresh vegetables and fruits</p>
-    <a href="#" class="btn">Order Now</a>
-  </div>
-</div>
-
-<!-- 30. Dental Clinic -->
-<div class="property-item" id="doctor-3">
-  <img src="https://loremflickr.com/450/220/dentist,clinic?random=30" alt="Dental Clinic" />
-  <div class="property-info">
-    <h3>Advanced Dental Care Services</h3>
-    <p>Smile Bright Dental Clinic, Kathmandu</p>
-    <a href="#" class="btn">Book Appointment</a>
-  </div>
-</div>
-
-<!-- 31. Graphic Designer Job -->
-<div class="property-item" id="job-6">
-  <img src="https://loremflickr.com/450/220/graphic,designer?random=31" alt="Graphic Designer" />
-  <div class="property-info">
-    <h3>Creative Graphic Designer Needed</h3>
-    <p>AdProAgency, Kathmandu</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-</div>
-
-<!-- 32. Hotel Receptionist Job -->
-<div class="property-item" id="job-7">
-  <img src="https://loremflickr.com/450/220/hotel,receptionist?random=32" alt="Hotel Receptionist" />
-  <div class="property-info">
-    <h3>Hotel Receptionist Vacancy</h3>
-    <p>Hotel Himalaya, Kathmandu</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-</div>
-
-<!-- 33. Furniture Shop -->
-<div class="property-item" id="commercial-4">
-  <img src="https://loremflickr.com/450/220/furniture,shop?random=33" alt="Furniture Shop" />
-  <div class="property-info">
-    <h3>Modern Furniture for Sale</h3>
-    <p>Best quality wood furniture</p>
-    <a href="#" class="btn">Contact Now</a>
-  </div>
-</div>
-
-<!-- 34. Local Bakery -->
-<div class="property-item" id="ecommerce-4">
-  <img src="https://loremflickr.com/450/220/bakery,cake?random=34" alt="Bakery" />
-  <div class="property-info">
-    <h3>Fresh Bakery Products</h3>
-    <p>Bread, cakes, and pastries daily</p>
-    <a href="#" class="btn">Order Now</a>
-  </div>
-</div>
-
-<!-- 35. Driver Training -->
-<div class="property-item" id="education-3">
-  <img src="https://loremflickr.com/450/220/driver,training?random=35" alt="Driver Training" />
-  <div class="property-info">
-    <h3>Driver Training Courses</h3>
-    <p>Learn safe driving from experts</p>
-    <a href="#" class="btn">Enroll Now</a>
-  </div>
-</div>
-
-<!-- 36. Fitness Gym -->
-<div class="property-item" id="social-4">
-  <img src="https://loremflickr.com/450/220/gym,fitness?random=36" alt="Gym" />
-  <div class="property-info">
-    <h3>Join PowerHouse Gym</h3>
-    <p>Modern equipment and personal trainers</p>
-    <a href="#" class="btn">Join Now</a>
-  </div>
-</div>
-
-<!-- 37. Mobile Phone Store -->
-<div class="property-item" id="ecommerce-5">
-  <img src="https://loremflickr.com/450/220/mobile,phone?random=37" alt="Mobile Phones" />
-  <div class="property-info">
-    <h3>Latest Smartphones Available</h3>
-    <p>Best deals and warranty</p>
-    <a href="#" class="btn">Shop Now</a>
-  </div>
-</div>
-
-<!-- 38. Courier Service -->
-<div class="property-item" id="delivery-4">
-  <img src="https://loremflickr.com/450/220/courier,delivery?random=38" alt="Courier Service" />
-  <div class="property-info">
-    <h3>Reliable Courier Service</h3>
-    <p>Fast and secure parcel delivery</p>
-    <a href="#" class="btn">Book Now</a>
-  </div>
-</div>
-
-<!-- 39. Language Translator -->
-<div class="property-item" id="job-8">
-  <img src="https://loremflickr.com/450/220/translator,language?random=39" alt="Translator" />
-  <div class="property-info">
-    <h3>Language Translator Required</h3>
-    <p>Fluent in English and Nepali</p>
-    <a href="#" class="btn">Apply Now</a>
-  </div>
-</div>
-
-<!-- 40. Wedding Photographer -->
-<div class="property-item" id="social-5">
-  <img src="https://loremflickr.com/450/220/wedding,photography?random=40" alt="Wedding Photographer" />
-  <div class="property-info">
-    <h3>Professional Wedding Photographer</h3>
-    <p>Memories captured perfectly</p>
-    <a href="#" class="btn">Book Now</a>
-  </div>
-</div>
-
-<!-- 41. Pharmacy Store -->
-<div class="property-item" id="doctor-4">
-  <img src="https://loremflickr.com/450/220/pharmacy,store?random=41" alt="Pharmacy" />
-  <div class="property-info">
-    <h3>24/7 Pharmacy Open</h3>
-    <p>All medicines available</p>
-    <a href="#" class="btn">Visit Store</a>
-  </div>
-</div>
-
-<!-- 42. Yoga Classes -->
-<div class="property-item" id="social-6">
-  <img src="https://loremflickr.com/450/220/yoga,classes?random=42" alt="Yoga Classes" />
-  <div class="property-info">
-    <h3>Join Yoga Classes Today</h3>
-    <p>Improve your health and mind</p>
-    <a href="#" class="btn">Enroll Now</a>
-  </div>
-</div>
-
-<script>
-  const feedContainer = document.getElementById('feedContainer');
-
-  // Load posts from localStorage key 'fbPosts' (social media style posts)
-  let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
-
-  function renderPosts() {
-    feedContainer.innerHTML = '';
-    posts.forEach((post, index) => {
-      const postDiv = document.createElement('div');
-      postDiv.className = 'post';
-
-      // Create dropdown menu for edit/delete
-      const menuButton = document.createElement('button');
-      menuButton.className = 'menu-button';
-      menuButton.innerHTML = '&#8942;'; // vertical three dots ⋮
-      postDiv.appendChild(menuButton);
-
-      const menuDropdown = document.createElement('div');
-      menuDropdown.className = 'menu-dropdown';
-
-      const editBtn = document.createElement('button');
-      editBtn.textContent = 'Edit';
-      editBtn.onclick = () => editPost(index);
-
-      const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = 'Delete';
-      deleteBtn.onclick = () => deletePost(index);
-
-      menuDropdown.appendChild(editBtn);
-      menuDropdown.appendChild(deleteBtn);
-      postDiv.appendChild(menuDropdown);
-
-      menuButton.onclick = (e) => {
-        e.stopPropagation();
-        // Close all other menus
-        document.querySelectorAll('.menu-dropdown').forEach(menu => {
-          if (menu !== menuDropdown) menu.style.display = 'none';
-        });
-        // Toggle this menu
-        menuDropdown.style.display = menuDropdown.style.display === 'block' ? 'none' : 'block';
-      };
-
-      // Close menu if click outside
-      document.addEventListener('click', () => {
-        menuDropdown.style.display = 'none';
-      });
-
-      postDiv.innerHTML += `
-        <div class="post-info">
-          <img class="avatar" src="${post.avatar || 'https://via.placeholder.com/40'}" alt="Avatar" />
-          <div>
-            <div class="name">${post.name || 'Unknown'}</div>
-            <div class="date">${post.postDate || ''}</div>
+  <!-- Profile Section -->
+  <img id="profileImage" class="profile-pic" src="https://via.placeholder.com/120" alt="Profile Picture" />
+  <h2 id="userName">Name</h2>
+  <p><strong>Email:</strong> <span id="userEmail"></span></p>
+  <p><strong>Gender:</strong> <span id="userGender"></span></p>
+  <p><strong>Date of Birth:</strong> <span id="userDob"></span></p>
+
+  <button onclick="editProfile()">Edit Profile</button>
+
+  <!-- Post Creation Form -->
+  <h2>Create Post</h2>
+  <form id="postForm">
+    <textarea id="postText" placeholder="What's on your mind?" required></textarea>
+
+    <label for="postPrivacy">Privacy:</label>
+    <select id="postPrivacy" required>
+      <option value="public" selected>Public</option>
+      <option value="friends">Friends</option>
+      <option value="onlyme">Only Me</option>
+    </select>
+
+    <input type="file" id="postImage" accept="image/*" />
+    <button type="submit">Post</button>
+  </form>
+
+  <!-- News Feed -->
+  <h2>News Feed</h2>
+  <div id="feed"></div>
+
+  <script>
+    // Load profile data from localStorage
+    function loadProfile() {
+      const storedProfile = localStorage.getItem('userProfile');
+      if (!storedProfile) {
+        alert('No profile found. Please create one first.');
+        window.location.href = 'authentication.html';
+        return;
+      }
+      const profile = JSON.parse(storedProfile);
+
+      document.getElementById('profileImage').src = profile.avatar || 'https://via.placeholder.com/120';
+      document.getElementById('userName').textContent = profile.name || 'Unknown';
+      document.getElementById('userEmail').textContent = profile.email || '';
+      document.getElementById('userGender').textContent = profile.gender || '';
+      document.getElementById('userDob').textContent = profile.dob || '';
+    }
+
+    function editProfile() {
+      window.location.href = 'authentication.html';
+    }
+
+    loadProfile();
+
+    const postForm = document.getElementById('postForm');
+    const postText = document.getElementById('postText');
+    const postImage = document.getElementById('postImage');
+    const feed = document.getElementById('feed');
+
+    // Assume current user ID (for privacy filtering)
+    const currentUserId = 'me';
+
+    // Load posts from localStorage
+    let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
+
+    function renderPosts() {
+      feed.innerHTML = '';
+
+      posts.forEach((post, idx) => {
+        // Author ID fallback to 'me'
+        const postAuthorId = post.authorId || 'me';
+
+        // Privacy filter: show only allowed posts
+        if (post.privacy === 'onlyme' && postAuthorId !== currentUserId) return;
+
+        // (For friends privacy, implement your friend check here if needed)
+
+        // Build post HTML
+        let imgHTML = '';
+        if (post.image) {
+          imgHTML = `<img src="${post.image}" alt="Post Image" class="post-image" />`;
+        }
+
+        const likedClass = post.liked ? 'liked' : '';
+        const commentsCount = post.comments ? post.comments.length : 0;
+
+        const privacyText = post.privacy.charAt(0).toUpperCase() + post.privacy.slice(1);
+
+        const postDiv = document.createElement('div');
+        postDiv.className = 'post';
+
+        postDiv.innerHTML = `
+          <button class="post-menu-btn" data-index="${idx}">&#8942;</button>
+          <div class="post-menu" data-index="${idx}">
+            <div class="privacy-display">Privacy: <span class="privacy-value">${privacyText}</span></div>
+            <button class="change-privacy-btn" data-index="${idx}">Change Privacy</button>
+            <button class="edit-post-btn" data-index="${idx}">Edit</button>
+            <button class="delete-post-btn" data-index="${idx}">Delete</button>
           </div>
-        </div>
-        <div class="post-text">${post.text || ''}</div>
-      `;
+          <div class="post-text" data-index="${idx}">${post.text}</div>
+          ${imgHTML}
+          <div class="post-actions">
+            <button class="like-btn ${likedClass}" data-index="${idx}">
+              <span>👍</span> <span class="like-count">${post.likes}</span> Like
+            </button>
+            <button class="comment-btn" data-index="${idx}">
+              💬 Comment${commentsCount > 0 ? ` (${commentsCount})` : ''}
+            </button>
+            <button class="share-btn" data-index="${idx}">🔗 Share</button>
+          </div>
 
-      if (post.image) {
-        const img = document.createElement('img');
-        img.className = 'post-image';
-        img.src = post.image;
-        img.alt = 'Post Image';
-        postDiv.appendChild(img);
-      }
-      if (post.video) {
-        const video = document.createElement('video');
-        video.className = 'post-video';
-        video.controls = true;
-        video.src = post.video;
-        postDiv.appendChild(video);
-      }
+          <div class="comments-section" style="display:none;" data-index="${idx}">
+            <div class="comments-list"></div>
+            <div class="comment-input">
+              <input type="text" placeholder="Write a comment..." />
+              <button>Send</button>
+            </div>
+          </div>
+        `;
 
-      // Post actions (like, comment, share)
-      const actionsDiv = document.createElement('div');
-      actionsDiv.className = 'post-actions';
+        feed.appendChild(postDiv);
+      });
 
+      attachEventListeners();
+    }
+
+    function attachEventListeners() {
       // Like button
-      const likeBtn = document.createElement('button');
-      likeBtn.innerHTML = `<i class="fas fa-thumbs-up"></i> <span>${post.likes || 0}</span> Like`;
-      if (post.liked) likeBtn.classList.add('liked');
-      likeBtn.onclick = () => {
-        post.liked = !post.liked;
-        post.likes = post.likes || 0;
-        post.likes += post.liked ? 1 : -1;
-        savePosts();
-        renderPosts();
+      document.querySelectorAll('.like-btn').forEach(btn => {
+        btn.onclick = function () {
+          const idx = this.getAttribute('data-index');
+          posts[idx].liked = !posts[idx].liked;
+          posts[idx].likes += posts[idx].liked ? 1 : -1;
+          saveAndRender();
+        };
+      });
+
+      // Comment button toggles comments
+      document.querySelectorAll('.comment-btn').forEach(btn => {
+        btn.onclick = function () {
+          const idx = this.getAttribute('data-index');
+          const postDiv = this.closest('.post');
+          const commentsSection = postDiv.querySelector(`.comments-section[data-index="${idx}"]`);
+          if (!commentsSection) return;
+
+          if (commentsSection.style.display === 'block') {
+            commentsSection.style.display = 'none';
+          } else {
+            commentsSection.style.display = 'block';
+            renderComments(idx, commentsSection.querySelector('.comments-list'));
+          }
+        };
+      });
+
+      // Send comment button
+      document.querySelectorAll('.comments-section').forEach(section => {
+        const idx = section.getAttribute('data-index');
+        const sendBtn = section.querySelector('button');
+        const input = section.querySelector('input[type="text"]');
+
+        sendBtn.onclick = () => {
+          const commentText = input.value.trim();
+          if (commentText === '') return alert('Comment cannot be empty.');
+
+          if (!posts[idx].comments) posts[idx].comments = [];
+          posts[idx].comments.push(commentText);
+          input.value = '';
+          saveAndRender();
+
+          // Open comments after re-render
+          setTimeout(() => {
+            const newFeed = document.getElementById('feed');
+            const newPostDiv = newFeed.children[idx];
+            const newCommentsSection = newPostDiv.querySelector(`.comments-section[data-index="${idx}"]`);
+            if (newCommentsSection) {
+              newCommentsSection.style.display = 'block';
+              renderComments(idx, newCommentsSection.querySelector('.comments-list'));
+            }
+          }, 50);
+        };
+      });
+
+      // Share button copies post text
+      document.querySelectorAll('.share-btn').forEach(btn => {
+        btn.onclick = function () {
+          const idx = this.getAttribute('data-index');
+          const shareText = `Check out this post: "${posts[idx].text}"`;
+          navigator.clipboard.writeText(shareText).then(() => {
+            alert("Post copied to clipboard!");
+          });
+        };
+      });
+
+      // Three dots menu toggle
+      document.querySelectorAll('.post-menu-btn').forEach(btn => {
+        btn.onclick = function (e) {
+          e.stopPropagation();
+          const idx = this.getAttribute('data-index');
+          const menu = document.querySelector(`.post-menu[data-index="${idx}"]`);
+          if (!menu) return;
+
+          // Close others
+          document.querySelectorAll('.post-menu').forEach(m => {
+            if (m !== menu) m.style.display = 'none';
+          });
+
+          menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        };
+      });
+
+      // Close menus on outside click
+      document.body.onclick = () => {
+        document.querySelectorAll('.post-menu').forEach(m => (m.style.display = 'none'));
       };
-      actionsDiv.appendChild(likeBtn);
 
-      // Comment button (just alert for now)
-      const commentBtn = document.createElement('button');
-      commentBtn.innerHTML = `<i class="fas fa-comment"></i> Comment`;
-      commentBtn.onclick = () => alert('Comments feature coming soon!');
-      actionsDiv.appendChild(commentBtn);
-
-      // Share button (just alert for now)
-      const shareBtn = document.createElement('button');
-      shareBtn.innerHTML = `<i class="fas fa-share"></i> Share`;
-      shareBtn.onclick = () => alert('Share feature coming soon!');
-      actionsDiv.appendChild(shareBtn);
-
-      postDiv.appendChild(actionsDiv);
-
-      feedContainer.appendChild(postDiv);
-    });
-  }
-
-  function savePosts() {
-    localStorage.setItem('fbPosts', JSON.stringify(posts));
-  }
-
-  function editPost(index) {
-    const post = posts[index];
-    const newText = prompt('Edit your post text:', post.text);
-    if (newText !== null) {
-      posts[index].text = newText;
-      savePosts();
-      renderPosts();
-    }
-  }
-
-  function deletePost(index) {
-    if (confirm('Are you sure you want to delete this post?')) {
-      posts.splice(index, 1);
-      savePosts();
-      renderPosts();
-    }
-  }
-
-  renderPosts();
-
-  function searchProfile() {
-  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-
-  const filteredPosts = posts.filter(post =>
-    (post.name && post.name.toLowerCase().includes(searchTerm)) ||
-    (post.text && post.text.toLowerCase().includes(searchTerm))
-  );
-
-  renderFilteredPosts(filteredPosts);
-}
-
-function renderFilteredPosts(filteredPosts) {
-  feedContainer.innerHTML = '';
-  if (filteredPosts.length === 0) {
-    feedContainer.innerHTML = `<p style="text-align:center;">No matching posts found.</p>`;
-    return;
-  }
-
-  filteredPosts.forEach((post, index) => {
-    const postDiv = document.createElement('div');
-    postDiv.className = 'post';
-
-    const menuButton = document.createElement('button');
-    menuButton.className = 'menu-button';
-    menuButton.innerHTML = '&#8942;';
-    postDiv.appendChild(menuButton);
-
-    const menuDropdown = document.createElement('div');
-    menuDropdown.className = 'menu-dropdown';
-
-    const editBtn = document.createElement('button');
-    editBtn.textContent = 'Edit';
-    editBtn.onclick = () => editPost(index);
-
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = 'Delete';
-    deleteBtn.onclick = () => deletePost(index);
-
-    menuDropdown.appendChild(editBtn);
-    menuDropdown.appendChild(deleteBtn);
-    postDiv.appendChild(menuDropdown);
-
-    menuButton.onclick = (e) => {
-      e.stopPropagation();
-      document.querySelectorAll('.menu-dropdown').forEach(menu => {
-        if (menu !== menuDropdown) menu.style.display = 'none';
+      // Delete post
+      document.querySelectorAll('.delete-post-btn').forEach(btn => {
+        btn.onclick = function () {
+          const idx = this.getAttribute('data-index');
+          if (confirm('Are you sure you want to delete this post?')) {
+            posts.splice(idx, 1);
+            saveAndRender();
+          }
+        };
       });
-      menuDropdown.style.display = menuDropdown.style.display === 'block' ? 'none' : 'block';
-    };
 
-    document.addEventListener('click', () => {
-      menuDropdown.style.display = 'none';
-    });
-
-    postDiv.innerHTML += `
-      <div class="post-info">
-        <img class="avatar" src="${post.avatar || 'https://via.placeholder.com/40'}" alt="Avatar" />
-        <div>
-          <div class="name">${post.name || 'Unknown'}</div>
-          <div class="date">${post.postDate || ''}</div>
-        </div>
-      </div>
-      <div class="post-text">${post.text || ''}</div>
-    `;
-
-    if (post.image) {
-      const img = document.createElement('img');
-      img.className = 'post-image';
-      img.src = post.image;
-      postDiv.appendChild(img);
-    }
-
-    if (post.video) {
-      const video = document.createElement('video');
-      video.className = 'post-video';
-      video.controls = true;
-      video.src = post.video;
-      postDiv.appendChild(video);
-    }
-
-    const actionsDiv = document.createElement('div');
-    actionsDiv.className = 'post-actions';
-
-    const likeBtn = document.createElement('button');
-    likeBtn.innerHTML = `<i class="fas fa-thumbs-up"></i> <span>${post.likes || 0}</span> Like`;
-    if (post.liked) likeBtn.classList.add('liked');
-    likeBtn.onclick = () => {
-      post.liked = !post.liked;
-      post.likes = post.likes || 0;
-      post.likes += post.liked ? 1 : -1;
-      savePosts();
-      searchProfile(); // Re-filter and re-render
-    };
-    actionsDiv.appendChild(likeBtn);
-
-    const commentBtn = document.createElement('button');
-    commentBtn.innerHTML = `<i class="fas fa-comment"></i> Comment`;
-    actionsDiv.appendChild(commentBtn);
-
-    const shareBtn = document.createElement('button');
-    shareBtn.innerHTML = `<i class="fas fa-share"></i> Share`;
-    actionsDiv.appendChild(shareBtn);
-
-    postDiv.appendChild(actionsDiv);
-
-    feedContainer.appendChild(postDiv);
-  });
-}
-  function toggleMenu() {
-  const navLinks = document.querySelector('nav .nav-links');
-  navLinks.classList.toggle('active');
-}
-
-
-// Comment button
-const commentBtn = document.createElement('button');
-commentBtn.innerHTML = `<i class="fas fa-comment"></i> Comment`;
-
-// Create comments section (initially hidden)
-const commentsSection = document.createElement('div');
-commentsSection.className = 'comments-section';
-commentsSection.style.display = 'none';
-
-// Comments list container
-const commentsList = document.createElement('div');
-commentsList.className = 'comments-list';
-
-// Comment input container
-const commentInputDiv = document.createElement('div');
-commentInputDiv.className = 'comment-input';
-
-const commentInput = document.createElement('input');
-commentInput.type = 'text';
-commentInput.placeholder = 'Write a comment...';
-
-const commentSendBtn = document.createElement('button');
-commentSendBtn.textContent = 'Send';
-
-commentInputDiv.appendChild(commentInput);
-commentInputDiv.appendChild(commentSendBtn);
-commentsSection.appendChild(commentsList);
-commentsSection.appendChild(commentInputDiv);
-
-postDiv.appendChild(commentsSection);
-
-// Function to render comments for this post
-function renderComments() {
-  commentsList.innerHTML = '';
-  const comments = post.comments || [];
-  if (comments.length === 0) {
-    commentsList.innerHTML = '<em>No comments yet</em>';
-    return;
-  }
-  comments.forEach(comment => {
-    const commentDiv = document.createElement('div');
-    commentDiv.className = 'comment-item';
-    commentDiv.textContent = comment;
-    commentsList.appendChild(commentDiv);
-  });
-}
-
-// Toggle comments section on comment button click
-commentBtn.onclick = () => {
-  if (commentsSection.style.display === 'block') {
-    commentsSection.style.display = 'none';
-  } else {
-    commentsSection.style.display = 'block';
-    renderComments();
-  }
-};
-
-// Handle sending new comment
-commentSendBtn.onclick = () => {
-  const text = commentInput.value.trim();
-  if (text === '') return alert('Comment cannot be empty.');
-  if (!post.comments) post.comments = [];
-  post.comments.push(text);
-  commentInput.value = '';
-  savePosts();
-  renderComments();
-};
-
-actionsDiv.appendChild(commentBtn);
-
-// Share button
-const shareBtn = document.createElement('button');
-shareBtn.innerHTML = `<i class="fas fa-share"></i> Share`;
-shareBtn.onclick = () => {
-  const shareText = `Check out this post: "${post.text}"`;
-  navigator.clipboard.writeText(shareText).then(() => {
-    alert('Post copied to clipboard!');
-  }).catch(() => {
-    alert('Failed to copy post');
-  });
-};
-actionsDiv.appendChild(shareBtn);
-function renderPosts() {
-  feedContainer.innerHTML = '';
-  posts.forEach((post, index) => {
-    const postDiv = document.createElement('div');
-    postDiv.className = 'post';
-
-    // Create dropdown menu for edit/delete
-    const menuButton = document.createElement('button');
-    menuButton.className = 'menu-button';
-    menuButton.innerHTML = '&#8942;'; // vertical three dots ⋮
-    postDiv.appendChild(menuButton);
-
-    const menuDropdown = document.createElement('div');
-    menuDropdown.className = 'menu-dropdown';
-
-    const editBtn = document.createElement('button');
-    editBtn.textContent = 'Edit';
-    editBtn.onclick = () => editPost(index);
-
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = 'Delete';
-    deleteBtn.onclick = () => deletePost(index);
-
-    menuDropdown.appendChild(editBtn);
-    menuDropdown.appendChild(deleteBtn);
-    postDiv.appendChild(menuDropdown);
-
-    menuButton.onclick = (e) => {
-      e.stopPropagation();
-      // Close all other menus
-      document.querySelectorAll('.menu-dropdown').forEach(menu => {
-        if (menu !== menuDropdown) menu.style.display = 'none';
+      // Edit post text
+      document.querySelectorAll('.edit-post-btn').forEach(btn => {
+        btn.onclick = function () {
+          const idx = this.getAttribute('data-index');
+          const post = posts[idx];
+          const newText = prompt('Edit your post:', post.text);
+          if (newText !== null && newText.trim() !== '') {
+            posts[idx].text = newText.trim();
+            saveAndRender();
+          }
+        };
       });
-      // Toggle this menu
-      menuDropdown.style.display = menuDropdown.style.display === 'block' ? 'none' : 'block';
-    };
 
-    // Close menu if click outside
-    document.addEventListener('click', () => {
-      menuDropdown.style.display = 'none';
-    });
-
-    postDiv.innerHTML += `
-      <div class="post-info">
-        <img class="avatar" src="${post.avatar || 'https://via.placeholder.com/40'}" alt="Avatar" />
-        <div>
-          <div class="name">${post.name || 'Unknown'}</div>
-          <div class="date">${post.postDate || ''}</div>
-        </div>
-      </div>
-      <div class="post-text">${post.text || ''}</div>
-    `;
-
-    if (post.image) {
-      const img = document.createElement('img');
-      img.className = 'post-image';
-      img.src = post.image;
-      img.alt = 'Post Image';
-      postDiv.appendChild(img);
-    }
-    if (post.video) {
-      const video = document.createElement('video');
-      video.className = 'post-video';
-      video.controls = true;
-      video.src = post.video;
-      postDiv.appendChild(video);
+      // Change privacy
+      document.querySelectorAll('.change-privacy-btn').forEach(btn => {
+        btn.onclick = function () {
+          const idx = this.getAttribute('data-index');
+          const currentPrivacy = posts[idx].privacy || 'public';
+          const newPrivacy = prompt('Set privacy (public, friends, onlyme):', currentPrivacy);
+          if (newPrivacy && ['public','friends','onlyme'].includes(newPrivacy.toLowerCase())) {
+            posts[idx].privacy = newPrivacy.toLowerCase();
+            saveAndRender();
+          } else if (newPrivacy !== null) {
+            alert('Invalid privacy option! Use: public, friends, or onlyme.');
+          }
+        };
+      });
     }
 
-    // Post actions container
-    const actionsDiv = document.createElement('div');
-    actionsDiv.className = 'post-actions';
-
-    // Like button
-    const likeBtn = document.createElement('button');
-    likeBtn.innerHTML = `<i class="fas fa-thumbs-up"></i> <span>${post.likes || 0}</span> Like`;
-    if (post.liked) likeBtn.classList.add('liked');
-    likeBtn.onclick = () => {
-      post.liked = !post.liked;
-      post.likes = post.likes || 0;
-      post.likes += post.liked ? 1 : -1;
-      savePosts();
-      renderPosts();
-    };
-    actionsDiv.appendChild(likeBtn);
-
-    // Comment button
-    const commentBtn = document.createElement('button');
-    commentBtn.innerHTML = `<i class="fas fa-comment"></i> Comment`;
-    actionsDiv.appendChild(commentBtn);
-
-    // Share button
-    const shareBtn = document.createElement('button');
-    shareBtn.innerHTML = `<i class="fas fa-share"></i> Share`;
-    actionsDiv.appendChild(shareBtn);
-
-    postDiv.appendChild(actionsDiv);
-
-    // --- COMMENT SECTION (hidden by default) ---
-    const commentsSection = document.createElement('div');
-    commentsSection.className = 'comments-section';
-    commentsSection.style.display = 'none'; // hidden initially
-
-    // Comments list container
-    const commentsList = document.createElement('div');
-    commentsList.className = 'comments-list';
-
-    // Comment input area
-    const commentInputDiv = document.createElement('div');
-    commentInputDiv.className = 'comment-input';
-
-    const commentInput = document.createElement('input');
-    commentInput.type = 'text';
-    commentInput.placeholder = 'Write a comment...';
-
-    const commentSendBtn = document.createElement('button');
-    commentSendBtn.textContent = 'Send';
-
-    commentInputDiv.appendChild(commentInput);
-    commentInputDiv.appendChild(commentSendBtn);
-
-    commentsSection.appendChild(commentsList);
-    commentsSection.appendChild(commentInputDiv);
-
-    postDiv.appendChild(commentsSection);
-
-    // Render comments function
-    function renderComments() {
-      commentsList.innerHTML = '';
-      const comments = post.comments || [];
+    // Render comments list inside post
+    function renderComments(idx, container) {
+      container.innerHTML = '';
+      const comments = posts[idx].comments || [];
       if (comments.length === 0) {
-        commentsList.innerHTML = '<em>No comments yet</em>';
+        container.innerHTML = '<em>No comments yet</em>';
         return;
       }
       comments.forEach(comment => {
-        const commentDiv = document.createElement('div');
-        commentDiv.className = 'comment-item';
-        commentDiv.textContent = comment;
-        commentsList.appendChild(commentDiv);
+        const div = document.createElement('div');
+        div.className = 'comment-item';
+        div.textContent = comment;
+        container.appendChild(div);
       });
     }
 
-    // Toggle comment section on comment button click
-    commentBtn.onclick = () => {
-      if (commentsSection.style.display === 'block') {
-        commentsSection.style.display = 'none';
-      } else {
-        commentsSection.style.display = 'block';
-        renderComments();
+    // Save posts and re-render
+    function saveAndRender() {
+      localStorage.setItem('fbPosts', JSON.stringify(posts));
+      renderPosts();
+    }
+
+    // Handle new post submission
+    postForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      if (!postText.value.trim()) {
+        alert('Please enter some text.');
+        return;
       }
-    };
 
-    // Add new comment on send button click
-    commentSendBtn.onclick = () => {
-      const text = commentInput.value.trim();
-      if (text === '') return alert('Comment cannot be empty.');
-      if (!post.comments) post.comments = [];
-      post.comments.push(text);
-      commentInput.value = '';
-      savePosts();
-      renderComments();
-    };
+      const file = postImage.files[0];
+      const privacy = document.getElementById('postPrivacy').value || 'public';
 
-    // Share button copies post text to clipboard
-    shareBtn.onclick = () => {
-      const shareText = `Check out this post: "${post.text}"`;
-      navigator.clipboard.writeText(shareText).then(() => {
-        alert('Post copied to clipboard!');
-      }).catch(() => {
-        alert('Failed to copy post');
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          addPost(postText.value.trim(), event.target.result, privacy);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        addPost(postText.value.trim(), null, privacy);
+      }
+    });
+
+    function addPost(text, image, privacy) {
+      posts.unshift({
+        text,
+        image,
+        privacy,
+        likes: 0,
+        liked: false,
+        comments: [],
+        authorId: 'me'  // your user id (for privacy filtering)
       });
-    };
+      postForm.reset();
+      saveAndRender();
+    }
 
-    feedContainer.appendChild(postDiv);
-  });
-}
-</script>
-
+    // Initial render
+    renderPosts();
+  </script>
 </body>
 </html>
