@@ -331,7 +331,36 @@ function attachEventListeners() {
       });
     };
   });
-}
+}// SHARE
+document.querySelectorAll('.share-btn').forEach(btn => {
+  btn.onclick = function () {
+    const idx = this.getAttribute('data-index');
+    const postText = posts[idx].text || '';
+
+    // Check if the device supports Web Share API
+    if (navigator.share) {
+      navigator.share({
+        title: 'Check this out!',
+        text: postText,
+        url: window.location.href
+      }).then(() => {
+        console.log('Thanks for sharing!');
+      }).catch((err) => {
+        alert('Sharing failed:', err.message);
+      });
+    } else {
+      // Fallback: Copy to clipboard
+      const tempInput = document.createElement('textarea');
+      tempInput.value = postText;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      alert('Post copied to clipboard!');
+    }
+  };
+});
+
 
   </script>
 </body>
