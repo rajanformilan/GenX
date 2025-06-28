@@ -7,11 +7,12 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 20px auto;
-      background: #f0f2f5;
-      padding: 10px;
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #eef1f6;
       border-radius: 10px;
+      text-align: center;
     }
     img.profile-pic {
       width: 120px;
@@ -20,18 +21,13 @@
       object-fit: cover;
       border: 3px solid #007bff;
       margin-bottom: 20px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
     }
     h2 {
       margin-bottom: 5px;
-      text-align: center;
     }
     p {
       margin: 5px 0;
       color: #555;
-      text-align: center;
     }
     button {
       background-color: #007bff;
@@ -42,21 +38,24 @@
       cursor: pointer;
       margin-top: 20px;
       font-size: 16px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
     }
     button:hover {
       background-color: #0056b3;
     }
-
-    /* Post form */
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 20px auto;
+      background: #f0f2f5;
+      padding: 10px;
+    }
     #postForm {
       background: white;
       padding: 15px;
       border-radius: 8px;
-      margin: 25px 0 20px 0;
+      margin-bottom: 20px;
       box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      text-align: left;
     }
     #postForm textarea {
       width: 100%;
@@ -64,56 +63,28 @@
       min-height: 60px;
       padding: 8px;
       font-size: 14px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
     }
     #postForm input[type="file"] {
       margin-top: 8px;
-      width: 100%;
     }
-    #postForm label[for="postPrivacy"] {
-      display: block;
-      font-weight: 600;
-      margin: 12px 0 6px 0;
-      color: #333;
+    #postForm select {
+      margin-top: 8px;
+      padding: 6px;
       font-size: 14px;
-    }
-    #postPrivacy {
-      width: 100%;
-      padding: 8px 10px;
-      font-size: 14px;
+      border-radius: 5px;
       border: 1px solid #ccc;
-      border-radius: 6px;
-      background-color: white;
-      transition: border-color 0.3s ease;
-      box-sizing: border-box;
-      margin-bottom: 10px;
-      cursor: pointer;
+      width: 100%;
     }
-    #postPrivacy:hover,
-    #postPrivacy:focus {
-      border-color: #1877f2;
-      outline: none;
-      box-shadow: 0 0 5px rgba(24, 119, 242, 0.5);
-    }
-    #postForm button[type="submit"] {
+    #postForm button {
       margin-top: 10px;
-      padding: 10px 20px;
+      padding: 8px 16px;
       background-color: #1877f2;
       border: none;
       color: white;
-      border-radius: 6px;
+      border-radius: 5px;
       cursor: pointer;
       font-weight: bold;
-      font-size: 16px;
-      width: 100%;
     }
-    #postForm button[type="submit"]:hover {
-      background-color: #155db2;
-    }
-
-    /* Posts */
     .post {
       background: white;
       padding: 15px;
@@ -122,17 +93,15 @@
       box-shadow: 0 1px 2px rgba(0,0,0,0.1);
       text-align: left;
       position: relative;
-      word-wrap: break-word;
-      white-space: pre-wrap;
     }
     .post-text {
       margin-bottom: 10px;
+      white-space: pre-wrap;
     }
     .post-image {
       max-width: 100%;
       border-radius: 8px;
       margin-bottom: 10px;
-      display: block;
     }
     .post-actions {
       display: flex;
@@ -159,8 +128,7 @@
       color: #1877f2;
       font-weight: bold;
     }
-
-    /* Three dots menu */
+    /* Styles for the three dots menu */
     .post-menu-btn {
       position: absolute;
       top: 10px;
@@ -183,16 +151,7 @@
       border-radius: 5px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.15);
       z-index: 10;
-      min-width: 140px;
-      font-size: 14px;
-    }
-    .post-menu .privacy-display {
-      padding: 8px 12px;
-      font-size: 13px;
-      color: #444;
-      border-bottom: 1px solid #ddd;
-      margin-bottom: 6px;
-      user-select: none;
+      min-width: 130px;
     }
     .post-menu button {
       display: block;
@@ -204,22 +163,15 @@
       text-align: left;
       font-size: 14px;
       color: #606770;
-      border-radius: 0;
-      font-weight: normal;
     }
     .post-menu button:hover {
       background-color: #f0f0f0;
     }
     .post-menu button.delete-post-btn {
       color: red;
-      font-weight: bold;
-    }
-    .post-menu button.change-privacy-btn {
-      color: #1877f2;
-      font-weight: 600;
     }
 
-    /* Comments */
+    /* Comment section styles */
     .comments-section {
       margin-top: 10px;
       border-top: 1px solid #ddd;
@@ -250,7 +202,6 @@
       border-radius: 20px;
       border: 1px solid #ccc;
       font-size: 14px;
-      box-sizing: border-box;
     }
     .comment-input button {
       background-color: #1877f2;
@@ -261,16 +212,22 @@
       cursor: pointer;
       font-weight: bold;
       font-size: 14px;
-      transition: background-color 0.2s;
     }
     .comment-input button:hover {
       background-color: #155db2;
     }
+
+    /* Privacy label in menu */
+    .privacy-label {
+      font-size: 12px;
+      color: #999;
+      padding: 0 12px 8px 12px;
+      border-bottom: 1px solid #eee;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
-
-  <!-- Profile Section -->
   <img id="profileImage" class="profile-pic" src="https://via.placeholder.com/120" alt="Profile Picture" />
   <h2 id="userName">Name</h2>
   <p><strong>Email:</strong> <span id="userEmail"></span></p>
@@ -278,29 +235,22 @@
   <p><strong>Date of Birth:</strong> <span id="userDob"></span></p>
 
   <button onclick="editProfile()">Edit Profile</button>
-
-  <!-- Post Creation Form -->
   <h2>Create Post</h2>
   <form id="postForm">
     <textarea id="postText" placeholder="What's on your mind?" required></textarea>
-
-    <label for="postPrivacy">Privacy:</label>
+    <input type="file" id="postImage" accept="image/*" />
     <select id="postPrivacy" required>
       <option value="public" selected>Public</option>
       <option value="friends">Friends</option>
       <option value="onlyme">Only Me</option>
     </select>
-
-    <input type="file" id="postImage" accept="image/*" />
     <button type="submit">Post</button>
   </form>
 
-  <!-- News Feed -->
   <h2>News Feed</h2>
   <div id="feed"></div>
 
   <script>
-    // Load profile data from localStorage
     function loadProfile() {
       const storedProfile = localStorage.getItem('userProfile');
       if (!storedProfile) {
@@ -308,6 +258,7 @@
         window.location.href = 'authentication.html';
         return;
       }
+
       const profile = JSON.parse(storedProfile);
 
       document.getElementById('profileImage').src = profile.avatar || 'https://via.placeholder.com/120';
@@ -326,27 +277,29 @@
     const postForm = document.getElementById('postForm');
     const postText = document.getElementById('postText');
     const postImage = document.getElementById('postImage');
+    const postPrivacy = document.getElementById('postPrivacy');
     const feed = document.getElementById('feed');
 
-    // Assume current user ID (for privacy filtering)
-    const currentUserId = 'me';
-
-    // Load posts from localStorage
+    // Load posts from localStorage on page load
     let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
+
+    // Get current user name for filtering "onlyme"
+    const currentUser = JSON.parse(localStorage.getItem('userProfile')) || {};
+    const currentUserName = currentUser.name || 'Unknown';
 
     function renderPosts() {
       feed.innerHTML = '';
-
       posts.forEach((post, idx) => {
-        // Author ID fallback to 'me'
-        const postAuthorId = post.authorId || 'me';
+        // Privacy check: show post only if:
+        // - public or friends (friends treated same here)
+        // - or onlyme but posted by current user
+        if (post.privacy === 'onlyme' && post.authorName !== currentUserName) {
+          return; // skip rendering
+        }
 
-        // Privacy filter: show only allowed posts
-        if (post.privacy === 'onlyme' && postAuthorId !== currentUserId) return;
+        const postDiv = document.createElement('div');
+        postDiv.className = 'post';
 
-        // (For friends privacy, implement your friend check here if needed)
-
-        // Build post HTML
         let imgHTML = '';
         if (post.image) {
           imgHTML = `<img src="${post.image}" alt="Post Image" class="post-image" />`;
@@ -355,20 +308,28 @@
         const likedClass = post.liked ? 'liked' : '';
         const commentsCount = post.comments ? post.comments.length : 0;
 
-        const privacyText = post.privacy.charAt(0).toUpperCase() + post.privacy.slice(1);
-
-        const postDiv = document.createElement('div');
-        postDiv.className = 'post';
+        // Capitalize privacy for display
+        const privacyDisplay = post.privacy ? post.privacy.charAt(0).toUpperCase() + post.privacy.slice(1) : 'Public';
 
         postDiv.innerHTML = `
           <button class="post-menu-btn" data-index="${idx}">&#8942;</button>
           <div class="post-menu" data-index="${idx}">
-            <div class="privacy-display">Privacy: <span class="privacy-value">${privacyText}</span></div>
+            <div class="privacy-label">Privacy: ${privacyDisplay}</div>
             <button class="change-privacy-btn" data-index="${idx}">Change Privacy</button>
             <button class="edit-post-btn" data-index="${idx}">Edit</button>
             <button class="delete-post-btn" data-index="${idx}">Delete</button>
           </div>
-          <div class="post-text" data-index="${idx}">${post.text}</div>
+          <label for="privacy">Choose privacy:</label>
+<select id="privacy" name="privacy">
+  <option value="public">Public</option>
+  <option value="friends">Friends</option>
+  <option value="onlyme">Only Me</option>
+</select>
+
+          <div class="post-text" data-index="${idx}">
+            <strong>Posted by: ${post.authorName || 'Unknown'}</strong><br />
+            ${post.text}
+          </div>
           ${imgHTML}
           <div class="post-actions">
             <button class="like-btn ${likedClass}" data-index="${idx}">
@@ -391,12 +352,11 @@
 
         feed.appendChild(postDiv);
       });
-
       attachEventListeners();
     }
 
     function attachEventListeners() {
-      // Like button
+      // LIKE
       document.querySelectorAll('.like-btn').forEach(btn => {
         btn.onclick = function () {
           const idx = this.getAttribute('data-index');
@@ -406,14 +366,16 @@
         };
       });
 
-      // Comment button toggles comments
+      // COMMENT BUTTON TO TOGGLE COMMENT SECTION
       document.querySelectorAll('.comment-btn').forEach(btn => {
         btn.onclick = function () {
           const idx = this.getAttribute('data-index');
           const postDiv = this.closest('.post');
           const commentsSection = postDiv.querySelector(`.comments-section[data-index="${idx}"]`);
+
           if (!commentsSection) return;
 
+          // Toggle display
           if (commentsSection.style.display === 'block') {
             commentsSection.style.display = 'none';
           } else {
@@ -423,7 +385,7 @@
         };
       });
 
-      // Send comment button
+      // SEND COMMENT BUTTON
       document.querySelectorAll('.comments-section').forEach(section => {
         const idx = section.getAttribute('data-index');
         const sendBtn = section.querySelector('button');
@@ -437,7 +399,6 @@
           posts[idx].comments.push(commentText);
           input.value = '';
           saveAndRender();
-
           // Open comments after re-render
           setTimeout(() => {
             const newFeed = document.getElementById('feed');
@@ -451,7 +412,7 @@
         };
       });
 
-      // Share button copies post text
+      // SHARE
       document.querySelectorAll('.share-btn').forEach(btn => {
         btn.onclick = function () {
           const idx = this.getAttribute('data-index');
@@ -462,7 +423,7 @@
         };
       });
 
-      // Three dots menu toggle
+      // POST MENU (three dots) toggle
       document.querySelectorAll('.post-menu-btn').forEach(btn => {
         btn.onclick = function (e) {
           e.stopPropagation();
@@ -470,11 +431,12 @@
           const menu = document.querySelector(`.post-menu[data-index="${idx}"]`);
           if (!menu) return;
 
-          // Close others
+          // Close other menus
           document.querySelectorAll('.post-menu').forEach(m => {
             if (m !== menu) m.style.display = 'none';
           });
 
+          // Toggle this menu
           menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         };
       });
@@ -484,7 +446,7 @@
         document.querySelectorAll('.post-menu').forEach(m => (m.style.display = 'none'));
       };
 
-      // Delete post
+      // DELETE post
       document.querySelectorAll('.delete-post-btn').forEach(btn => {
         btn.onclick = function () {
           const idx = this.getAttribute('data-index');
@@ -495,7 +457,7 @@
         };
       });
 
-      // Edit post text
+      // EDIT post
       document.querySelectorAll('.edit-post-btn').forEach(btn => {
         btn.onclick = function () {
           const idx = this.getAttribute('data-index');
@@ -508,23 +470,23 @@
         };
       });
 
-      // Change privacy
+      // CHANGE PRIVACY
       document.querySelectorAll('.change-privacy-btn').forEach(btn => {
         btn.onclick = function () {
           const idx = this.getAttribute('data-index');
           const currentPrivacy = posts[idx].privacy || 'public';
-          const newPrivacy = prompt('Set privacy (public, friends, onlyme):', currentPrivacy);
-          if (newPrivacy && ['public','friends','onlyme'].includes(newPrivacy.toLowerCase())) {
+          const newPrivacy = prompt('Change privacy (public, friends, onlyme):', currentPrivacy);
+          if (newPrivacy && ['public', 'friends', 'onlyme'].includes(newPrivacy.toLowerCase())) {
             posts[idx].privacy = newPrivacy.toLowerCase();
             saveAndRender();
           } else if (newPrivacy !== null) {
-            alert('Invalid privacy option! Use: public, friends, or onlyme.');
+            alert('Invalid privacy option.');
           }
         };
       });
     }
 
-    // Render comments list inside post
+    // Render comments inside comment list element
     function renderComments(idx, container) {
       container.innerHTML = '';
       const comments = posts[idx].comments || [];
@@ -540,13 +502,12 @@
       });
     }
 
-    // Save posts and re-render
+    // Save posts to localStorage and re-render feed
     function saveAndRender() {
       localStorage.setItem('fbPosts', JSON.stringify(posts));
       renderPosts();
     }
 
-    // Handle new post submission
     postForm.addEventListener('submit', function(e) {
       e.preventDefault();
 
@@ -556,28 +517,33 @@
       }
 
       const file = postImage.files[0];
-      const privacy = document.getElementById('postPrivacy').value || 'public';
+
+      // Get poster name from profile
+      const storedProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
+      const posterName = storedProfile.name || 'Unknown';
+
+      const privacyValue = postPrivacy.value || 'public';
 
       if (file) {
         const reader = new FileReader();
         reader.onload = function(event) {
-          addPost(postText.value.trim(), event.target.result, privacy);
+          addPost(postText.value.trim(), event.target.result, posterName, privacyValue);
         };
         reader.readAsDataURL(file);
       } else {
-        addPost(postText.value.trim(), null, privacy);
+        addPost(postText.value.trim(), null, posterName, privacyValue);
       }
     });
 
-    function addPost(text, image, privacy) {
+    function addPost(text, image, authorName, privacy) {
       posts.unshift({
         text,
         image,
-        privacy,
         likes: 0,
         liked: false,
         comments: [],
-        authorId: 'me'  // your user id (for privacy filtering)
+        authorName,
+        privacy
       });
       postForm.reset();
       saveAndRender();
