@@ -296,6 +296,7 @@
 
     renderPosts();
 
+
 function attachEventListeners() {
   // LIKE
   document.querySelectorAll('.like-btn').forEach(btn => {
@@ -311,13 +312,11 @@ function attachEventListeners() {
   document.querySelectorAll('.comment-btn').forEach(btn => {
     btn.onclick = function () {
       const idx = this.getAttribute('data-index');
-      const comment = prompt("Enter your comment:");
-      if (!comment) return;
-
-      if (!posts[idx].comments) posts[idx].comments = [];
-      posts[idx].comments.push(comment);
-      alert("Comment added!");
-      saveAndRender();
+      const comment = prompt('Enter your comment:');
+      if (comment) {
+        alert('Comment added (not saved yet in this version).');
+        // You can store comments later in localStorage
+      }
     };
   });
 
@@ -325,41 +324,35 @@ function attachEventListeners() {
   document.querySelectorAll('.share-btn').forEach(btn => {
     btn.onclick = function () {
       const idx = this.getAttribute('data-index');
-      const shareText = `Check out this post: "${posts[idx].text}"`;
-      navigator.clipboard.writeText(shareText).then(() => {
-        alert("Post copied to clipboard!");
-      });
+      const post = posts[idx];
+      const shareText = post.text || '';
+
+      if (navigator.share) {
+        navigator.share({
+          title: 'GenX Post',
+          text: shareText,
+          url: window.location.href
+        }).then(() => {
+          console.log('Shared successfully');
+        }).catch(err => {
+          fallbackCopy(shareText);
+        });
+      } else {
+        fallbackCopy(shareText);
+      }
     };
   });
-}// SHARE
-document.querySelectorAll('.share-btn').forEach(btn => {
-  btn.onclick = function () {
-    const idx = this.getAttribute('data-index');
-    const postText = posts[idx].text || '';
 
-    // Check if the device supports Web Share API
-    if (navigator.share) {
-      navigator.share({
-        title: 'Check this out!',
-        text: postText,
-        url: window.location.href
-      }).then(() => {
-        console.log('Thanks for sharing!');
-      }).catch((err) => {
-        alert('Sharing failed:', err.message);
-      });
-    } else {
-      // Fallback: Copy to clipboard
-      const tempInput = document.createElement('textarea');
-      tempInput.value = postText;
-      document.body.appendChild(tempInput);
-      tempInput.select();
-      document.execCommand('copy');
-      document.body.removeChild(tempInput);
-      alert('Post copied to clipboard!');
-    }
-  };
-});
+  function fallbackCopy(text) {
+    const temp = document.createElement('textarea');
+    temp.value = text;
+    document.body.appendChild(temp);
+    temp.select();
+    document.execCommand('copy');
+    document.body.removeChild(temp);
+    alert('Link or text copied to clipboard!');
+  }
+}
 
 
   </script>
