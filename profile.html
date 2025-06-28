@@ -98,6 +98,7 @@
       display: flex;
       gap: 15px;
       font-size: 14px;
+      align-items: center;
     }
     .post-actions button {
       background: none;
@@ -107,6 +108,12 @@
       display: flex;
       align-items: center;
       gap: 5px;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    .post-actions button:hover {
+      background-color: #e4e6eb;
     }
     .post-actions button.liked {
       color: #1877f2;
@@ -153,6 +160,52 @@
     }
     .post-menu button.delete-post-btn {
       color: red;
+    }
+
+    /* Comment section styles */
+    .comments-section {
+      margin-top: 10px;
+      border-top: 1px solid #ddd;
+      padding-top: 10px;
+    }
+    .comments-list {
+      max-height: 150px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+    .comment-item {
+      background: #f0f2f5;
+      border-radius: 20px;
+      padding: 6px 12px;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #050505;
+      word-wrap: break-word;
+      white-space: normal;
+    }
+    .comment-input {
+      display: flex;
+      gap: 6px;
+    }
+    .comment-input input[type="text"] {
+      flex-grow: 1;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    .comment-input button {
+      background-color: #1877f2;
+      border: none;
+      color: white;
+      border-radius: 20px;
+      padding: 6px 16px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .comment-input button:hover {
+      background-color: #155db2;
     }
   </style>
 </head>
@@ -218,6 +271,7 @@
         }
 
         const likedClass = post.liked ? 'liked' : '';
+        const commentsCount = post.comments ? post.comments.length : 0;
 
         postDiv.innerHTML = `
           <button class="post-menu-btn" data-index="${idx}">&#8942;</button>
@@ -231,8 +285,18 @@
             <button class="like-btn ${likedClass}" data-index="${idx}">
               <span>👍</span> <span class="like-count">${post.likes}</span> Like
             </button>
-            <button class="comment-btn" data-index="${idx}">💬 Comment</button>
+            <button class="comment-btn" data-index="${idx}">
+              💬 Comment${commentsCount > 0 ? ` (${commentsCount})` : ''}
+            </button>
             <button class="share-btn" data-index="${idx}">🔗 Share</button>
+          </div>
+
+          <div class="comments-section" style="display:none;" data-index="${idx}">
+            <div class="comments-list"></div>
+            <div class="comment-input">
+              <input type="text" placeholder="Write a comment..." />
+              <button>Send</button>
+            </div>
           </div>
         `;
 
@@ -241,7 +305,6 @@
       attachEventListeners();
     }
 
-    // Attach event listeners for all buttons
     function attachEventListeners() {
       // LIKE
       document.querySelectorAll('.like-btn').forEach(btn => {
@@ -253,17 +316,49 @@
         };
       });
 
-      // COMMENT
+      // COMMENT BUTTON TO TOGGLE COMMENT SECTION
       document.querySelectorAll('.comment-btn').forEach(btn => {
         btn.onclick = function () {
           const idx = this.getAttribute('data-index');
-          const comment = prompt("Enter your comment:");
-          if (!comment) return;
+          const postDiv = this.closest('.post');
+          const commentsSection = postDiv.querySelector(`.comments-section[data-index="${idx}"]`);
+
+          if (!commentsSection) return;
+
+          // Toggle display
+          if (commentsSection.style.display === 'block') {
+            commentsSection.style.display = 'none';
+          } else {
+            commentsSection.style.display = 'block';
+            renderComments(idx, commentsSection.querySelector('.comments-list'));
+          }
+        };
+      });
+
+      // SEND COMMENT BUTTON
+      document.querySelectorAll('.comments-section').forEach(section => {
+        const idx = section.getAttribute('data-index');
+        const sendBtn = section.querySelector('button');
+        const input = section.querySelector('input[type="text"]');
+
+        sendBtn.onclick = () => {
+          const commentText = input.value.trim();
+          if (commentText === '') return alert('Comment cannot be empty.');
 
           if (!posts[idx].comments) posts[idx].comments = [];
-          posts[idx].comments.push(comment);
-          alert("Comment added!");
+          posts[idx].comments.push(commentText);
+          input.value = '';
           saveAndRender();
+          // Open comments after re-render
+          setTimeout(() => {
+            const newFeed = document.getElementById('feed');
+            const newPostDiv = newFeed.children[idx];
+            const newCommentsSection = newPostDiv.querySelector(`.comments-section[data-index="${idx}"]`);
+            if (newCommentsSection) {
+              newCommentsSection.style.display = 'block';
+              renderComments(idx, newCommentsSection.querySelector('.comments-list'));
+            }
+          }, 50);
         };
       });
 
@@ -326,6 +421,22 @@
       });
     }
 
+    // Render comments inside comment list element
+    function renderComments(idx, container) {
+      container.innerHTML = '';
+      const comments = posts[idx].comments || [];
+      if (comments.length === 0) {
+        container.innerHTML = '<em>No comments yet</em>';
+        return;
+      }
+      comments.forEach(comment => {
+        const div = document.createElement('div');
+        div.className = 'comment-item';
+        div.textContent = comment;
+        container.appendChild(div);
+      });
+    }
+
     // Save posts to localStorage and re-render feed
     function saveAndRender() {
       localStorage.setItem('fbPosts', JSON.stringify(posts));
@@ -358,7 +469,8 @@
         text,
         image,
         likes: 0,
-        liked: false
+        liked: false,
+        comments: []
       });
       postForm.reset();
       saveAndRender();
