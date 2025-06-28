@@ -295,6 +295,44 @@
     }
 
     renderPosts();
+
+function attachEventListeners() {
+  // LIKE
+  document.querySelectorAll('.like-btn').forEach(btn => {
+    btn.onclick = function () {
+      const idx = this.getAttribute('data-index');
+      posts[idx].liked = !posts[idx].liked;
+      posts[idx].likes += posts[idx].liked ? 1 : -1;
+      saveAndRender();
+    };
+  });
+
+  // COMMENT
+  document.querySelectorAll('.comment-btn').forEach(btn => {
+    btn.onclick = function () {
+      const idx = this.getAttribute('data-index');
+      const comment = prompt("Enter your comment:");
+      if (!comment) return;
+
+      if (!posts[idx].comments) posts[idx].comments = [];
+      posts[idx].comments.push(comment);
+      alert("Comment added!");
+      saveAndRender();
+    };
+  });
+
+  // SHARE
+  document.querySelectorAll('.share-btn').forEach(btn => {
+    btn.onclick = function () {
+      const idx = this.getAttribute('data-index');
+      const shareText = `Check out this post: "${posts[idx].text}"`;
+      navigator.clipboard.writeText(shareText).then(() => {
+        alert("Post copied to clipboard!");
+      });
+    };
+  });
+}
+
   </script>
 </body>
 </html>
