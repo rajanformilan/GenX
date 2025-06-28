@@ -278,6 +278,43 @@ nav.navbar {
     display: block;
   }
 }
+.comments-section {
+  border-top: 1px solid #ccc;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.comments-list .comment-item {
+  background: #eee;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.comment-input {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.comment-input input[type="text"] {
+  flex-grow: 1;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.comment-input button {
+  background: #1877f2;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
 
   </style>
 </head>
@@ -603,12 +640,10 @@ function renderFilteredPosts(filteredPosts) {
 
     const commentBtn = document.createElement('button');
     commentBtn.innerHTML = `<i class="fas fa-comment"></i> Comment`;
-    commentBtn.onclick = () => alert('Comments feature coming soon!');
     actionsDiv.appendChild(commentBtn);
 
     const shareBtn = document.createElement('button');
     shareBtn.innerHTML = `<i class="fas fa-share"></i> Share`;
-    shareBtn.onclick = () => alert('Share feature coming soon!');
     actionsDiv.appendChild(shareBtn);
 
     postDiv.appendChild(actionsDiv);
@@ -616,13 +651,268 @@ function renderFilteredPosts(filteredPosts) {
     feedContainer.appendChild(postDiv);
   });
 }
-
-  
-  
-  
   function toggleMenu() {
   const navLinks = document.querySelector('nav .nav-links');
   navLinks.classList.toggle('active');
+}
+
+
+// Comment button
+const commentBtn = document.createElement('button');
+commentBtn.innerHTML = `<i class="fas fa-comment"></i> Comment`;
+
+// Create comments section (initially hidden)
+const commentsSection = document.createElement('div');
+commentsSection.className = 'comments-section';
+commentsSection.style.display = 'none';
+
+// Comments list container
+const commentsList = document.createElement('div');
+commentsList.className = 'comments-list';
+
+// Comment input container
+const commentInputDiv = document.createElement('div');
+commentInputDiv.className = 'comment-input';
+
+const commentInput = document.createElement('input');
+commentInput.type = 'text';
+commentInput.placeholder = 'Write a comment...';
+
+const commentSendBtn = document.createElement('button');
+commentSendBtn.textContent = 'Send';
+
+commentInputDiv.appendChild(commentInput);
+commentInputDiv.appendChild(commentSendBtn);
+commentsSection.appendChild(commentsList);
+commentsSection.appendChild(commentInputDiv);
+
+postDiv.appendChild(commentsSection);
+
+// Function to render comments for this post
+function renderComments() {
+  commentsList.innerHTML = '';
+  const comments = post.comments || [];
+  if (comments.length === 0) {
+    commentsList.innerHTML = '<em>No comments yet</em>';
+    return;
+  }
+  comments.forEach(comment => {
+    const commentDiv = document.createElement('div');
+    commentDiv.className = 'comment-item';
+    commentDiv.textContent = comment;
+    commentsList.appendChild(commentDiv);
+  });
+}
+
+// Toggle comments section on comment button click
+commentBtn.onclick = () => {
+  if (commentsSection.style.display === 'block') {
+    commentsSection.style.display = 'none';
+  } else {
+    commentsSection.style.display = 'block';
+    renderComments();
+  }
+};
+
+// Handle sending new comment
+commentSendBtn.onclick = () => {
+  const text = commentInput.value.trim();
+  if (text === '') return alert('Comment cannot be empty.');
+  if (!post.comments) post.comments = [];
+  post.comments.push(text);
+  commentInput.value = '';
+  savePosts();
+  renderComments();
+};
+
+actionsDiv.appendChild(commentBtn);
+
+// Share button
+const shareBtn = document.createElement('button');
+shareBtn.innerHTML = `<i class="fas fa-share"></i> Share`;
+shareBtn.onclick = () => {
+  const shareText = `Check out this post: "${post.text}"`;
+  navigator.clipboard.writeText(shareText).then(() => {
+    alert('Post copied to clipboard!');
+  }).catch(() => {
+    alert('Failed to copy post');
+  });
+};
+actionsDiv.appendChild(shareBtn);
+function renderPosts() {
+  feedContainer.innerHTML = '';
+  posts.forEach((post, index) => {
+    const postDiv = document.createElement('div');
+    postDiv.className = 'post';
+
+    // Create dropdown menu for edit/delete
+    const menuButton = document.createElement('button');
+    menuButton.className = 'menu-button';
+    menuButton.innerHTML = '&#8942;'; // vertical three dots ⋮
+    postDiv.appendChild(menuButton);
+
+    const menuDropdown = document.createElement('div');
+    menuDropdown.className = 'menu-dropdown';
+
+    const editBtn = document.createElement('button');
+    editBtn.textContent = 'Edit';
+    editBtn.onclick = () => editPost(index);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.onclick = () => deletePost(index);
+
+    menuDropdown.appendChild(editBtn);
+    menuDropdown.appendChild(deleteBtn);
+    postDiv.appendChild(menuDropdown);
+
+    menuButton.onclick = (e) => {
+      e.stopPropagation();
+      // Close all other menus
+      document.querySelectorAll('.menu-dropdown').forEach(menu => {
+        if (menu !== menuDropdown) menu.style.display = 'none';
+      });
+      // Toggle this menu
+      menuDropdown.style.display = menuDropdown.style.display === 'block' ? 'none' : 'block';
+    };
+
+    // Close menu if click outside
+    document.addEventListener('click', () => {
+      menuDropdown.style.display = 'none';
+    });
+
+    postDiv.innerHTML += `
+      <div class="post-info">
+        <img class="avatar" src="${post.avatar || 'https://via.placeholder.com/40'}" alt="Avatar" />
+        <div>
+          <div class="name">${post.name || 'Unknown'}</div>
+          <div class="date">${post.postDate || ''}</div>
+        </div>
+      </div>
+      <div class="post-text">${post.text || ''}</div>
+    `;
+
+    if (post.image) {
+      const img = document.createElement('img');
+      img.className = 'post-image';
+      img.src = post.image;
+      img.alt = 'Post Image';
+      postDiv.appendChild(img);
+    }
+    if (post.video) {
+      const video = document.createElement('video');
+      video.className = 'post-video';
+      video.controls = true;
+      video.src = post.video;
+      postDiv.appendChild(video);
+    }
+
+    // Post actions container
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'post-actions';
+
+    // Like button
+    const likeBtn = document.createElement('button');
+    likeBtn.innerHTML = `<i class="fas fa-thumbs-up"></i> <span>${post.likes || 0}</span> Like`;
+    if (post.liked) likeBtn.classList.add('liked');
+    likeBtn.onclick = () => {
+      post.liked = !post.liked;
+      post.likes = post.likes || 0;
+      post.likes += post.liked ? 1 : -1;
+      savePosts();
+      renderPosts();
+    };
+    actionsDiv.appendChild(likeBtn);
+
+    // Comment button
+    const commentBtn = document.createElement('button');
+    commentBtn.innerHTML = `<i class="fas fa-comment"></i> Comment`;
+    actionsDiv.appendChild(commentBtn);
+
+    // Share button
+    const shareBtn = document.createElement('button');
+    shareBtn.innerHTML = `<i class="fas fa-share"></i> Share`;
+    actionsDiv.appendChild(shareBtn);
+
+    postDiv.appendChild(actionsDiv);
+
+    // --- COMMENT SECTION (hidden by default) ---
+    const commentsSection = document.createElement('div');
+    commentsSection.className = 'comments-section';
+    commentsSection.style.display = 'none'; // hidden initially
+
+    // Comments list container
+    const commentsList = document.createElement('div');
+    commentsList.className = 'comments-list';
+
+    // Comment input area
+    const commentInputDiv = document.createElement('div');
+    commentInputDiv.className = 'comment-input';
+
+    const commentInput = document.createElement('input');
+    commentInput.type = 'text';
+    commentInput.placeholder = 'Write a comment...';
+
+    const commentSendBtn = document.createElement('button');
+    commentSendBtn.textContent = 'Send';
+
+    commentInputDiv.appendChild(commentInput);
+    commentInputDiv.appendChild(commentSendBtn);
+
+    commentsSection.appendChild(commentsList);
+    commentsSection.appendChild(commentInputDiv);
+
+    postDiv.appendChild(commentsSection);
+
+    // Render comments function
+    function renderComments() {
+      commentsList.innerHTML = '';
+      const comments = post.comments || [];
+      if (comments.length === 0) {
+        commentsList.innerHTML = '<em>No comments yet</em>';
+        return;
+      }
+      comments.forEach(comment => {
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'comment-item';
+        commentDiv.textContent = comment;
+        commentsList.appendChild(commentDiv);
+      });
+    }
+
+    // Toggle comment section on comment button click
+    commentBtn.onclick = () => {
+      if (commentsSection.style.display === 'block') {
+        commentsSection.style.display = 'none';
+      } else {
+        commentsSection.style.display = 'block';
+        renderComments();
+      }
+    };
+
+    // Add new comment on send button click
+    commentSendBtn.onclick = () => {
+      const text = commentInput.value.trim();
+      if (text === '') return alert('Comment cannot be empty.');
+      if (!post.comments) post.comments = [];
+      post.comments.push(text);
+      commentInput.value = '';
+      savePosts();
+      renderComments();
+    };
+
+    // Share button copies post text to clipboard
+    shareBtn.onclick = () => {
+      const shareText = `Check out this post: "${post.text}"`;
+      navigator.clipboard.writeText(shareText).then(() => {
+        alert('Post copied to clipboard!');
+      }).catch(() => {
+        alert('Failed to copy post');
+      });
+    };
+
+    feedContainer.appendChild(postDiv);
+  });
 }
 
 </script>
