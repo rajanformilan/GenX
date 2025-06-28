@@ -316,6 +316,12 @@ nav.navbar {
   font-weight: 600;
 }
 
+body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 20px; max-width: 800px; margin: 0 auto; }
+  .item { background: white; padding: 12px; margin: 12px 0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .item img { width: 100%; display: block; border-radius: 6px; margin-bottom: 8px; }
+  .item h3 { margin: 4px 0; font-size: 18px; }
+  .item p { margin: 2px 0; color: #555; font-size: 14px; }
+  .location { color: #888; font-size: 13px; }
   </style>
 </head>
 <body>
@@ -409,6 +415,12 @@ nav.navbar {
       </div>
     </div>
   </div>
+
+
+<h1>GenX Universal Feed</h1>
+<div id="feed"></div>
+
+
 
 <script>
   const feedContainer = document.getElementById('feedContainer');
@@ -914,7 +926,51 @@ function renderPosts() {
     feedContainer.appendChild(postDiv);
   });
 }
+const sampleImages = [
+    'https://via.placeholder.com/800x400?text=Job',
+    'https://via.placeholder.com/800x400?text=Rental',
+    'https://via.placeholder.com/800x400?text=Hotel',
+    'https://via.placeholder.com/800x400?text=Ad',
+    'https://via.placeholder.com/800x400?text=Doctor',
+    'https://via.placeholder.com/800x400?text=Delivery',
+    'https://via.placeholder.com/800x400?text=Lawyer',
+    'https://via.placeholder.com/800x400?text=Student+Hostel',
+    'https://via.placeholder.com/800x400?text=Engineer',
+    'https://via.placeholder.com/800x400?text=Pilot',
+    'https://via.placeholder.com/800x400?text=Product'
+  ];
 
+  const categories = [
+    { type: 'Job', title: 'Software Developer', info1: 'TechNepal Pvt. Ltd.', info2: 'NPR 50,000/month' },
+    { type: 'Rental', title: '2BHK House for Rent', info1: '950 sqft', info2: 'NPR 18,000/month' },
+    { type: 'Hotel', title: 'Deluxe Hotel Room', info1: 'Mount View Hotel', info2: 'From NPR 2,000/night' },
+    { type: 'Ad', title: 'Promote Your Brand', info1: '100k+ Active Users', info2: 'Nationwide' },
+    { type: 'Doctor', title: 'Dermatologist Dr. Asha Sharma', info1: 'Consultation NPR 700', info2: 'Biratnagar' },
+    { type: 'Delivery', title: 'Food Delivery Rider Wanted', info1: 'FoodDash Nepal', info2: 'NPR 25,000+Bonus' },
+    { type: 'Lawyer', title: 'Legal Advisor Suraj Bhandari', info1: 'Property Disputes, Contracts', info2: 'Kathmandu Court' },
+    { type: 'Hostel', title: 'Student Hostel w/ Meals', info1: 'Near TU, Kirtipur', info2: 'NPR 6,000/month' },
+    { type: 'Engineer', title: 'Civil Engineer Hiring', info1: 'BuildSmart Engineering', info2: 'NPR 60,000/month' },
+    { type: 'Pilot', title: 'Commercial Pilot Required', info1: 'Nepal Wings', info2: 'NPR 200,000/month' },
+    { type: 'Product', title: 'Smart Watch Sale', info1: 'GenX Tech', info2: 'NPR 3,999' }
+  ];
+
+  const feedEl = document.getElementById('feed');
+  const total = 200; // number of items
+
+  for (let i = 0; i < total; i++) {
+    const cat = categories[i % categories.length];
+    const img = sampleImages[i % sampleImages.length];
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <img src="${img}" alt="${cat.type}">
+      <h3>${cat.type}: ${cat.title}</h3>
+      <p><strong>${cat.type === 'Job' ? 'Company' : cat.type === 'Product' ? 'Brand' : cat.type}:</strong> ${cat.info1}</p>
+      <p><strong>${cat.type === 'Job' ? 'Salary' : cat.type === 'Product' ? 'Price' : cat.type === 'Hotel' ? 'Rate' : ''} </strong>${cat.info2}</p>
+      <p class="location">Location: Kathmandu, Nepal</p>
+    `;
+    feedEl.appendChild(div);
+  }
 </script>
 
 </body>
