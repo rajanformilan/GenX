@@ -79,6 +79,42 @@
       background-color: white;
       margin: 4px 0;
     }
+nav.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  position: relative; /* Important */
+  z-index: 1000;
+}
+
+/* Responsive dropdown menu */
+@media (max-width: 768px) {
+  nav .nav-links {
+    position: absolute;     /* Keep it floating */
+    top: 60px;              /* Position just below navbar */
+    right: 0;
+    left: 0;
+    background-color: #007bff;
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 20px;
+    z-index: 999;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+
+  nav .nav-links.active {
+    display: flex;
+  }
+
+  nav .burger {
+    display: block;
+  }
+}
+
 
     h2.section-title {
       text-align: center;
