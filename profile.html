@@ -7,10 +7,11 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 20px auto;
-      background: #f0f2f5;
-      padding: 10px;
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #eef1f6;
+      border-radius: 10px;
       text-align: center;
     }
     img.profile-pic {
@@ -41,113 +42,77 @@
     button:hover {
       background-color: #0056b3;
     }
-
-    #postForm {
-      background: white;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-      text-align: left;
-    }
-    #postForm textarea {
-      width: 100%;
-      resize: vertical;
-      min-height: 60px;
-      padding: 8px;
-      font-size: 14px;
-    }
-    #postForm input[type="file"] {
-      margin-top: 8px;
-    }
-    #postForm button {
-      margin-top: 10px;
-      padding: 8px 16px;
-      background-color: #1877f2;
-      border: none;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .post {
-      background: white;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-      position: relative;
-      text-align: left;
-    }
-    .post-text {
-      margin-bottom: 10px;
-      white-space: pre-wrap;
-    }
-    .post-image {
-      max-width: 100%;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-    .post-actions {
-      display: flex;
-      gap: 15px;
-      font-size: 14px;
-    }
-    .post-actions button {
-      background: none;
-      border: none;
-      color: #606770;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .post-actions button.liked {
-      color: #1877f2;
-      font-weight: bold;
-    }
-
-    /* Three-dot menu styles */
-    .post-menu-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      border: none;
-      background: transparent;
-      font-size: 24px;
-      cursor: pointer;
-      user-select: none;
-      color: #606770;
-    }
-    .post-menu-dropdown {
-      display: none;
-      position: absolute;
-      top: 35px;
-      right: 10px;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-      z-index: 10;
-      width: 110px;
-      text-align: left;
-    }
-    .post-menu-dropdown button {
-      width: 100%;
-      padding: 8px;
-      border: none;
-      background: none;
-      cursor: pointer;
-      text-align: left;
-      font-size: 14px;
-      color: #606770;
-    }
-    .post-menu-dropdown button:hover {
-      background-color: #f0f2f5;
-    }
-    .post-menu-dropdown button.delete-post {
-      color: red;
-    }
+    body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 20px auto;
+    background: #f0f2f5;
+    padding: 10px;
+  }
+  #postForm {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  #postForm textarea {
+    width: 100%;
+    resize: vertical;
+    min-height: 60px;
+    padding: 8px;
+    font-size: 14px;
+  }
+  #postForm input[type="file"] {
+    margin-top: 8px;
+  }
+  #postForm button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #1877f2;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .post {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  .post-text {
+    margin-bottom: 10px;
+    white-space: pre-wrap;
+  }
+  .post-image {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  .post-actions {
+    display: flex;
+    gap: 15px;
+    font-size: 14px;
+  }
+  .post-actions button {
+    background: none;
+    border: none;
+    color: #606770;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .post-actions button.liked {
+    color: #1877f2;
+    font-weight: bold;
+  }
+.post-menu button:hover {
+  background-color: #f0f0f0;
+}
   </style>
 </head>
 <body>
@@ -158,17 +123,15 @@
   <p><strong>Date of Birth:</strong> <span id="userDob"></span></p>
 
   <button onclick="editProfile()">Edit Profile</button>
+<h2>Create Post</h2>
+<form id="postForm">
+  <textarea id="postText" placeholder="What's on your mind?" required></textarea>
+  <input type="file" id="postImage" accept="image/*" />
+  <button type="submit">Post</button>
+</form>
 
-  <h2>Create Post</h2>
-  <form id="postForm">
-    <textarea id="postText" placeholder="What's on your mind?" required></textarea>
-    <input type="file" id="postImage" accept="image/*" />
-    <button type="submit">Post</button>
-  </form>
-
-  <h2>News Feed</h2>
-  <div id="feed"></div>
-
+<h2>News Feed</h2>
+<div id="feed"></div>
   <script>
     function loadProfile() {
       const storedProfile = localStorage.getItem('userProfile');
@@ -192,180 +155,198 @@
     }
 
     loadProfile();
-
     const postForm = document.getElementById('postForm');
-    const postText = document.getElementById('postText');
-    const postImage = document.getElementById('postImage');
-    const feed = document.getElementById('feed');
+  const postText = document.getElementById('postText');
+  const postImage = document.getElementById('postImage');
+  const feed = document.getElementById('feed');
 
-    // Load posts from localStorage on page load
-    let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
+  // Load posts from localStorage on page load
+  let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
 
-    function renderPosts() {
-      feed.innerHTML = '';
-      posts.forEach((post, idx) => {
-        const postDiv = document.createElement('div');
-        postDiv.className = 'post';
-        postDiv.style.position = 'relative';
+  function renderPosts() {
+    feed.innerHTML = '';
+    posts.forEach((post, idx) => {
+      const postDiv = document.createElement('div');
+      postDiv.className = 'post';
 
-        let imgHTML = '';
-        if (post.image) {
-          imgHTML = `<img src="${post.image}" alt="Post Image" class="post-image" />`;
-        }
-
-        const likedClass = post.liked ? 'liked' : '';
-
-        postDiv.innerHTML = `
-          <div>
-            <div class="post-text">${post.text}</div>
-            <button class="post-menu-btn" data-index="${idx}" title="Options">⋮</button>
-            <div class="post-menu-dropdown" data-index="${idx}">
-              <button class="edit-post" data-index="${idx}">Edit</button>
-              <button class="delete-post" data-index="${idx}">Delete</button>
-            </div>
-          </div>
-
-          ${imgHTML}
-          <div class="post-actions">
-            <button class="like-btn ${likedClass}" data-index="${idx}">
-              <span>👍</span> <span class="like-count">${post.likes}</span> Like
-            </button>
-            <button class="comment-btn" data-index="${idx}">💬 Comment</button>
-            <button class="share-btn" data-index="${idx}">🔗 Share</button>
-          </div>
-        `;
-
-        feed.appendChild(postDiv);
-      });
-
-      attachEventListeners();
-    }
-
-    function attachEventListeners() {
-      // Close all menus helper
-      function closeAllMenus() {
-        document.querySelectorAll('.post-menu-dropdown').forEach(menu => menu.style.display = 'none');
+      let imgHTML = '';
+      if (post.image) {
+        imgHTML = `<img src="${post.image}" alt="Post Image" class="post-image" />`;
       }
 
-      // Post menu buttons (three dots)
-      document.querySelectorAll('.post-menu-btn').forEach(btn => {
-        btn.onclick = function (e) {
-          e.stopPropagation();
-          const idx = this.getAttribute('data-index');
-          const menu = document.querySelector(`.post-menu-dropdown[data-index="${idx}"]`);
-          const isVisible = menu.style.display === 'block';
-          closeAllMenus();
-          menu.style.display = isVisible ? 'none' : 'block';
-        };
-      });
+      const likedClass = post.liked ? 'liked' : '';
 
-      // Edit post buttons
-      document.querySelectorAll('.edit-post').forEach(btn => {
-        btn.onclick = function () {
-          const idx = this.getAttribute('data-index');
-          const newText = prompt("Edit your post:", posts[idx].text);
-          if (newText !== null && newText.trim() !== '') {
-            posts[idx].text = newText.trim();
-            saveAndRender();
-          }
-          closeAllMenus();
-        };
-      });
+      postDiv.innerHTML = `
+        <div class="post-text">${post.text}</div>
+        ${imgHTML}
+        <div class="post-actions">
+          <button class="like-btn ${likedClass}" data-index="${idx}">
+            <span>👍</span> <span class="like-count">${post.likes}</span> Like
+          </button>
+          <button class="comment-btn" data-index="${idx}">💬 Comment</button>
+          <button class="share-btn" data-index="${idx}">🔗 Share</button>
+        </div>
+      `;
 
-      // Delete post buttons
-      document.querySelectorAll('.delete-post').forEach(btn => {
-        btn.onclick = function () {
-          const idx = this.getAttribute('data-index');
-          if (confirm("Are you sure you want to delete this post?")) {
-            posts.splice(idx, 1);
-            saveAndRender();
-          }
-          closeAllMenus();
-        };
-      });
+      feed.appendChild(postDiv);
+    });
+    attachEventListeners();
+  }
 
-      // Like button
-      document.querySelectorAll('.like-btn').forEach(btn => {
-        btn.onclick = function () {
-          const idx = this.getAttribute('data-index');
-          posts[idx].liked = !posts[idx].liked;
-          posts[idx].likes += posts[idx].liked ? 1 : -1;
-          saveAndRender();
-        };
-      });
-
-      // Comment button
-      document.querySelectorAll('.comment-btn').forEach(btn => {
-        btn.onclick = function () {
-          const idx = this.getAttribute('data-index');
-          const comment = prompt("Enter your comment:");
-          if (!comment) return;
-
-          if (!posts[idx].comments) posts[idx].comments = [];
-          posts[idx].comments.push(comment);
-          alert("Comment added!");
-          saveAndRender();
-        };
-      });
-
-      // Share button
-      document.querySelectorAll('.share-btn').forEach(btn => {
-        btn.onclick = function () {
-          const idx = this.getAttribute('data-index');
-          const shareText = `Check out this post: "${posts[idx].text}"`;
-          navigator.clipboard.writeText(shareText).then(() => {
-            alert("Post copied to clipboard!");
-          });
-        };
-      });
-
-      // Close menu if clicked outside
-      document.body.onclick = function () {
-        document.querySelectorAll('.post-menu-dropdown').forEach(menu => menu.style.display = 'none');
+  // Attach event listeners for like buttons
+  function attachEventListeners() {
+    document.querySelectorAll('.like-btn').forEach(btn => {
+      btn.onclick = function() {
+        const idx = this.getAttribute('data-index');
+        posts[idx].liked = !posts[idx].liked;
+        posts[idx].likes += posts[idx].liked ? 1 : -1;
+        saveAndRender();
       };
+    });
+    // You can add comment and share handlers here
+  }
+
+  // Save posts to localStorage and re-render feed
+  function saveAndRender() {
+    localStorage.setItem('fbPosts', JSON.stringify(posts));
+    renderPosts();
+  }
+
+  postForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    if (!postText.value.trim()) {
+      alert('Please enter some text.');
+      return;
     }
 
-    // Save posts to localStorage and re-render feed
-    function saveAndRender() {
-      localStorage.setItem('fbPosts', JSON.stringify(posts));
-      renderPosts();
+    const file = postImage.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        addPost(postText.value.trim(), event.target.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      addPost(postText.value.trim(), null);
     }
+  });
 
-    postForm.addEventListener('submit', function(e) {
-      e.preventDefault();
+  function addPost(text, image) {
+    posts.unshift({
+      text,
+      image,
+      likes: 0,
+      liked: false
+    });
+    postForm.reset();
+    saveAndRender();
+  }
 
-      if (!postText.value.trim()) {
-        alert('Please enter some text.');
-        return;
-      }
+  // Initial render
+  renderPosts();
+  
+  function attachEventListeners() {
+  // LIKE
+  document.querySelectorAll('.like-btn').forEach(btn => {
+    btn.onclick = function () {
+      const idx = this.getAttribute('data-index');
+      posts[idx].liked = !posts[idx].liked;
+      posts[idx].likes += posts[idx].liked ? 1 : -1;
+      saveAndRender();
+    };
+  });
 
-      const file = postImage.files[0];
+  // COMMENT
+  document.querySelectorAll('.comment-btn').forEach(btn => {
+    btn.onclick = function () {
+      const idx = this.getAttribute('data-index');
+      const comment = prompt("Enter your comment:");
+      if (!comment) return;
 
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          addPost(postText.value.trim(), event.target.result);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        addPost(postText.value.trim(), null);
-      }
+      if (!posts[idx].comments) posts[idx].comments = [];
+      posts[idx].comments.push(comment);
+      alert("Comment added!");
+      saveAndRender();
+    };
+  });
+
+  // SHARE
+  document.querySelectorAll('.share-btn').forEach(btn => {
+    btn.onclick = function () {
+      const idx = this.getAttribute('data-index');
+      const shareText = `Check out this post: "${posts[idx].text}"`;
+      navigator.clipboard.writeText(shareText).then(() => {
+        alert("Post copied to clipboard!");
+      });
+    };
+  });
+}postDiv.innerHTML = `
+  <div style="position: relative; text-align: left;">
+    <button class="post-menu-btn" data-index="${idx}" style="position:absolute; top:0; right:0; background:none; border:none; font-size:20px; cursor:pointer;">&#8942;</button>
+    <div class="post-menu" data-index="${idx}" style="display:none; position:absolute; top:25px; right:0; background:#fff; border:1px solid #ccc; border-radius:5px; box-shadow:0 2px 5px rgba(0,0,0,0.15); z-index:10; min-width:100px;">
+      <button class="edit-post-btn" data-index="${idx}" style="display:block; width:100%; padding:8px; border:none; background:none; cursor:pointer; text-align:left;">Edit</button>
+      <button class="delete-post-btn" data-index="${idx}" style="display:block; width:100%; padding:8px; border:none; background:none; cursor:pointer; text-align:left; color:red;">Delete</button>
+    </div>
+  </div>
+  <div class="post-text" data-index="${idx}">${post.text}</div>
+  ${imgHTML}
+  <div class="post-actions">
+    <button class="like-btn ${likedClass}" data-index="${idx}">
+      <span>👍</span> <span class="like-count">${post.likes}</span> Like
+    </button>
+    <button class="comment-btn" data-index="${idx}">💬 Comment</button>
+    <button class="share-btn" data-index="${idx}">🔗 Share</button>
+  </div>
+`;
+// Toggle post menu dropdown
+document.querySelectorAll('.post-menu-btn').forEach(btn => {
+  btn.onclick = function (e) {
+    e.stopPropagation();
+    const idx = this.getAttribute('data-index');
+    const menu = document.querySelector(`.post-menu[data-index="${idx}"]`);
+    if (!menu) return;
+
+    // Close any other open menus
+    document.querySelectorAll('.post-menu').forEach(m => {
+      if (m !== menu) m.style.display = 'none';
     });
 
-    function addPost(text, image) {
-      posts.unshift({
-        text,
-        image,
-        likes: 0,
-        liked: false,
-        comments: []
-      });
-      postForm.reset();
+    // Toggle this menu
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  };
+});
+
+// Close menus when clicking outside
+document.body.onclick = () => {
+  document.querySelectorAll('.post-menu').forEach(m => (m.style.display = 'none'));
+};
+
+// Delete post
+document.querySelectorAll('.delete-post-btn').forEach(btn => {
+  btn.onclick = function () {
+    const idx = this.getAttribute('data-index');
+    if (confirm('Are you sure you want to delete this post?')) {
+      posts.splice(idx, 1);
       saveAndRender();
     }
+  };
+});
 
-    // Initial render
-    renderPosts();
+// Edit post
+document.querySelectorAll('.edit-post-btn').forEach(btn => {
+  btn.onclick = function () {
+    const idx = this.getAttribute('data-index');
+    const post = posts[idx];
+    const newText = prompt('Edit your post:', post.text);
+    if (newText !== null && newText.trim() !== '') {
+      posts[idx].text = newText.trim();
+      saveAndRender();
+    }
+  };
+});
+
   </script>
 </body>
 </html>
