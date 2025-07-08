@@ -241,11 +241,195 @@
     .comment-input button:hover {
       background-color: #155db2;
     }
+    body {
+  font-family: Arial, sans-serif;
+  max-width: 400px;
+  margin: 40px auto;
+  background: #f0f2f5;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+.action-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  position: relative;
+}
+button {
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 10px 18px;
+  font-size: 15px;
+  transition: background-color 0.3s ease;
+}
+.follow-btn {
+  background-color: #1877f2;
+  color: white;
+  min-width: 110px;
+}
+.follow-btn.following {
+  background-color: #ccc;
+  color: #444;
+}
+.message-btn {
+  background-color: #42b72a;
+  color: white;
+  min-width: 110px;
+}
+.dots-menu-btn {
+  background-color: #f44336; /* Red */
+  color: white;
+  font-size: 20px;
+  padding: 8px 14px;
+  min-width: 50px;
+  border-radius: 50%;
+  line-height: 1;
+  user-select: none;
+}
+.dots-menu {
+  display: none;
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  min-width: 140px;
+  z-index: 100;
+}
+.dots-menu button {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 12px 15px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  text-align: left;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+.dots-menu button:last-child {
+  border-bottom: none;
+}
+.dots-menu button:hover {
+  background-color: #f0f0f0;
+}
+
+/* Chat Popup Styles */
+.chat-popup {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 320px;
+  max-height: 400px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 200;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.chat-header {
+  background: #1877f2;
+  color: white;
+  padding: 10px 15px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-header button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 10px 15px;
+  overflow-y: auto;
+  font-size: 14px;
+  color: #333;
+  background: #f9f9f9;
+}
+
+.chat-message {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 15px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.chat-message.sent {
+  background-color: #1877f2;
+  color: white;
+  align-self: flex-end;
+}
+
+.chat-message.received {
+  background-color: #e4e6eb;
+  color: #050505;
+  align-self: flex-start;
+}
+
+.chat-input-area {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  gap: 8px;
+}
+
+.chat-input-area input[type="text"] {
+  flex-grow: 1;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.chat-input-area button {
+  background-color: #1877f2;
+  border: none;
+  color: white;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+}
+.chat-input-area button:hover {
+  background-color: #155db2;
+}
+
   </style>
 </head>
 <body>
   <img id="profileImage" class="profile-pic" src="https://via.placeholder.com/120" alt="Profile Picture" />
   <h2 id="userName">Name</h2>
+  <div class="action-row">
+  <button class="follow-btn" id="followBtn">+ Follow</button>
+  <button class="message-btn" id="messageBtn"><a href="chat.html">✉️ Message</a></button>
+  <button class="dots-menu-btn" id="dotsBtn">⋯</button>
+  <div class="dots-menu" id="dotsMenu">
+    <button id="blockBtn">🚫 Block</button>
+    <button id="reportBtn">⚠️ Report</button>
+  </div>
+</div>
   <p><strong>Email:</strong> <span id="userEmail"></span></p>
   <p><strong>Gender:</strong> <span id="userGender"></span></p>
   <p><strong>Date of Birth:</strong> <span id="userDob"></span></p>
@@ -537,6 +721,124 @@
     }
 
     renderPosts();
+    
+    const followBtn = document.getElementById('followBtn');
+const messageBtn = document.getElementById('messageBtn');
+const dotsBtn = document.getElementById('dotsBtn');
+const dotsMenu = document.getElementById('dotsMenu');
+const blockBtn = document.getElementById('blockBtn');
+const reportBtn = document.getElementById('reportBtn');
+
+const chatPopup = document.getElementById('chatPopup');
+const closeChatBtn = document.getElementById('closeChatBtn');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const sendMsgBtn = document.getElementById('sendMsgBtn');
+
+let isFollowing = false;
+let isBlocked = false;
+let messages = []; // To store chat messages (simple demo)
+
+// Follow button toggle
+followBtn.addEventListener('click', () => {
+  isFollowing = !isFollowing;
+  if (isFollowing) {
+    followBtn.textContent = 'Following';
+    followBtn.classList.add('following');
+  } else {
+    followBtn.textContent = '+ Follow';
+    followBtn.classList.remove('following');
+  }
+});
+
+// Message button opens chat popup
+messageBtn.addEventListener('click', () => {
+  if (isBlocked) {
+    alert('You cannot message a blocked user.');
+    return;
+  }
+  chatPopup.classList.remove('hidden');
+  chatInput.focus();
+  renderChatMessages();
+});
+
+// Close chat popup
+closeChatBtn.addEventListener('click', () => {
+  chatPopup.classList.add('hidden');
+});
+
+// Send message on button click or Enter key
+sendMsgBtn.addEventListener('click', sendMessage);
+chatInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+function sendMessage() {
+  const text = chatInput.value.trim();
+  if (!text) return;
+  messages.push({ text, sent: true });
+  chatInput.value = '';
+  renderChatMessages();
+  // Simulate a received reply after 1 sec
+  setTimeout(() => {
+    messages.push({ text: 'Got your message!', sent: false });
+    renderChatMessages();
+  }, 1000);
+}
+
+function renderChatMessages() {
+  chatMessages.innerHTML = '';
+  messages.forEach(msg => {
+    const div = document.createElement('div');
+    div.className = 'chat-message ' + (msg.sent ? 'sent' : 'received');
+    div.textContent = msg.text;
+    chatMessages.appendChild(div);
+  });
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Toggle dots menu visibility
+dotsBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  dotsMenu.style.display = dotsMenu.style.display === 'block' ? 'none' : 'block';
+});
+
+// Click outside closes menu
+document.addEventListener('click', () => {
+  dotsMenu.style.display = 'none';
+});
+
+// Block/Unblock toggle
+blockBtn.addEventListener('click', () => {
+  isBlocked = !isBlocked;
+  if (isBlocked) {
+    alert('User has been blocked.');
+    blockBtn.textContent = '🔓 Unblock';
+    followBtn.disabled = true;
+    messageBtn.disabled = true;
+    followBtn.style.opacity = 0.5;
+    messageBtn.style.opacity = 0.5;
+    if (!chatPopup.classList.contains('hidden')) chatPopup.classList.add('hidden');
+  } else {
+    alert('User has been unblocked.');
+    blockBtn.textContent = '🚫 Block';
+    followBtn.disabled = false;
+    messageBtn.disabled = false;
+    followBtn.style.opacity = 1;
+    messageBtn.style.opacity = 1;
+  }
+  dotsMenu.style.display = 'none'; // hide menu after action
+});
+
+// Report button click
+reportBtn.addEventListener('click', () => {
+  alert('User has been reported.');
+  dotsMenu.style.display = 'none';
+});
+
   </script>
 </body>
 </html>
