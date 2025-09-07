@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GenX - Friends</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+    }
+    header {
+      background: #1877f2;
+      color: #fff;
+      padding: 12px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+    }
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #65676b;
+    }
+    .tab.active {
+      border-bottom: 3px solid #1877f2;
+      color: #1877f2;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 0 10px;
+    }
+    .card {
+      background: #fff;
+      padding: 15px;
+      margin: 12px 0;
+      border-radius: 10px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+    }
+    .user-info img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-right: 12px;
+    }
+    .user-info .name {
+      font-weight: bold;
+      color: #050505;
+    }
+    .user-info .mutual {
+      font-size: 13px;
+      color: #65676b;
+    }
+    .buttons button {
+      margin-left: 5px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .add { background: #1877f2; color: #fff; }
+    .cancel { background: #e4e6eb; color: #050505; }
+    .accept { background: #1877f2; color: white; }
+    .reject { background: #e4e6eb; color: #050505; }
+    .friend { background: #e4e6eb; color: #050505; }
+  </style>
+</head>
+<body>
+
+<header>Friends</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('suggestions')">Suggestions</div>
+  <div class="tab" onclick="showTab('requests')">Friend Requests</div>
+  <div class="tab" onclick="showTab('friends')">All Friends</div>
+</div>
+
+<div class="container">
+  <div id="suggestions"></div>
+  <div id="requests" style="display:none"></div>
+  <div id="friends" style="display:none"></div>
+</div>
+
+<script>
+  let currentUser = "Milan";
+
+  let users = JSON.parse(localStorage.getItem("genxUsers")) || {
+    "Milan": { friends: [], requestsSent: [], requestsReceived: [], avatar:"https://i.pravatar.cc/150?u=Milan" },
+    "Sita": { friends: [], requestsSent: [], requestsReceived: [], avatar:"https://i.pravatar.cc/150?u=Sita" },
+    "Ram": { friends: [], requestsSent: [], requestsReceived: [], avatar:"https://i.pravatar.cc/150?u=Ram" },
+    "Hari": { friends: [], requestsSent: [], requestsReceived: [], avatar:"https://i.pravatar.cc/150?u=Hari" }
+  };
+
+  function saveUsers() {
+    localStorage.setItem("genxUsers", JSON.stringify(users));
+  }
+
+  function sendRequest(toUser) {
+    if (!users[currentUser].requestsSent.includes(toUser) &&
+        !users[currentUser].friends.includes(toUser) &&
+        toUser !== currentUser) {
+      users[currentUser].requestsSent.push(toUser);
+      users[toUser].requestsReceived.push(currentUser);
+      saveUsers();
+      render();
+    }
+  }
+
+  function cancelRequest(toUser) {
+    users[currentUser].requestsSent =
+      users[currentUser].requestsSent.filter(u => u !== toUser);
+    users[toUser].requestsReceived =
+      users[toUser].requestsReceived.filter(u => u !== currentUser);
+    saveUsers();
+    render();
+  }
+
+  function acceptRequest(fromUser) {
+    users[currentUser].friends.push(fromUser);
+    users[fromUser].friends.push(currentUser);
+    users[currentUser].requestsReceived =
+      users[currentUser].requestsReceived.filter(u => u !== fromUser);
+    users[fromUser].requestsSent =
+      users[fromUser].requestsSent.filter(u => u !== currentUser);
+    saveUsers();
+    render();
+  }
+
+  function rejectRequest(fromUser) {
+    users[currentUser].requestsReceived =
+      users[currentUser].requestsReceived.filter(u => u !== fromUser);
+    users[fromUser].requestsSent =
+      users[fromUser].requestsSent.filter(u => u !== currentUser);
+    saveUsers();
+    render();
+  }
+
+  function showTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.tab[onclick="showTab('${tab}')"]`).classList.add('active');
+    document.querySelectorAll('.container > div').forEach(d => d.style.display = "none");
+    document.getElementById(tab).style.display = "block";
+  }
+
+  function render() {
+    // Suggestions
+    document.getElementById("suggestions").innerHTML = Object.keys(users).map(u => {
+      if (u === currentUser) return "";
+      let status = "";
+      if (users[currentUser].friends.includes(u)) {
+        status = `<button class="friend">Friends</button>`;
+      } else if (users[currentUser].requestsSent.includes(u)) {
+        status = `<button class="cancel" onclick="cancelRequest('${u}')">Cancel Request</button>`;
+      } else {
+        status = `<button class="add" onclick="sendRequest('${u}')">Add Friend</button>`;
+      }
+      return `
+        <div class="card">
+          <div class="user-info">
+            <img src="${users[u].avatar}">
+            <div>
+              <div class="name">${u}</div>
+              <div class="mutual">3 mutual friends</div>
+            </div>
+          </div>
+          <div class="buttons">${status}</div>
+        </div>`;
+    }).join("");
+
+    // Requests
+    document.getElementById("requests").innerHTML =
+      users[currentUser].requestsReceived.map(u => `
+        <div class="card">
+          <div class="user-info">
+            <img src="${users[u].avatar}">
+            <div>
+              <div class="name">${u}</div>
+              <div class="mutual">1 mutual friend</div>
+            </div>
+          </div>
+          <div class="buttons">
+            <button class="accept" onclick="acceptRequest('${u}')">Confirm</button>
+            <button class="reject" onclick="rejectRequest('${u}')">Delete</button>
+          </div>
+        </div>
+      `).join("") || "<p>No friend requests</p>";
+
+    // Friends
+    document.getElementById("friends").innerHTML =
+      users[currentUser].friends.map(u => `
+        <div class="card">
+          <div class="user-info">
+            <img src="${users[u].avatar}">
+            <div>
+              <div class="name">${u}</div>
+              <div class="mutual">2 mutual friends</div>
+            </div>
+          </div>
+          <div class="buttons"><button class="friend">Friends</button></div>
+        </div>
+      `).join("") || "<p>No friends yet</p>";
+  }
+
+  render();
+</script>
+
+</body>
+</html>
