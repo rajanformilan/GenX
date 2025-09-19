@@ -3356,15 +3356,68 @@
       document.getElementById("navLinks").classList.toggle("active");
     }
 
-    function searchProfile() {
-      const input = document.getElementById("searchInput").value.trim();
-      if (input) {
-        alert("Searching for: " + input);
-      } else {
-        alert("Please enter a search term.");
-      }
-    }
     
+  const searchInput = document.getElementById("searchInput");
+  const searchBtn = document.getElementById("searchBtn");
+
+  // Create results container
+  const resultsBox = document.createElement("div");
+  resultsBox.style.position = "absolute";
+  resultsBox.style.background = "#fff";
+  resultsBox.style.width = "100%";
+  resultsBox.style.border = "1px solid #ccc";
+  resultsBox.style.maxHeight = "200px";
+  resultsBox.style.overflowY = "auto";
+  resultsBox.style.zIndex = "1000";
+  resultsBox.style.display = "none";
+  searchInput.parentNode.appendChild(resultsBox);
+
+  function showResults(query) {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const matches = users.filter(u =>
+      u.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    resultsBox.innerHTML = "";
+    if (matches.length === 0) {
+      resultsBox.style.display = "none";
+      return;
+    }
+
+    matches.forEach(user => {
+      const item = document.createElement("div");
+      item.style.padding = "8px";
+      item.style.cursor = "pointer";
+      item.innerHTML = `<img src="${user.avatar}" style="width:30px;height:30px;border-radius:50%;vertical-align:middle;margin-right:8px;"> ${user.name}`;
+      
+      item.onclick = () => {
+        window.location.href = "profile.html?id=" + user.id;
+      };
+
+      resultsBox.appendChild(item);
+    });
+
+    resultsBox.style.display = "block";
+  }
+
+  // Search when typing
+  searchInput.addEventListener("input", e => {
+    const query = e.target.value.trim();
+    if (query.length > 0) {
+      showResults(query);
+    } else {
+      resultsBox.style.display = "none";
+    }
+  });
+
+  // Optional: also search on button click
+  searchBtn.addEventListener("click", () => {
+    const query = searchInput.value.trim();
+    if (query.length > 0) {
+      showResults(query);
+    }
+  });
+    }
   </script>
 
 </body>
