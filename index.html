@@ -3360,6 +3360,12 @@
   const searchInput = document.getElementById("searchInput");
   const searchBtn = document.getElementById("searchBtn");
 
+  // Ensure the input's container is relatively positioned
+  const parent = searchInput.parentNode;
+  if (getComputedStyle(parent).position === "static") {
+    parent.style.position = "relative";
+  }
+
   // Create results container
   const resultsBox = document.createElement("div");
   resultsBox.style.position = "absolute";
@@ -3370,7 +3376,19 @@
   resultsBox.style.overflowY = "auto";
   resultsBox.style.zIndex = "1000";
   resultsBox.style.display = "none";
-  searchInput.parentNode.appendChild(resultsBox);
+  resultsBox.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
+  parent.appendChild(resultsBox);
+
+  // Escape HTML to prevent XSS
+  function escapeHTML(str) {
+    return str.replace(/[&<>"']/g, (m) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[m]));
+  }
 
   function showResults(query) {
     const users = JSON.parse(localStorage.getItem("users")) || [];
@@ -3379,19 +3397,30 @@
     );
 
     resultsBox.innerHTML = "";
+
     if (matches.length === 0) {
       resultsBox.style.display = "none";
       return;
     }
 
+    const regex = new RegExp(`(${query})`, "i");
+
     matches.forEach(user => {
       const item = document.createElement("div");
       item.style.padding = "8px";
       item.style.cursor = "pointer";
-      item.innerHTML = `<img src="${user.avatar}" style="width:30px;height:30px;border-radius:50%;vertical-align:middle;margin-right:8px;"> ${user.name}`;
-      
+      item.style.display = "flex";
+      item.style.alignItems = "center";
+
+      const escapedName = escapeHTML(user.name).replace(regex, '<strong>$1</strong>');
+
+      item.innerHTML = `
+        <img src="${user.avatar}" style="width:30px;height:30px;border-radius:50%;margin-right:8px;">
+        <span>${escapedName}</span>
+      `;
+
       item.onclick = () => {
-        window.location.href = "profile.html?id=" + user.id;
+        window.location.href = "profile.html?id=" + encodeURIComponent(user.id);
       };
 
       resultsBox.appendChild(item);
@@ -3400,9 +3429,28 @@
     resultsBox.style.display = "block";
   }
 
-  // Search when typing
-  searchInput.addEventListener("input", e => {
+  // Debounce utility to prevent excessive function calls
+  function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+  }
+
+  // Handle input
+  searchInput.addEventListener("input", debounce((e) => {
     const query = e.target.value.trim();
+    if (query.length > 0) {
+      showResults(query);
+    } else {
+      resultsBox.style.display = "none";
+    }
+  }, 300));
+
+  // Optional: Search on button click
+  searchBtn.addEventListener("click", () => {
+    const query = searchInput.value.trim();
     if (query.length > 0) {
       showResults(query);
     } else {
@@ -3410,14 +3458,13 @@
     }
   });
 
-  // Optional: also search on button click
-  searchBtn.addEventListener("click", () => {
-    const query = searchInput.value.trim();
-    if (query.length > 0) {
-      showResults(query);
+  // Hide results on outside click
+  document.addEventListener("click", (e) => {
+    if (!resultsBox.contains(e.target) && e.target !== searchInput) {
+      resultsBox.style.display = "none";
     }
   });
-    }
+  
   </script>
 
 </body>
