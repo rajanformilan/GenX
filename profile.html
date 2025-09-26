@@ -537,6 +537,49 @@
     }
 
     renderPosts();
+  
+  <script type="module">
+    // Import Firebase SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // ✅ Your Firebase config (replace with yours)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAyMhgLjQg9zU1Tq2pFVmRiF_UiOBqPlj0",
+      authDomain: "genx-7a5b3.firebaseapp.com",
+      projectId: "genx-7a5b3",
+      storageBucket: "genx-7a5b3.firebasestorage.app",
+      messagingSenderId: "1293731877",
+      appId: "1:1293731877:web:a330360ade1db5e68897cc"
+    };
+
+    // Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Handle Post
+    document.addEventListener("DOMContentLoaded", () => {
+      const postForm = document.getElementById("postForm");
+
+      postForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const username = localStorage.getItem("username") || "Anonymous";
+        const content = document.getElementById("postContent").value;
+
+        try {
+          await addDoc(collection(db, "posts"), {
+            username,
+            content,
+            createdAt: serverTimestamp()
+          });
+          alert("✅ Post published!");
+          postForm.reset();
+        } catch (err) {
+          console.error("Error adding post:", err);
+        }
+      });
+    });
   </script>
 </body>
 </html>
