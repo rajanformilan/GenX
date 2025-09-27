@@ -3353,9 +3353,9 @@
     window.onload = loadPosts;
     
     function toggleMenu() {
-      document.getElementById("navLinks").classList.toggle("active");
-    }
-
+document.getElementById("menu-toggle").addEventListener("click", function () {
+      document.getElementById("nav-links").classList.toggle("active");
+    });
     
   const searchInput = document.getElementById("searchInput");
   const searchBtn = document.getElementById("searchBtn");
