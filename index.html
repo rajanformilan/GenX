@@ -3353,8 +3353,11 @@
     window.onload = loadPosts;
     
     function toggleMenu() {
-document.getElementById("menu-toggle").addEventListener("click", function () {
-      document.getElementById("nav-links").classList.toggle("active");
+const toggleBtn = document.getElementById("menu-toggle");
+    const navLinks = document.getElementById("nav-links");
+
+    toggleBtn.addEventListener("click", () => {
+      navLinks.classList.toggle("active");
     });
     
   const searchInput = document.getElementById("searchInput");
