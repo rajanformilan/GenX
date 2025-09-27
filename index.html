@@ -3353,8 +3353,8 @@
     window.onload = loadPosts;
     
     function toggleMenu() {
-const toggleBtn = document.getElementById("menu-toggle");
-    const navLinks = document.getElementById("nav-links");
+document.getElementById("menu").classList.toggle("active");
+    }
 
     toggleBtn.addEventListener("click", () => {
       navLinks.classList.toggle("active");
