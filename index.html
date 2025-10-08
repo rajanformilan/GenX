@@ -3352,13 +3352,21 @@
 
     window.onload = loadPosts;
     
-    function toggleMenu() {
+function toggleMenu() {
   const burger = document.querySelector('.burger');
   const navLinks = document.querySelector('.nav-links');
 
-  burger.addEventListener('click', () => {
-    navLinks.classList.toggle('active');
-  });
+  // Ensure elements exist before adding listener
+  if (burger && navLinks) {
+    burger.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+  }
+}
+
+// ✅ Call the function after the page loads
+document.addEventListener('DOMContentLoaded', toggleMenu);
+
 
 
     
