@@ -3352,21 +3352,19 @@
 
     window.onload = loadPosts;
     
-function toggleMenu() {
+
+document.addEventListener('DOMContentLoaded', () => {
   const burger = document.querySelector('.burger');
   const navLinks = document.querySelector('.nav-links');
 
-  // Ensure elements exist before adding listener
   if (burger && navLinks) {
+    // Toggle the menu visibility when burger is clicked
     burger.addEventListener('click', () => {
       navLinks.classList.toggle('active');
+      burger.classList.toggle('toggle'); // for animation if needed
     });
   }
-}
-
-// ✅ Call the function after the page loads
-document.addEventListener('DOMContentLoaded', toggleMenu);
-
+});
 
 
     
