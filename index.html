@@ -236,30 +236,31 @@
 </head>
 <body>
 <nav class="navbar">
-    <div class="logo">GenX</div>
+  <div class="logo">GenX</div>
 
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Search profiles..." />
-      <button onclick="searchProfile()">🔍<i class="fas fa-search"></i></button>
-    </div>
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search profiles..." />
+    <button onclick="searchProfile()">🔍</button>
+  </div>
 
-    <div class="burger" onclick="toggleMenu()">
-      <div class="line"></div>
-      <div class="line"></div>
-      <div class="line"></div>
-    </div>
-  </nav>
+  <div class="burger">
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+  </div>
+</nav>
 
-  <ul class="nav-links" id="navLinks">
-    <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-    <li><a href="authentication.html"><i class="fas fa-sign-in-alt"></i> Signup/Login</a></li>
-    <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
-        <li><a href="friends.html"><i class="fas fa-friends"></i> Friendship</a></li>
-        <li><a href="chat.html"><i class="fas fa-chats"></i> Chats</a></li>
-    <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
-    <li><a href="services.html"><i class="fas fa-cogs"></i> Services</a></li>
-    <li><a href="contact.html"><i class="fas fa-phone-alt"></i> Contact</a></li>
-  </ul>
+<ul class="nav-links">
+  <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+  <li><a href="authentication.html"><i class="fas fa-sign-in-alt"></i> Signup/Login</a></li>
+  <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+  <li><a href="friends.html"><i class="fas fa-users"></i> Friendship</a></li>
+  <li><a href="chat.html"><i class="fas fa-comments"></i> Chats</a></li>
+  <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+  <li><a href="services.html"><i class="fas fa-cogs"></i> Services</a></li>
+  <li><a href="contact.html"><i class="fas fa-phone-alt"></i> Contact</a></li>
+</ul>
+
 
   <h1>News Feed</h1>
   <div id="feed"></div>
@@ -3353,18 +3354,6 @@
     window.onload = loadPosts;
     
 
-document.addEventListener('DOMContentLoaded', () => {
-  const burger = document.querySelector('.burger');
-  const navLinks = document.querySelector('.nav-links');
-
-  if (burger && navLinks) {
-    // Toggle the menu visibility when burger is clicked
-    burger.addEventListener('click', () => {
-      navLinks.classList.toggle('active');
-      burger.classList.toggle('toggle'); // for animation if needed
-    });
-  }
-});
 
 
     
@@ -3513,6 +3502,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
     });
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const burger = document.querySelector('.burger');
+  const navLinks = document.querySelector('.nav-links');
+
+  if (burger && navLinks) {
+    burger.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+      burger.classList.toggle('toggle');
+    });
+  }
+});
+
   </script>
 
 </body>
