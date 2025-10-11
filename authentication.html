@@ -21,7 +21,7 @@
 <body>
 
 <div class="container">
-  <!-- Step 1 -->
+  <!-- Step 1: Basic Info -->
   <div class="step active" id="step1">
     <h2>Step 1: Basic Info</h2>
     <input type="text" id="firstName" placeholder="First Name" required>
@@ -36,7 +36,7 @@
     <button id="next1">Next</button>
   </div>
 
-  <!-- Step 2 -->
+  <!-- Step 2: Avatar, Cover, Bio -->
   <div class="step" id="step2">
     <h2>Step 2: Profile & Cover</h2>
     <label>Profile Picture:</label>
@@ -48,7 +48,7 @@
     <button id="next2">Next</button>
   </div>
 
-  <!-- Step 3 -->
+  <!-- Step 3: Review & Edit -->
   <div class="step" id="step3">
     <h2>Step 3: Review & Save</h2>
     <div class="profile-display">
@@ -65,18 +65,18 @@
   </div>
 </div>
 
-<!-- Firebase -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 
 <script>
-  // Firebase Config
+  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyAyMhgLjQg9zU1Tq2pFVmRiF_UiOBqPlj0",
     authDomain: "genx-7a5b3.firebaseapp.com",
     projectId: "genx-7a5b3",
-    storageBucket: "genx-7a5b3.appspot.com",
+    storageBucket: "genx-7a5b3.firebasestorage.app",
     messagingSenderId: "1293731877",
     appId: "1:1293731877:web:a330360ade1db5e68897cc"
   };
@@ -115,33 +115,50 @@
       alert('Please fill all fields!');
       return;
     }
-    profileData = {
-      name: firstName.value,
-      email: email.value,
-      gender: gender.value,
-      dob: dob.value
-    };
+    profileData.name = firstName.value;
+    profileData.email = email.value;
+    profileData.gender = gender.value;
+    profileData.dob = dob.value;
     step1.classList.remove('active');
     step2.classList.add('active');
   });
 
-  // Step 2 → Step 3
-  next2.addEventListener('click', async () => {
+  // Step 2 → Step 3 (with Firebase Storage)
+  next2.addEventListener('click', () => {
     profileData.bio = bio.value || '';
 
-    const upload = async (file, path, placeholder) => {
-      if (!file) return placeholder;
-      const ref = firebase.storage().ref(path + Date.now() + '_' + file.name);
-      await ref.put(file);
-      return await ref.getDownloadURL();
-    };
+    let uploadsDone = 0;
 
-    profileData.avatar = await upload(profilePic.files[0], 'profiles/', 'https://via.placeholder.com/100');
-    profileData.cover = await upload(coverPic.files[0], 'covers/', 'https://via.placeholder.com/600x150');
+    function checkAllDone(){
+      uploadsDone++;
+      if(uploadsDone === 2){ // Both uploads done
+        showReview();
+        step2.classList.remove('active');
+        step3.classList.add('active');
+      }
+    }
 
-    showReview();
-    step2.classList.remove('active');
-    step3.classList.add('active');
+    // Profile Pic Upload
+    if(profilePic.files[0]){
+      const profileRef = firebase.storage().ref('profiles/' + Date.now() + '_' + profilePic.files[0].name);
+      profileRef.put(profilePic.files[0]).then(snapshot => {
+        snapshot.ref.getDownloadURL().then(url => {
+          profileData.avatar = url;
+          checkAllDone();
+        });
+      });
+    } else { profileData.avatar = "https://via.placeholder.com/100"; checkAllDone(); }
+
+    // Cover Pic Upload
+    if(coverPic.files[0]){
+      const coverRef = firebase.storage().ref('covers/' + Date.now() + '_' + coverPic.files[0].name);
+      coverRef.put(coverPic.files[0]).then(snapshot => {
+        snapshot.ref.getDownloadURL().then(url => {
+          profileData.cover = url;
+          checkAllDone();
+        });
+      });
+    } else { profileData.cover = "https://via.placeholder.com/600x150"; checkAllDone(); }
   });
 
   function showReview(){
@@ -154,19 +171,22 @@
     displayBio.textContent = profileData.bio;
   }
 
+  // Edit
   editBtn.addEventListener('click', () => {
     step3.classList.remove('active');
     step1.classList.add('active');
+    firstName.value = profileData.name;
+    email.value = profileData.email;
+    gender.value = profileData.gender;
+    dob.value = profileData.dob;
+    bio.value = profileData.bio;
   });
 
-  // ✅ Save and Redirect
+  // Save to Firebase Database
   saveBtn.addEventListener('click', () => {
     const newUserRef = firebase.database().ref('users/' + Date.now());
     newUserRef.set(profileData)
-      .then(() => {
-        alert('✅ Profile saved successfully!');
-        window.location.href = "profile.html";  // Redirect after save
-      })
+      .then(() => alert('Profile saved to Firebase successfully!'))
       .catch(err => alert('Error: ' + err.message));
   });
 </script>
