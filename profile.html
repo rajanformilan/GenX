@@ -5,170 +5,32 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>GenX — My Profile</title>
 <style>
-  body {
-    font-family: "Poppins", Arial, sans-serif;
-    background: #f0f2f5;
-    margin: 0;
-    padding: 0;
-  }
-
-  .profile-container {
-    max-width: 600px;
-    margin: 20px auto;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    overflow: hidden;
-  }
-
-  .cover-photo {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-  }
-
-  .profile-info {
-    text-align: center;
-    padding: 15px;
-    margin-top: -60px;
-  }
-
-  .profile-info img {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    border: 4px solid white;
-  }
-
-  .profile-info h2 {
-    margin: 10px 0 5px;
-    color: #1877f2;
-  }
-
-  .profile-info p {
-    margin: 4px 0;
-    color: #555;
-  }
-
-  .bio {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 10px;
-    margin: 10px;
-    text-align: center;
-    font-style: italic;
-  }
-
-  .btns {
-    text-align: center;
-    margin: 15px;
-  }
-
-  .btn {
-    display: inline-block;
-    background: #1877f2;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    margin: 5px;
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  .btn:hover {
-    background: #165ec9;
-  }
-
-  .no-profile {
-    text-align: center;
-    padding: 50px;
-    color: #666;
-  }
-
-  /* Post Section */
-  .post-section {
-    max-width: 600px;
-    margin: 20px auto;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    padding: 15px;
-  }
-
-  textarea {
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    resize: none;
-    font-family: inherit;
-  }
-
-  input[type="file"], select {
-    margin-top: 8px;
-    display: block;
-  }
-
-  button {
-    background: #1877f2;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background: #165ec9;
-  }
-
-  /* Posts Feed */
-  .feed {
-    max-width: 600px;
-    margin: 20px auto;
-  }
-
-  .post {
-    background: white;
-    margin-bottom: 15px;
-    border-radius: 12px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    padding: 15px;
-  }
-
-  .post-header {
-    display: flex;
-    justify-content: space-between;
-    font-weight: bold;
-    color: #1877f2;
-  }
-
-  .post-time {
-    color: gray;
-    font-size: 12px;
-  }
-
-  .post img, .post video {
-    width: 100%;
-    border-radius: 10px;
-    margin-top: 10px;
-  }
-
-  .actions {
-    margin-top: 10px;
-  }
-
-  .actions button {
-    background: none;
-    border: none;
-    color: #555;
-    margin-right: 10px;
-    cursor: pointer;
-  }
-
-  .actions button:hover {
-    color: #1877f2;
-  }
+  body { font-family: "Poppins", Arial, sans-serif; background: #f0f2f5; margin:0; padding:0; }
+  .profile-container { max-width:600px; margin:20px auto; background:white; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.1); overflow:hidden; }
+  .cover-photo { width:100%; height:180px; object-fit:cover; }
+  .profile-info { text-align:center; padding:15px; margin-top:-60px; }
+  .profile-info img { width:110px; height:110px; border-radius:50%; border:4px solid white; }
+  .profile-info h2 { margin:10px 0 5px; color:#1877f2; }
+  .profile-info p { margin:4px 0; color:#555; }
+  .bio { background:#f8f9fa; padding:15px; border-radius:10px; margin:10px; text-align:center; font-style:italic; }
+  .btns { text-align:center; margin:15px; }
+  .btn { display:inline-block; background:#1877f2; color:white; padding:10px 20px; border-radius:8px; margin:5px; text-decoration:none; font-weight:500; }
+  .btn:hover { background:#165ec9; }
+  .no-profile { text-align:center; padding:50px; color:#666; }
+  .post-section { max-width:600px; margin:20px auto; background:white; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.1); padding:15px; }
+  textarea { width:100%; border:1px solid #ccc; border-radius:8px; padding:10px; resize:none; font-family:inherit; }
+  input[type="file"], select { margin-top:8px; display:block; }
+  button { background:#1877f2; color:white; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; }
+  button:hover { background:#165ec9; }
+  .feed { max-width:600px; margin:20px auto; }
+  .post { background:white; margin-bottom:15px; border-radius:12px; box-shadow:0 2px 5px rgba(0,0,0,0.1); padding:15px; }
+  .post-header { display:flex; justify-content:space-between; font-weight:bold; color:#1877f2; }
+  .post-time { color:gray; font-size:12px; }
+  .post img, .post video { width:100%; border-radius:10px; margin-top:10px; }
+  .actions { margin-top:10px; }
+  .actions button { background:none; border:none; color:#555; margin-right:10px; cursor:pointer; }
+  .actions button:hover { color:#1877f2; }
+  .actions button.liked { color:red; font-weight:bold; }
 </style>
 </head>
 <body>
@@ -184,7 +46,6 @@
     <p id="profileDob"></p>
   </div>
   <div class="bio" id="profileBio"></div>
-
   <div class="btns">
     <a href="edit-profile.html" class="btn">Edit Profile</a>
     <a href="index.html" class="btn" style="background:#42b72a;">Go to Home</a>
@@ -194,7 +55,7 @@
 <div id="noProfile" class="no-profile">
   <h3>No Profile Found</h3>
   <p>Please set up your profile first.</p>
-  <a href="setup.html" class="btn">Create Profile</a>
+  <a href="authentication.html" class="btn">Create Profile</a>
 </div>
 
 <!-- Create Post -->
@@ -216,7 +77,21 @@
   <div id="myPosts"></div>
 </div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js"></script>
+
 <script>
+  // 🔥 Firebase Configuration
+  const firebaseConfig = {
+    // YOUR_FIREBASE_CONFIG_HERE
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+
   const savedProfile = JSON.parse(localStorage.getItem("userProfile"));
   const profileSection = document.getElementById("profileSection");
   const noProfile = document.getElementById("noProfile");
@@ -247,96 +122,103 @@
     userEmail = savedProfile.email;
   }
 
-  // Load posts
-  function loadMyPosts() {
-    const posts = JSON.parse(localStorage.getItem("genx_posts")) || [];
-    const userPosts = posts.filter(p => p.email === userEmail);
-    myPosts.innerHTML = "";
-
-    userPosts.forEach((post, i) => {
-      const div = document.createElement("div");
-      div.classList.add("post");
-      div.innerHTML = `
-        <div class="post-header">
-          <span>${post.username}</span>
-          <span class="post-time">${post.time}</span>
-        </div>
-        <p>${post.text}</p>
-        ${
-          post.media
-            ? post.type.startsWith("image")
-              ? `<img src="${post.media}" alt="Post image">`
-              : `<video controls><source src="${post.media}" type="${post.type}"></video>`
-            : ""
-        }
-        <div class="post-time">🔒 Privacy: ${post.privacy}</div>
-        <div class="actions">
-          <button onclick="editPost(${i})">✏️ Edit</button>
-          <button onclick="deletePost(${i})">🗑️ Delete</button>
-        </div>
-      `;
-      myPosts.appendChild(div);
-    });
-  }
-
-  // Create Post
-  postBtn.addEventListener("click", () => {
+  // 🔹 Create Post with Firebase Storage
+  postBtn.addEventListener("click", async () => {
     const text = postText.value.trim();
     const file = mediaInput.files[0];
     const privacy = privacySelect.value;
 
     if (!text && !file) return alert("Write something or add media!");
+    postBtn.disabled = true;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const mediaURL = file ? reader.result : null;
-      const newPost = {
-        username,
-        email: userEmail,
-        text,
-        media: mediaURL,
-        type: file ? file.type : "",
-        privacy,
-        time: new Date().toLocaleString()
-      };
-      const posts = JSON.parse(localStorage.getItem("genx_posts")) || [];
-      posts.unshift(newPost);
-      localStorage.setItem("genx_posts", JSON.stringify(posts));
-      postText.value = "";
-      mediaInput.value = "";
-      loadMyPosts();
-    };
+    let mediaURL = "";
+    let mediaType = "";
 
-    if (file) reader.readAsDataURL(file);
-    else reader.onload();
+    if (file) {
+      const ref = storage.ref(`posts/${Date.now()}-${file.name}`);
+      await ref.put(file);
+      mediaURL = await ref.getDownloadURL();
+      mediaType = file.type;
+    }
+
+    await db.collection("posts").add({
+      username,
+      email: userEmail,
+      text,
+      media: mediaURL,
+      type: mediaType,
+      privacy,
+      time: new Date().toISOString(),
+      likesArray: [],
+      comments: []
+    });
+
+    postText.value = "";
+    mediaInput.value = "";
+    postBtn.disabled = false;
+    alert("✅ Post uploaded!");
   });
 
-  // Edit post
-  function editPost(index) {
-    const posts = JSON.parse(localStorage.getItem("genx_posts")) || [];
-    const userPosts = posts.filter(p => p.email === userEmail);
-    const targetPost = userPosts[index];
-    const newText = prompt("Edit your post:", targetPost.text);
-    if (newText !== null) {
-      const realIndex = posts.indexOf(targetPost);
-      posts[realIndex].text = newText;
-      localStorage.setItem("genx_posts", JSON.stringify(posts));
-      loadMyPosts();
-    }
+  // 🔹 Load user posts
+  function loadMyPosts() {
+    db.collection("posts")
+      .where("email", "==", userEmail)
+      .orderBy("time", "desc")
+      .onSnapshot(snapshot => {
+        myPosts.innerHTML = "";
+        if (snapshot.empty) {
+          myPosts.innerHTML = '<div class="no-posts">You have not posted yet.</div>';
+          return;
+        }
+        snapshot.forEach(doc => {
+          const post = doc.data();
+          const div = document.createElement("div");
+          div.classList.add("post");
+
+          // Check if current user liked this post
+          const liked = post.likesArray && post.likesArray.includes(username);
+
+          div.innerHTML = `
+            <div class="post-header">${post.username} — <span style="font-size:12px;color:gray;">${post.privacy || 'public'}</span></div>
+            <div class="post-time">${new Date(post.time).toLocaleString()}</div>
+            <p>${post.text}</p>
+            ${post.media ? (post.type.startsWith('image') ? `<img src="${post.media}" alt="Post image">` : `<video controls><source src="${post.media}" type="${post.type}"></video>`) : ''}
+            <div class="actions">
+              <button class="${liked ? 'liked' : ''}" onclick="likePost('${doc.id}')">${liked ? '💔 Unlike' : '❤️ Like'} (${post.likesArray?.length || 0})</button>
+              <button onclick="commentPost('${doc.id}')">💬 Comment (${post.comments?.length || 0})</button>
+            </div>
+          `;
+          myPosts.appendChild(div);
+        });
+      });
   }
 
-  // Delete post
-  function deletePost(index) {
-    const posts = JSON.parse(localStorage.getItem("genx_posts")) || [];
-    const userPosts = posts.filter(p => p.email === userEmail);
-    const targetPost = userPosts[index];
-    const newPosts = posts.filter(p => p !== targetPost);
-    localStorage.setItem("genx_posts", JSON.stringify(newPosts));
-    loadMyPosts();
+  // 🔹 Like post
+  async function likePost(docId) {
+    const postRef = db.collection("posts").doc(docId);
+    const postDoc = await postRef.get();
+    const post = postDoc.data();
+    const likesArray = post.likesArray || [];
+    const index = likesArray.indexOf(username);
+    if (index === -1) likesArray.push(username);
+    else likesArray.splice(index, 1);
+    await postRef.update({ likesArray });
   }
 
-  loadMyPosts();
+  // 🔹 Comment post
+  async function commentPost(docId) {
+    const commentText = prompt("Write your comment:");
+    if (!commentText) return;
+    const postRef = db.collection("posts").doc(docId);
+    const postDoc = await postRef.get();
+    const post = postDoc.data();
+    const comments = post.comments || [];
+    comments.push({ user: username, text: commentText, time: new Date().toISOString() });
+    await postRef.update({ comments });
+    alert("Comment added!");
+  }
+
+  if (userEmail) loadMyPosts();
 </script>
-
 </body>
 </html>
