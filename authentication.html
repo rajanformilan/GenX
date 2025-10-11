@@ -3,23 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GenX — Signup / Login</title>
+<title>GenX — Profile Setup</title>
 <style>
-body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; }
-.container { max-width: 600px; margin: 30px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-h2 { color: #1877f2; }
-input, select, textarea, button { width: 100%; margin: 8px 0; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 14px; }
-button { background: #1877f2; color: white; border: none; cursor: pointer; }
-button:hover { background: #165ec9; }
-.step { display: none; }
-.step.active { display: block; }
-.profile-display { text-align: center; }
-.profile-display img { width: 100px; height: 100px; border-radius: 50%; margin: 10px; }
-.cover-display { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
-.optional-login { text-align:center; margin-top:10px; font-size:14px; }
-.optional-login a { color: #1877f2; text-decoration:none; }
-.optional-login a:hover { text-decoration:underline; }
-.login-form { display:none; }
+  body { font-family: Arial; background: #f0f2f5; margin: 0; }
+  .container { max-width: 600px; margin: 30px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+  h2 { color: #1877f2; }
+  input, select, textarea, button { width: 100%; margin: 8px 0; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 14px; }
+  button { background: #1877f2; color: white; border: none; cursor: pointer; }
+  button:hover { background: #165ec9; }
+  .step { display: none; }
+  .step.active { display: block; }
+  .profile-display { text-align: center; }
+  .profile-display img { width: 100px; height: 100px; border-radius: 50%; margin: 10px; }
+  .cover-display { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
 </style>
 </head>
 <body>
@@ -28,23 +24,46 @@ button:hover { background: #165ec9; }
   <!-- Step 1: Basic Info -->
   <div class="step active" id="step1">
     <h2>Step 1: Basic Info</h2>
-    <input type="text" id="firstName" placeholder="Full Name" required>
+    <input type="text" id="firstName" placeholder="First Name" required>
     <input type="email" id="email" placeholder="Email" required>
+    
     <select id="gender" required>
       <option value="">Select Gender</option>
       <option value="Male">Male</option>
       <option value="Female">Female</option>
       <option value="Other">Other</option>
     </select>
-    <select id="marital" required>
+
+    <input type="date" id="dob" placeholder="Date of Birth" required>
+
+    <!-- New Fields -->
+    <input type="text" id="qualification" placeholder="Qualification">
+    
+    <select id="workingStatus">
+      <option value="">Working Status</option>
+      <option value="Employed">Employed</option>
+      <option value="Self-Employed">Self-Employed</option>
+      <option value="Student">Student</option>
+      <option value="Unemployed">Unemployed</option>
+    </select>
+
+    <select id="maritalStatus">
       <option value="">Marital Status</option>
       <option value="Single">Single</option>
       <option value="Married">Married</option>
+      <option value="Divorced">Divorced</option>
     </select>
-    <input type="text" id="location" placeholder="Location (City, Country)" required>
-    <input type="date" id="dob" required>
+
+    <input type="text" id="location" placeholder="Location">
+
     <button id="next1">Next</button>
-    <p class="optional-login">Already have an account? <a href="#" id="loginLink">Login here</a></p>
+    <div style="text-align:center; margin-top:15px;">
+  <p>
+    Already have an account? 
+    <a href="login.html" style="color:#1877f2; text-decoration:none;">Login</a>
+  </p>
+</div>
+
   </div>
 
   <!-- Step 2: Avatar, Cover, Bio -->
@@ -59,7 +78,7 @@ button:hover { background: #165ec9; }
     <button id="next2">Next</button>
   </div>
 
-  <!-- Step 3: Review & Save -->
+  <!-- Step 3: Review & Edit -->
   <div class="step" id="step3">
     <h2>Step 3: Review & Save</h2>
     <div class="profile-display">
@@ -67,202 +86,157 @@ button:hover { background: #165ec9; }
       <h3 id="displayName"></h3>
       <p id="displayEmail"></p>
       <p id="displayGender"></p>
-      <p id="displayMarital"></p>
-      <p id="displayLocation"></p>
       <p id="displayDob"></p>
       <img id="displayCover" class="cover-display" src="https://via.placeholder.com/600x150" alt="Cover">
       <p id="displayBio"></p>
+      <p id="extraInfo"></p>
     </div>
     <button id="editBtn">Edit Info</button>
     <button id="saveBtn">Save Profile</button>
   </div>
-
-  <!-- Login Form -->
-  <div class="step login-form" id="loginForm">
-    <h2>Login</h2>
-    <input type="email" id="loginEmail" placeholder="Enter your email" required>
-    <button id="loginBtn">Login</button>
-    <p class="optional-login">Don't have an account? <a href="#" id="backSignup">Signup</a></p>
-  </div>
 </div>
 
 <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 
 <script>
-const firebaseConfig = { /* YOUR_FIREBASE_CONFIG_HERE */ };
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const storage = firebase.storage();
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAyMhgLjQg9zU1Tq2pFVmRiF_UiOBqPlj0",
+    authDomain: "genx-7a5b3.firebaseapp.com",
+    projectId: "genx-7a5b3",
+    storageBucket: "genx-7a5b3.firebasestorage.app",
+    messagingSenderId: "1293731877",
+    appId: "1:1293731877:web:a330360ade1db5e68897cc"
+  };
+  firebase.initializeApp(firebaseConfig);
 
-// Elements
-const step1 = document.getElementById('step1');
-const step2 = document.getElementById('step2');
-const step3 = document.getElementById('step3');
-const loginForm = document.getElementById('loginForm');
+  // Elements
+  const step1 = document.getElementById('step1');
+  const step2 = document.getElementById('step2');
+  const step3 = document.getElementById('step3');
+  const next1 = document.getElementById('next1');
+  const next2 = document.getElementById('next2');
+  const editBtn = document.getElementById('editBtn');
+  const saveBtn = document.getElementById('saveBtn');
 
-const next1 = document.getElementById('next1');
-const next2 = document.getElementById('next2');
-const editBtn = document.getElementById('editBtn');
-const saveBtn = document.getElementById('saveBtn');
-const loginLink = document.getElementById('loginLink');
-const backSignup = document.getElementById('backSignup');
-const loginBtn = document.getElementById('loginBtn');
+  const firstName = document.getElementById('firstName');
+  const email = document.getElementById('email');
+  const gender = document.getElementById('gender');
+  const dob = document.getElementById('dob');
+  const qualification = document.getElementById('qualification');
+  const workingStatus = document.getElementById('workingStatus');
+  const maritalStatus = document.getElementById('maritalStatus');
+  const location = document.getElementById('location');
+  const profilePic = document.getElementById('profilePic');
+  const coverPic = document.getElementById('coverPic');
+  const bio = document.getElementById('bio');
 
-const firstName = document.getElementById('firstName');
-const email = document.getElementById('email');
-const gender = document.getElementById('gender');
-const marital = document.getElementById('marital');
-const locationInput = document.getElementById('location');
-const dob = document.getElementById('dob');
-const profilePic = document.getElementById('profilePic');
-const coverPic = document.getElementById('coverPic');
-const bio = document.getElementById('bio');
+  const displayName = document.getElementById('displayName');
+  const displayEmail = document.getElementById('displayEmail');
+  const displayGender = document.getElementById('displayGender');
+  const displayDob = document.getElementById('displayDob');
+  const displayProfile = document.getElementById('displayProfile');
+  const displayCover = document.getElementById('displayCover');
+  const displayBio = document.getElementById('displayBio');
+  const extraInfo = document.getElementById('extraInfo');
 
-const displayName = document.getElementById('displayName');
-const displayEmail = document.getElementById('displayEmail');
-const displayGender = document.getElementById('displayGender');
-const displayMarital = document.getElementById('displayMarital');
-const displayLocation = document.getElementById('displayLocation');
-const displayDob = document.getElementById('displayDob');
-const displayProfile = document.getElementById('displayProfile');
-const displayCover = document.getElementById('displayCover');
-const displayBio = document.getElementById('displayBio');
+  let profileData = {};
 
-const loginEmail = document.getElementById('loginEmail');
+  // Step 1 → Step 2
+  next1.addEventListener('click', () => {
+    if(!firstName.value || !email.value || !gender.value || !dob.value){
+      alert('Please fill all mandatory fields!');
+      return;
+    }
+    profileData.name = firstName.value;
+    profileData.email = email.value;
+    profileData.gender = gender.value;
+    profileData.dob = dob.value;
+    profileData.qualification = qualification.value || '';
+    profileData.workingStatus = workingStatus.value || '';
+    profileData.maritalStatus = maritalStatus.value || '';
+    profileData.location = location.value || '';
 
-let profileData = {};
-
-// Step 1 → Step 2
-next1.addEventListener('click', () => {
-  if(!firstName.value || !email.value || !gender.value || !dob.value || !marital.value || !locationInput.value){
-    alert('Please fill all fields!');
-    return;
-  }
-  profileData.name = firstName.value;
-  profileData.email = email.value;
-  profileData.gender = gender.value;
-  profileData.marital = marital.value;
-  profileData.location = locationInput.value;
-  profileData.dob = dob.value;
-  step1.classList.remove('active');
-  step2.classList.add('active');
-});
-
-// Step 2 → Step 3
-next2.addEventListener('click', () => {
-  profileData.bio = bio.value || '';
-  const profileFile = profilePic.files[0];
-  const coverFile = coverPic.files[0];
-
-  const readFile = (file) => new Promise(resolve => {
-    if(!file) return resolve(null);
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.readAsDataURL(file);
+    step1.classList.remove('active');
+    step2.classList.add('active');
   });
 
-  Promise.all([readFile(profileFile), readFile(coverFile)]).then(([avatar, cover]) => {
-    profileData.avatar = avatar || "https://via.placeholder.com/100";
-    profileData.cover = cover || "https://via.placeholder.com/600x150";
-    showReview();
-    step2.classList.remove('active');
-    step3.classList.add('active');
-  });
-});
+  // Step 2 → Step 3 (with Firebase Storage)
+  next2.addEventListener('click', () => {
+    profileData.bio = bio.value || '';
+    let uploadsDone = 0;
 
-function showReview(){
-  displayName.textContent = profileData.name;
-  displayEmail.textContent = "Email: " + profileData.email;
-  displayGender.textContent = "Gender: " + profileData.gender;
-  displayMarital.textContent = "Marital: " + profileData.marital;
-  displayLocation.textContent = "Location: " + profileData.location;
-  displayDob.textContent = "DOB: " + profileData.dob;
-  displayProfile.src = profileData.avatar;
-  displayCover.src = profileData.cover;
-  displayBio.textContent = profileData.bio;
-}
+    function checkAllDone(){
+      uploadsDone++;
+      if(uploadsDone === 2){
+        showReview();
+        step2.classList.remove('active');
+        step3.classList.add('active');
+      }
+    }
 
-// Edit button
-editBtn.addEventListener('click', () => {
-  step3.classList.remove('active');
-  step1.classList.add('active');
-  firstName.value = profileData.name;
-  email.value = profileData.email;
-  gender.value = profileData.gender;
-  marital.value = profileData.marital;
-  locationInput.value = profileData.location;
-  dob.value = profileData.dob;
-  bio.value = profileData.bio;
-});
+    // Profile Pic Upload
+    if(profilePic.files[0]){
+      const profileRef = firebase.storage().ref('profiles/' + Date.now() + '_' + profilePic.files[0].name);
+      profileRef.put(profilePic.files[0]).then(snapshot => {
+        snapshot.ref.getDownloadURL().then(url => {
+          profileData.avatar = url;
+          checkAllDone();
+        });
+      });
+    } else { profileData.avatar = "https://via.placeholder.com/100"; checkAllDone(); }
 
-// Save profile to Firebase
-saveBtn.addEventListener('click', async () => {
-  saveBtn.disabled = true;
-  let avatarURL = profileData.avatar;
-  let coverURL = profileData.cover;
-
-  if(profilePic.files[0]){
-    const ref = storage.ref("avatars/" + Date.now() + "-" + profilePic.files[0].name);
-    await ref.put(profilePic.files[0]);
-    avatarURL = await ref.getDownloadURL();
-  }
-
-  if(coverPic.files[0]){
-    const refCover = storage.ref("covers/" + Date.now() + "-" + coverPic.files[0].name);
-    await refCover.put(coverPic.files[0]);
-    coverURL = await refCover.getDownloadURL();
-  }
-
-  await db.collection("users").doc(profileData.email).set({
-    name: profileData.name,
-    email: profileData.email,
-    gender: profileData.gender,
-    marital: profileData.marital,
-    location: profileData.location,
-    dob: profileData.dob,
-    bio: profileData.bio,
-    avatar: avatarURL,
-    cover: coverURL,
-    time: new Date().toISOString()
+    // Cover Pic Upload
+    if(coverPic.files[0]){
+      const coverRef = firebase.storage().ref('covers/' + Date.now() + '_' + coverPic.files[0].name);
+      coverRef.put(coverPic.files[0]).then(snapshot => {
+        snapshot.ref.getDownloadURL().then(url => {
+          profileData.cover = url;
+          checkAllDone();
+        });
+      });
+    } else { profileData.cover = "https://via.placeholder.com/600x150"; checkAllDone(); }
   });
 
-  alert('✅ Profile saved successfully!');
-  localStorage.setItem('userProfile', JSON.stringify(profileData));
-  saveBtn.disabled = false;
-});
-
-// Show login form
-loginLink.addEventListener('click', (e) => {
-  e.preventDefault();
-  step1.classList.remove('active');
-  step2.classList.remove('active');
-  step3.classList.remove('active');
-  loginForm.classList.add('active');
-});
-
-backSignup.addEventListener('click', (e) => {
-  e.preventDefault();
-  loginForm.classList.remove('active');
-  step1.classList.add('active');
-});
-
-// Login user
-loginBtn.addEventListener('click', async () => {
-  const email = loginEmail.value.trim();
-  if(!email) return alert("Enter your email");
-  const doc = await db.collection("users").doc(email).get();
-  if(doc.exists){
-    const user = doc.data();
-    localStorage.setItem('userProfile', JSON.stringify(user));
-    alert("Login successful!");
-    window.location.href = "profile.html";
-  } else {
-    alert("No account found with this email!");
+  function showReview(){
+    displayName.textContent = profileData.name;
+    displayEmail.textContent = "Email: " + profileData.email;
+    displayGender.textContent = "Gender: " + profileData.gender;
+    displayDob.textContent = "DOB: " + profileData.dob;
+    displayProfile.src = profileData.avatar;
+    displayCover.src = profileData.cover;
+    displayBio.textContent = profileData.bio;
+    extraInfo.innerHTML = `Qualification: ${profileData.qualification} <br>
+                           Working: ${profileData.workingStatus} <br>
+                           Marital: ${profileData.maritalStatus} <br>
+                           Location: ${profileData.location}`;
   }
-});
+
+  // Edit
+  editBtn.addEventListener('click', () => {
+    step3.classList.remove('active');
+    step1.classList.add('active');
+    firstName.value = profileData.name;
+    email.value = profileData.email;
+    gender.value = profileData.gender;
+    dob.value = profileData.dob;
+    qualification.value = profileData.qualification;
+    workingStatus.value = profileData.workingStatus;
+    maritalStatus.value = profileData.maritalStatus;
+    location.value = profileData.location;
+    bio.value = profileData.bio;
+  });
+
+  // Save to Firebase Database
+  saveBtn.addEventListener('click', () => {
+    const newUserRef = firebase.database().ref('users/' + Date.now());
+    newUserRef.set(profileData)
+      .then(() => alert('Profile saved to Firebase successfully!'))
+      .catch(err => alert('Error: ' + err.message));
+  });
 </script>
 </body>
 </html>
