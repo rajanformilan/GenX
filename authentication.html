@@ -24,7 +24,7 @@
   <!-- Step 1: Basic Info -->
   <div class="step active" id="step1">
     <h2>Step 1: Basic Info</h2>
-    <input type="text" id="firstName" placeholder="First Name" required>
+    <input type="text" id="firstName" placeholder="Full Name" required>
     <input type="email" id="email" placeholder="Email" required>
     <select id="gender" required>
       <option value="">Select Gender</option>
@@ -48,7 +48,7 @@
     <button id="next2">Next</button>
   </div>
 
-  <!-- Step 3: Review & Edit -->
+  <!-- Step 3: Review & Save -->
   <div class="step" id="step3">
     <h2>Step 3: Review & Save</h2>
     <div class="profile-display">
@@ -71,18 +71,17 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 
 <script>
-  // Firebase config
+  // 🔥 Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyAyMhgLjQg9zU1Tq2pFVmRiF_UiOBqPlj0",
     authDomain: "genx-7a5b3.firebaseapp.com",
     projectId: "genx-7a5b3",
-    storageBucket: "genx-7a5b3.firebasestorage.app",
+    storageBucket: "genx-7a5b3.appspot.com",
     messagingSenderId: "1293731877",
     appId: "1:1293731877:web:a330360ade1db5e68897cc"
   };
   firebase.initializeApp(firebaseConfig);
 
-  // Elements
   const step1 = document.getElementById('step1');
   const step2 = document.getElementById('step2');
   const step3 = document.getElementById('step3');
@@ -123,53 +122,44 @@
     step2.classList.add('active');
   });
 
-  // Step 2 → Step 3 (with Firebase Storage)
-  next2.addEventListener('click', () => {
+  // Step 2 → Step 3
+  next2.addEventListener('click', async () => {
     profileData.bio = bio.value || '';
 
-    let uploadsDone = 0;
-
-    function checkAllDone(){
-      uploadsDone++;
-      if(uploadsDone === 2){ // Both uploads done
-        showReview();
-        step2.classList.remove('active');
-        step3.classList.add('active');
-      }
+    function uploadFile(file, path, placeholder){
+      return new Promise((resolve, reject)=>{
+        if(!file) return resolve(placeholder);
+        const ref = firebase.storage().ref(path + '/' + Date.now() + '_' + file.name);
+        ref.put(file)
+          .then(snapshot => snapshot.ref.getDownloadURL())
+          .then(url => resolve(url))
+          .catch(err => reject(err));
+      });
     }
 
-    // Profile Pic Upload
-    if(profilePic.files[0]){
-      const profileRef = firebase.storage().ref('profiles/' + Date.now() + '_' + profilePic.files[0].name);
-      profileRef.put(profilePic.files[0]).then(snapshot => {
-        snapshot.ref.getDownloadURL().then(url => {
-          profileData.avatar = url;
-          checkAllDone();
-        });
-      });
-    } else { profileData.avatar = "https://via.placeholder.com/100"; checkAllDone(); }
+    try {
+      const [avatarURL, coverURL] = await Promise.all([
+        uploadFile(profilePic.files[0], 'profiles', 'https://via.placeholder.com/100'),
+        uploadFile(coverPic.files[0], 'covers', 'https://via.placeholder.com/600x150')
+      ]);
+      profileData.avatar = avatarURL;
+      profileData.cover = coverURL;
 
-    // Cover Pic Upload
-    if(coverPic.files[0]){
-      const coverRef = firebase.storage().ref('covers/' + Date.now() + '_' + coverPic.files[0].name);
-      coverRef.put(coverPic.files[0]).then(snapshot => {
-        snapshot.ref.getDownloadURL().then(url => {
-          profileData.cover = url;
-          checkAllDone();
-        });
-      });
-    } else { profileData.cover = "https://via.placeholder.com/600x150"; checkAllDone(); }
+      // Show review
+      displayName.textContent = profileData.name;
+      displayEmail.textContent = "Email: " + profileData.email;
+      displayGender.textContent = "Gender: " + profileData.gender;
+      displayDob.textContent = "DOB: " + profileData.dob;
+      displayProfile.src = profileData.avatar;
+      displayCover.src = profileData.cover;
+      displayBio.textContent = profileData.bio;
+
+      step2.classList.remove('active');
+      step3.classList.add('active');
+    } catch(err){
+      alert('Error uploading files: ' + err.message);
+    }
   });
-
-  function showReview(){
-    displayName.textContent = profileData.name;
-    displayEmail.textContent = "Email: " + profileData.email;
-    displayGender.textContent = "Gender: " + profileData.gender;
-    displayDob.textContent = "DOB: " + profileData.dob;
-    displayProfile.src = profileData.avatar;
-    displayCover.src = profileData.cover;
-    displayBio.textContent = profileData.bio;
-  }
 
   // Edit
   editBtn.addEventListener('click', () => {
@@ -186,7 +176,13 @@
   saveBtn.addEventListener('click', () => {
     const newUserRef = firebase.database().ref('users/' + Date.now());
     newUserRef.set(profileData)
-      .then(() => alert('Profile saved to Firebase successfully!'))
+      .then(() => {
+        alert('✅ Profile saved to Firebase successfully!');
+        // Optional: also save locally for profile.html
+        localStorage.setItem('userProfile', JSON.stringify(profileData));
+        // Redirect to profile page
+        window.location.href = "profile.html";
+      })
       .catch(err => alert('Error: ' + err.message));
   });
 </script>
