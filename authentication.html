@@ -5,17 +5,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GenX — Profile Setup</title>
 <style>
-  body { font-family: Arial; background: #f0f2f5; margin: 0; }
-  .container { max-width: 600px; margin: 30px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f2f5;
+    margin: 0;
+  }
+  .container {
+    max-width: 600px;
+    margin: 30px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
   h2 { color: #1877f2; }
-  input, select, textarea, button { width: 100%; margin: 8px 0; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 14px; }
-  button { background: #1877f2; color: white; border: none; cursor: pointer; }
+  input, select, textarea, button {
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+  button {
+    background: #1877f2;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
   button:hover { background: #165ec9; }
   .step { display: none; }
   .step.active { display: block; }
-  .profile-display { text-align: center; }
-  .profile-display img { width: 100px; height: 100px; border-radius: 50%; margin: 10px; }
-  .cover-display { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
+  .profile-display {
+    text-align: center;
+  }
+  .profile-display img {
+    width: 100px; height: 100px; border-radius: 50%; margin: 10px;
+  }
+  .cover-display {
+    width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 10px;
+  }
 </style>
 </head>
 <body>
@@ -32,7 +62,7 @@
       <option value="Female">Female</option>
       <option value="Other">Other</option>
     </select>
-    <input type="date" id="dob" required>
+    <input type="date" id="dob" placeholder="Date of Birth" required>
     <button id="next1">Next</button>
   </div>
 
@@ -65,27 +95,12 @@
   </div>
 </div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
-
 <script>
-  // Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyAyMhgLjQg9zU1Tq2pFVmRiF_UiOBqPlj0",
-    authDomain: "genx-7a5b3.firebaseapp.com",
-    projectId: "genx-7a5b3",
-    storageBucket: "genx-7a5b3.firebasestorage.app",
-    messagingSenderId: "1293731877",
-    appId: "1:1293731877:web:a330360ade1db5e68897cc"
-  };
-  firebase.initializeApp(firebaseConfig);
-
   // Elements
   const step1 = document.getElementById('step1');
   const step2 = document.getElementById('step2');
   const step3 = document.getElementById('step3');
+
   const next1 = document.getElementById('next1');
   const next2 = document.getElementById('next2');
   const editBtn = document.getElementById('editBtn');
@@ -123,42 +138,29 @@
     step2.classList.add('active');
   });
 
-  // Step 2 → Step 3 (with Firebase Storage)
+  // Step 2 → Step 3
   next2.addEventListener('click', () => {
-    profileData.bio = bio.value || '';
+    const readerProfile = new FileReader();
+    const readerCover = new FileReader();
 
-    let uploadsDone = 0;
-
-    function checkAllDone(){
-      uploadsDone++;
-      if(uploadsDone === 2){ // Both uploads done
-        showReview();
-        step2.classList.remove('active');
-        step3.classList.add('active');
-      }
+    if(profilePic.files[0]){
+      readerProfile.onload = () => { profileData.avatar = readerProfile.result; showReview(); };
+      readerProfile.readAsDataURL(profilePic.files[0]);
+    } else {
+      profileData.avatar = "https://via.placeholder.com/100";
     }
 
-    // Profile Pic Upload
-    if(profilePic.files[0]){
-      const profileRef = firebase.storage().ref('profiles/' + Date.now() + '_' + profilePic.files[0].name);
-      profileRef.put(profilePic.files[0]).then(snapshot => {
-        snapshot.ref.getDownloadURL().then(url => {
-          profileData.avatar = url;
-          checkAllDone();
-        });
-      });
-    } else { profileData.avatar = "https://via.placeholder.com/100"; checkAllDone(); }
-
-    // Cover Pic Upload
     if(coverPic.files[0]){
-      const coverRef = firebase.storage().ref('covers/' + Date.now() + '_' + coverPic.files[0].name);
-      coverRef.put(coverPic.files[0]).then(snapshot => {
-        snapshot.ref.getDownloadURL().then(url => {
-          profileData.cover = url;
-          checkAllDone();
-        });
-      });
-    } else { profileData.cover = "https://via.placeholder.com/600x150"; checkAllDone(); }
+      readerCover.onload = () => { profileData.cover = readerCover.result; showReview(); };
+      readerCover.readAsDataURL(coverPic.files[0]);
+    } else {
+      profileData.cover = "https://via.placeholder.com/600x150";
+    }
+
+    profileData.bio = bio.value || '';
+    showReview();
+    step2.classList.remove('active');
+    step3.classList.add('active');
   });
 
   function showReview(){
@@ -171,7 +173,7 @@
     displayBio.textContent = profileData.bio;
   }
 
-  // Edit
+  // Edit button
   editBtn.addEventListener('click', () => {
     step3.classList.remove('active');
     step1.classList.add('active');
@@ -182,13 +184,19 @@
     bio.value = profileData.bio;
   });
 
-  // Save to Firebase Database
+  // Save profile to localStorage
   saveBtn.addEventListener('click', () => {
-    const newUserRef = firebase.database().ref('users/' + Date.now());
-    newUserRef.set(profileData)
-      .then(() => alert('Profile saved to Firebase successfully!'))
-      .catch(err => alert('Error: ' + err.message));
+    localStorage.setItem('userProfile', JSON.stringify(profileData));
+    alert('Profile saved successfully!');
   });
+
+  // Load existing profile if available
+  const existingProfile = JSON.parse(localStorage.getItem('userProfile'));
+  if(existingProfile){
+    profileData = existingProfile;
+    showReview();
+  }
+
 </script>
 </body>
 </html>
