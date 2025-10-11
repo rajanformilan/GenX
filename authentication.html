@@ -21,7 +21,7 @@
 <body>
 
 <div class="container">
-  <!-- Step 1: Basic Info -->
+  <!-- Step 1 -->
   <div class="step active" id="step1">
     <h2>Step 1: Basic Info</h2>
     <input type="text" id="firstName" placeholder="First Name" required>
@@ -36,7 +36,7 @@
     <button id="next1">Next</button>
   </div>
 
-  <!-- Step 2: Avatar, Cover, Bio -->
+  <!-- Step 2 -->
   <div class="step" id="step2">
     <h2>Step 2: Profile & Cover</h2>
     <label>Profile Picture:</label>
@@ -48,7 +48,7 @@
     <button id="next2">Next</button>
   </div>
 
-  <!-- Step 3: Review & Edit -->
+  <!-- Step 3 -->
   <div class="step" id="step3">
     <h2>Step 3: Review & Save</h2>
     <div class="profile-display">
@@ -65,26 +65,24 @@
   </div>
 </div>
 
-<!-- Firebase SDK -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 
 <script>
-  // Firebase config
+  // Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyAyMhgLjQg9zU1Tq2pFVmRiF_UiOBqPlj0",
     authDomain: "genx-7a5b3.firebaseapp.com",
     projectId: "genx-7a5b3",
-    storageBucket: "genx-7a5b3.firebasestorage.app",
+    storageBucket: "genx-7a5b3.appspot.com",
     messagingSenderId: "1293731877",
     appId: "1:1293731877:web:a330360ade1db5e68897cc"
   };
   firebase.initializeApp(firebaseConfig);
 
-  const db = firebase.database();
-  const storage = firebase.storage();
-
+  // Elements
   const step1 = document.getElementById('step1');
   const step2 = document.getElementById('step2');
   const step3 = document.getElementById('step3');
@@ -117,43 +115,33 @@
       alert('Please fill all fields!');
       return;
     }
-    profileData.name = firstName.value;
-    profileData.email = email.value;
-    profileData.gender = gender.value;
-    profileData.dob = dob.value;
+    profileData = {
+      name: firstName.value,
+      email: email.value,
+      gender: gender.value,
+      dob: dob.value
+    };
     step1.classList.remove('active');
     step2.classList.add('active');
   });
 
   // Step 2 → Step 3
-  next2.addEventListener('click', () => {
+  next2.addEventListener('click', async () => {
     profileData.bio = bio.value || '';
-    let uploadsDone = 0;
 
-    function checkAllDone(){
-      uploadsDone++;
-      if(uploadsDone === 2){
-        showReview();
-        step2.classList.remove('active');
-        step3.classList.add('active');
-      }
-    }
+    const upload = async (file, path, placeholder) => {
+      if (!file) return placeholder;
+      const ref = firebase.storage().ref(path + Date.now() + '_' + file.name);
+      await ref.put(file);
+      return await ref.getDownloadURL();
+    };
 
-    // Profile upload
-    if(profilePic.files[0]){
-      const ref = storage.ref('profiles/' + Date.now() + '_' + profilePic.files[0].name);
-      ref.put(profilePic.files[0]).then(s => s.ref.getDownloadURL()).then(url => {
-        profileData.avatar = url; checkAllDone();
-      });
-    } else { profileData.avatar = "https://via.placeholder.com/100"; checkAllDone(); }
+    profileData.avatar = await upload(profilePic.files[0], 'profiles/', 'https://via.placeholder.com/100');
+    profileData.cover = await upload(coverPic.files[0], 'covers/', 'https://via.placeholder.com/600x150');
 
-    // Cover upload
-    if(coverPic.files[0]){
-      const ref = storage.ref('covers/' + Date.now() + '_' + coverPic.files[0].name);
-      ref.put(coverPic.files[0]).then(s => s.ref.getDownloadURL()).then(url => {
-        profileData.cover = url; checkAllDone();
-      });
-    } else { profileData.cover = "https://via.placeholder.com/600x150"; checkAllDone(); }
+    showReview();
+    step2.classList.remove('active');
+    step3.classList.add('active');
   });
 
   function showReview(){
@@ -166,19 +154,18 @@
     displayBio.textContent = profileData.bio;
   }
 
-  // Edit
   editBtn.addEventListener('click', () => {
     step3.classList.remove('active');
     step1.classList.add('active');
   });
 
-  // Save & Redirect
+  // ✅ Save and Redirect
   saveBtn.addEventListener('click', () => {
-    const ref = db.ref('users/' + Date.now());
-    ref.set(profileData)
+    const newUserRef = firebase.database().ref('users/' + Date.now());
+    newUserRef.set(profileData)
       .then(() => {
-        alert('Profile saved successfully ✅');
-        window.location.href = "profile.html"; // ✅ redirect line
+        alert('✅ Profile saved successfully!');
+        window.location.href = "profile.html";  // Redirect after save
       })
       .catch(err => alert('Error: ' + err.message));
   });
