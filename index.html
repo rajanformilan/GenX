@@ -1,376 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GenX — News Feed</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: "Poppins", Arial, sans-serif;
-      background: #f0f2f5;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GenX — News Feed</title>
+<style>
+  body {
+    margin: 0;
+    font-family: "Poppins", Arial, sans-serif;
+    background: #f0f2f5;
+  }
 
-    /* Navbar */
-    .navbar {
-      background-color: #1877f2;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 15px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    }
+  /* Navbar */
+  .navbar {
+    background-color: #1877f2;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
 
-    .logo {
-      font-size: 22px;
-      font-weight: 700;
-    }
+  .logo { font-size: 22px; font-weight: 700; }
 
-    /* Search Bar */
-    .search-bar {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0 15px;
-      position: relative;
-    }
+  .menu-toggle { font-size: 28px; cursor: pointer; color: white; margin-left: 10px; }
 
-    .search-bar input {
-      width: 100%;
-      max-width: 320px;
-      padding: 8px 36px 8px 14px;
-      border-radius: 25px;
-      border: none;
-      outline: none;
-      font-size: 14px;
-      background: white;
-      color: #333;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+  .nav-links {
+    list-style: none;
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 100%;
+    background: white;
+    border-top: 1px solid #ddd;
+    padding: 10px 0;
+    text-align: center;
+    z-index: 999;
+  }
 
-    .search-bar::after {
-      content: "🔍";
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 15px;
-      color: #666;
-    }
+  .nav-links li { margin: 10px 0; }
+  .nav-links a { color: #333; text-decoration: none; font-weight: 600; }
+  .nav-links a:hover { color: #1877f2; }
+  .nav-links.active { display: flex; }
 
-    /* Dropdown search results */
-    .search-results {
-      position: absolute;
-      top: 42px;
-      width: 100%;
-      max-width: 320px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-      overflow: hidden;
-      z-index: 1000;
-      display: none;
-    }
-
-    .search-results.active {
-      display: block;
-    }
-
-    .search-results div {
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .search-results div:hover {
-      background: #f0f2f5;
-    }
-
-    .category {
-      background: #f7f7f7;
-      font-weight: bold;
-      color: #1877f2;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-
-    /* Nav Links */
+  @media (min-width: 768px) {
+    .menu-toggle { display: none; }
     .nav-links {
-      list-style: none;
-      display: none;
-      flex-direction: column;
-      position: absolute;
-      top: 60px;
-      right: 0;
-      width: 100%;
-      background: white;
-      border-top: 1px solid #ddd;
-      padding: 10px 0;
-      text-align: center;
-      z-index: 999;
-    }
-
-    .nav-links li {
-      margin: 10px 0;
-    }
-
-    .nav-links a {
-      color: #333;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .nav-links a:hover {
-      color: #1877f2;
-    }
-
-    .nav-links.active {
-      display: flex;
-    }
-
-    .menu-toggle {
-      font-size: 28px;
-      cursor: pointer;
-      color: white;
-      margin-left: 10px;
-    }
-
-    @media (min-width: 768px) {
-      .menu-toggle { display: none; }
-      .nav-links {
-        display: flex;
-        flex-direction: row;
-        position: static;
-        background: none;
-        border: none;
-      }
-      .nav-links li { margin: 0 10px; }
-      .nav-links a { color: white; }
-      .nav-links a:hover { text-decoration: underline; }
-    }
-
-    /* ===== Feed Section ===== */
-    .feed {
-      max-width: 600px;
-      margin: 20px auto;
-    }
-
-    .post {
-      background: white;
-      margin-bottom: 15px;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .post-header {
-      font-weight: bold;
-      color: #1877f2;
-    }
-
-    .post-time {
-      color: gray;
-      font-size: 12px;
-    }
-
-    .post img, .post video {
-      width: 100%;
-      margin-top: 10px;
-      border-radius: 10px;
-    }
-
-    .actions {
-      margin-top: 10px;
-    }
-
-    .actions button {
+      display: flex !important;
+      flex-direction: row;
+      position: static;
       background: none;
       border: none;
-      color: #555;
-      margin-right: 10px;
-      cursor: pointer;
     }
+    .nav-links li { margin: 0 10px; }
+    .nav-links a { color: white; }
+    .nav-links a:hover { text-decoration: underline; }
+  }
 
-    .actions button:hover {
-      color: #1877f2;
-    }
+  /* Search Bar */
+  .search-bar { flex: 1; display: flex; justify-content: center; align-items: center; margin: 0 15px; position: relative; }
+  .search-bar input {
+    width: 100%; max-width: 320px;
+    padding: 8px 36px 8px 14px;
+    border-radius: 25px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background: white;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .search-bar::after { content: "🔍"; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 15px; color: #666; }
+  .search-results {
+    position: absolute; top: 42px; width: 100%; max-width: 320px; background: white; border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15); overflow: hidden; z-index: 1000; display: none;
+  }
+  .search-results.active { display: block; }
+  .search-results div { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 14px; }
+  .search-results div:hover { background: #f0f2f5; }
+  .category { background: #f7f7f7; font-weight: bold; color: #1877f2; text-transform: uppercase; font-size: 12px; }
 
-    .actions button.liked {
-      color: red;
-      font-weight: bold;
-    }
-
-    .no-posts {
-      text-align: center;
-      color: #888;
-      padding: 30px;
-    }
-  </style>
+  /* Feed */
+  .feed { max-width: 600px; margin: 20px auto; }
+  .post { background: white; margin-bottom: 15px; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .post-header { font-weight: bold; color: #1877f2; display: flex; justify-content: space-between; }
+  .post-time { color: gray; font-size: 12px; }
+  .post img, .post video { width: 100%; margin-top: 10px; border-radius: 10px; }
+  .actions { margin-top: 10px; }
+  .actions button { background: none; border: none; color: #555; margin-right: 10px; cursor: pointer; }
+  .actions button:hover { color: #1877f2; }
+  .actions button.liked { color: red; font-weight: bold; }
+  .no-posts { text-align: center; color: #888; padding: 30px; }
+</style>
 </head>
 <body>
 
   <nav class="navbar">
     <div class="logo">GenX</div>
-
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="Search profiles, posts, pages..." />
       <div class="search-results" id="searchResults"></div>
     </div>
-
     <div class="menu-toggle" id="menu-toggle">☰</div>
-
     <ul class="nav-links" id="nav-links">
-    <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-    <li><a href="authentication.html"><i class="fas fa-sign-in-alt"></i> Signup/Login</a></li>
-    <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
-      <li><a href="groups.html"><i class="fas fa-groups"></i>Groups</a></li>
-        <li><a href="friends.html"><i class="fas fa-friends"></i> Friendship</a></li>
-        <li><a href="chat.html"><i class="fas fa-chats"></i> Chats</a></li>
-    <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
-    <li><a href="services.html"><i class="fas fa-cogs"></i> Services</a></li>
-    <li><a href="contact.html"><i class="fas fa-phone-alt"></i> Contact</a></li>
-      <li><a href="settings.html"><i class="fas fa-settings"></i> Settings</a></li>
-  </ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="authentication.html">Signup/Login</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="groups.html">Groups</a></li>
+      <li><a href="friends.html">Friendship</a></li>
+      <li><a href="chat.html">Chats</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
   </nav>
 
-  <!-- ===== News Feed Section ===== -->
-  <div class="feed" id="feedContainer"></div>
+  <div class="feed" id="feedContainer">
+    <div class="no-posts">Loading posts...</div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js"></script>
 
   <script>
-    const currentUser = "Milan Kandel"; // logged-in user
-
-    // Navbar toggle
-    const menuToggle = document.getElementById('menu-toggle');
-    const navLinks = document.getElementById('nav-links');
-    menuToggle.addEventListener('click', () => {
-      navLinks.classList.toggle('active');
-    });
-
-    // Search system
-    const data = {
-      users: ["Milan Kandel", "Sita Rai", "John Smith", "Aarav Shrestha"],
-      pages: ["Digital Nepal", "GenX Official", "Smart Investments", "Real Estate Hub"],
-      groups: ["Nepal Tech Group", "Bara Entrepreneurs", "Students Network"],
-      posts: [
-        "How to grow your business online",
-        "New real estate projects in Nepal",
-        "GenX introduces live streaming feature",
-        "Tips for investment success"
-      ]
-    };
-
-    const searchInput = document.getElementById('searchInput');
-    const searchResults = document.getElementById('searchResults');
-
-    searchInput.addEventListener('input', () => {
-      const query = searchInput.value.toLowerCase();
-      searchResults.innerHTML = "";
-      if (query.trim() === "") {
-        searchResults.classList.remove('active');
-        return;
-      }
-
-      let resultsHTML = "";
-      for (const category in data) {
-        const filtered = data[category].filter(item =>
-          item.toLowerCase().includes(query)
-        );
-        if (filtered.length > 0) {
-          resultsHTML += `<div class="category">${category}</div>`;
-          filtered.forEach(item => {
-            resultsHTML += `<div>${item}</div>`;
-          });
-        }
-      }
-      searchResults.innerHTML = resultsHTML || `<div>No results found</div>`;
-      searchResults.classList.add('active');
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.search-bar')) {
-        searchResults.classList.remove('active');
-      }
-    });
-
-    // ===== Load All Posts from localStorage =====
-    const feedContainer = document.getElementById('feedContainer');
-
-    function loadPosts() {
-      const posts = JSON.parse(localStorage.getItem('genx_posts')) || [];
-      feedContainer.innerHTML = '';
-
-      if (posts.length === 0) {
-        feedContainer.innerHTML = '<div class="no-posts">No posts yet. Be the first to post!</div>';
-        return;
-      }
-
-      posts.forEach((post, index) => {
-        const div = document.createElement('div');
-        div.classList.add('post');
-
-        // Ensure likesArray exists
-        if (!post.likesArray) post.likesArray = [];
-
-        const liked = post.likesArray.includes(currentUser);
-
-        div.innerHTML = `
-          <div class="post-header">${post.username} — <span style="font-size:12px;color:gray;">${post.privacy || 'public'}</span></div>
-          <div class="post-time">${post.time}</div>
-          <p>${post.text}</p>
-          ${
-            post.media
-              ? post.type && post.type.startsWith('image')
-                ? `<img src="${post.media}" alt="Post image">`
-                : `<video controls><source src="${post.media}" type="${post.type}"></video>`
-              : ''
-          }
-          <div class="actions">
-            <button onclick="likePost(${index})" class="${liked ? 'liked' : ''}">${liked ? '💔 Unlike' : '❤️ Like'} (${post.likesArray.length})</button>
-            <button onclick="commentPost(${index})">💬 Comment</button>
-            <button onclick="sharePost(${index})">🔗 Share</button>
-          </div>
-        `;
-        feedContainer.appendChild(div);
+    document.addEventListener('DOMContentLoaded', () => {
+      // Hamburger menu
+      const menuToggle = document.getElementById('menu-toggle');
+      const navLinks = document.getElementById('nav-links');
+      menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
       });
-    }
 
-    function likePost(index) {
-      const posts = JSON.parse(localStorage.getItem('genx_posts')) || [];
-      if (!posts[index].likesArray) posts[index].likesArray = [];
+      // Search example
+      const data = {
+        users: ["Milan Kandel", "Sita Rai", "John Smith", "Aarav Shrestha"],
+        pages: ["Digital Nepal", "GenX Official", "Smart Investments", "Real Estate Hub"],
+        groups: ["Nepal Tech Group", "Bara Entrepreneurs", "Students Network"],
+        posts: ["How to grow your business online","New real estate projects in Nepal","GenX live streaming feature","Tips for investment success"]
+      };
+      const searchInput = document.getElementById('searchInput');
+      const searchResults = document.getElementById('searchResults');
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase();
+        searchResults.innerHTML = "";
+        if (!query.trim()) return searchResults.classList.remove('active');
+        let resultsHTML = "";
+        for (const category in data) {
+          const filtered = data[category].filter(item => item.toLowerCase().includes(query));
+          if (filtered.length) {
+            resultsHTML += `<div class="category">${category}</div>`;
+            filtered.forEach(item => resultsHTML += `<div>${item}</div>`);
+          }
+        }
+        searchResults.innerHTML = resultsHTML || `<div>No results found</div>`;
+        searchResults.classList.add('active');
+      });
+      document.addEventListener('click', e => { if (!e.target.closest('.search-bar')) searchResults.classList.remove('active'); });
 
-      const userIndex = posts[index].likesArray.indexOf(currentUser);
-      if (userIndex === -1) {
-        posts[index].likesArray.push(currentUser); // Like
-      } else {
-        posts[index].likesArray.splice(userIndex, 1); // Unlike
+      // ===== Firebase Initialization =====
+      const firebaseConfig = {
+        // your Firebase config
+      };
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+      const feedContainer = document.getElementById('feedContainer');
+
+      // Load posts from Firebase
+      function loadPosts() {
+        db.collection("posts").orderBy("time", "desc").onSnapshot(snapshot => {
+          feedContainer.innerHTML = "";
+          if (snapshot.empty) {
+            feedContainer.innerHTML = '<div class="no-posts">No posts yet.</div>';
+            return;
+          }
+          snapshot.forEach(doc => {
+            const post = doc.data();
+            const postDiv = document.createElement('div');
+            postDiv.classList.add('post');
+            postDiv.innerHTML = `
+              <div class="post-header">
+                <span>${post.username}</span>
+                <span style="font-size:12px;color:gray;">${post.privacy || 'public'}</span>
+              </div>
+              <div class="post-time">${new Date(post.time).toLocaleString()}</div>
+              <p>${post.text || ''}</p>
+              ${
+                post.media
+                  ? post.type && post.type.startsWith('image')
+                    ? `<img src="${post.media}" alt="post image">`
+                    : `<video controls><source src="${post.media}" type="${post.type}"></video>`
+                  : ''
+              }
+              <div class="actions">
+                <button onclick="alert('Like clicked')">❤️ Like</button>
+                <button onclick="alert('Comment clicked')">💬 Comment</button>
+                <button onclick="alert('Share clicked')">🔗 Share</button>
+              </div>
+            `;
+            feedContainer.appendChild(postDiv);
+          });
+        });
       }
 
-      localStorage.setItem('genx_posts', JSON.stringify(posts));
       loadPosts();
-    }
-
-    function commentPost(index) {
-      const comment = prompt("Write your comment:");
-      if (comment) {
-        const posts = JSON.parse(localStorage.getItem('genx_posts')) || [];
-        if (!posts[index].comments) posts[index].comments = [];
-        posts[index].comments.push({ user: currentUser, text: comment });
-        localStorage.setItem('genx_posts', JSON.stringify(posts));
-        alert("Comment added!");
-      }
-    }
-
-    function sharePost(index) {
-      alert("Post link copied!");
-    }
-
-    loadPosts();
+    });
   </script>
 </body>
 </html>
