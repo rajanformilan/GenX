@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GenX — Admin Dashboard</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f2f5;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 1000px;
+    margin: 30px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  h2 {
+    color: #1877f2;
+    text-align: center;
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  th {
+    background-color: #1877f2;
+    color: white;
+  }
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Admin Dashboard — Users</h2>
+  <input type="text" id="searchInput" placeholder="Search users by name or email...">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Gender</th>
+        <th>Marital Status</th>
+        <th>Location</th>
+        <th>DOB</th>
+        <th>Bio</th>
+        <th>Registered At</th>
+      </tr>
+    </thead>
+    <tbody id="usersTable">
+      <!-- Users will load here -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+
+<script>
+  // 🔥 Firebase Config
+  const firebaseConfig = {
+    // YOUR_FIREBASE_CONFIG_HERE
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const usersTable = document.getElementById('usersTable');
+  const searchInput = document.getElementById('searchInput');
+
+  let allUsers = [];
+
+  // 🔹 Load all users
+  db.collection("users").orderBy("time", "desc").onSnapshot(snapshot => {
+    allUsers = [];
+    usersTable.innerHTML = "";
+    snapshot.forEach(doc => {
+      const user = doc.data();
+      allUsers.push(user);
+      addUserRow(user);
+    });
+  });
+
+  function addUserRow(user) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${user.name}</td>
+      <td>${user.email}</td>
+      <td>${user.gender}</td>
+      <td>${user.marital}</td>
+      <td>${user.location}</td>
+      <td>${user.dob}</td>
+      <td>${user.bio}</td>
+      <td>${new Date(user.time).toLocaleString()}</td>
+    `;
+    usersTable.appendChild(tr);
+  }
+
+  // 🔹 Search functionality
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase();
+    usersTable.innerHTML = "";
+    allUsers
+      .filter(user => user.name.toLowerCase().includes(query) || user.email.toLowerCase().includes(query))
+      .forEach(user => addUserRow(user));
+  });
+</script>
+
+</body>
+</html>
