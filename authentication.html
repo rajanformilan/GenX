@@ -16,7 +16,6 @@
   .profile-display { text-align: center; }
   .profile-display img { width: 100px; height: 100px; border-radius: 50%; margin: 10px; }
   .cover-display { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
-  a { color:#1877f2; text-decoration:none; }
 </style>
 </head>
 <body>
@@ -33,30 +32,8 @@
       <option value="Female">Female</option>
       <option value="Other">Other</option>
     </select>
-    <input type="date" id="dob" placeholder="Date of Birth" required>
-
-    <!-- New Fields -->
-    <input type="text" id="qualification" placeholder="Qualification">
-    <select id="workingStatus">
-      <option value="">Working Status</option>
-      <option value="Employed">Employed</option>
-      <option value="Self-Employed">Self-Employed</option>
-      <option value="Student">Student</option>
-      <option value="Unemployed">Unemployed</option>
-    </select>
-    <select id="maritalStatus">
-      <option value="">Marital Status</option>
-      <option value="Single">Single</option>
-      <option value="Married">Married</option>
-      <option value="Divorced">Divorced</option>
-    </select>
-    <input type="text" id="location" placeholder="Location">
-
+    <input type="date" id="dob" required>
     <button id="next1">Next</button>
-
-    <div style="text-align:center; margin-top:15px;">
-      <p>Already have an account? <a href="login.html">Login</a></p>
-    </div>
   </div>
 
   <!-- Step 2: Avatar, Cover, Bio -->
@@ -82,7 +59,6 @@
       <p id="displayDob"></p>
       <img id="displayCover" class="cover-display" src="https://via.placeholder.com/600x150" alt="Cover">
       <p id="displayBio"></p>
-      <p id="extraInfo"></p>
     </div>
     <button id="editBtn">Edit Info</button>
     <button id="saveBtn">Save Profile</button>
@@ -97,7 +73,7 @@
 <script>
   // Firebase config
   const firebaseConfig = {
-    apiKey: "AIzaSyAyMhgLjQg9zU1Tq2fVmRiF_UiOBqPlj0",
+    apiKey: "AIzaSyAyMhgLjQg9zU1Tq2pFVmRiF_UiOBqPlj0",
     authDomain: "genx-7a5b3.firebaseapp.com",
     projectId: "genx-7a5b3",
     storageBucket: "genx-7a5b3.firebasestorage.app",
@@ -119,10 +95,6 @@
   const email = document.getElementById('email');
   const gender = document.getElementById('gender');
   const dob = document.getElementById('dob');
-  const qualification = document.getElementById('qualification');
-  const workingStatus = document.getElementById('workingStatus');
-  const maritalStatus = document.getElementById('maritalStatus');
-  const location = document.getElementById('location');
   const profilePic = document.getElementById('profilePic');
   const coverPic = document.getElementById('coverPic');
   const bio = document.getElementById('bio');
@@ -134,50 +106,59 @@
   const displayProfile = document.getElementById('displayProfile');
   const displayCover = document.getElementById('displayCover');
   const displayBio = document.getElementById('displayBio');
-  const extraInfo = document.getElementById('extraInfo');
 
   let profileData = {};
 
   // Step 1 → Step 2
   next1.addEventListener('click', () => {
     if(!firstName.value || !email.value || !gender.value || !dob.value){
-      alert('Please fill all mandatory fields!');
+      alert('Please fill all fields!');
       return;
     }
     profileData.name = firstName.value;
     profileData.email = email.value;
     profileData.gender = gender.value;
     profileData.dob = dob.value;
-    profileData.qualification = qualification.value || '';
-    profileData.workingStatus = workingStatus.value || '';
-    profileData.maritalStatus = maritalStatus.value || '';
-    profileData.location = location.value || '';
-
     step1.classList.remove('active');
     step2.classList.add('active');
   });
 
-  // Step 2 → Step 3
+  // Step 2 → Step 3 (with Firebase Storage)
   next2.addEventListener('click', () => {
     profileData.bio = bio.value || '';
 
-    function uploadFile(file, folder, defaultUrl){
-      if(file){
-        const ref = firebase.storage().ref(`${folder}/${Date.now()}_${file.name}`);
-        return ref.put(file).then(snapshot => snapshot.ref.getDownloadURL());
-      } else return Promise.resolve(defaultUrl);
+    let uploadsDone = 0;
+
+    function checkAllDone(){
+      uploadsDone++;
+      if(uploadsDone === 2){ // Both uploads done
+        showReview();
+        step2.classList.remove('active');
+        step3.classList.add('active');
+      }
     }
 
-    Promise.all([
-      uploadFile(profilePic.files[0], 'profiles', "https://via.placeholder.com/100"),
-      uploadFile(coverPic.files[0], 'covers', "https://via.placeholder.com/600x150")
-    ]).then(urls => {
-      profileData.avatar = urls[0];
-      profileData.cover = urls[1];
-      showReview();
-      step2.classList.remove('active');
-      step3.classList.add('active');
-    }).catch(err => alert('Error uploading images: ' + err.message));
+    // Profile Pic Upload
+    if(profilePic.files[0]){
+      const profileRef = firebase.storage().ref('profiles/' + Date.now() + '_' + profilePic.files[0].name);
+      profileRef.put(profilePic.files[0]).then(snapshot => {
+        snapshot.ref.getDownloadURL().then(url => {
+          profileData.avatar = url;
+          checkAllDone();
+        });
+      });
+    } else { profileData.avatar = "https://via.placeholder.com/100"; checkAllDone(); }
+
+    // Cover Pic Upload
+    if(coverPic.files[0]){
+      const coverRef = firebase.storage().ref('covers/' + Date.now() + '_' + coverPic.files[0].name);
+      coverRef.put(coverPic.files[0]).then(snapshot => {
+        snapshot.ref.getDownloadURL().then(url => {
+          profileData.cover = url;
+          checkAllDone();
+        });
+      });
+    } else { profileData.cover = "https://via.placeholder.com/600x150"; checkAllDone(); }
   });
 
   function showReview(){
@@ -188,10 +169,6 @@
     displayProfile.src = profileData.avatar;
     displayCover.src = profileData.cover;
     displayBio.textContent = profileData.bio;
-    extraInfo.innerHTML = `Qualification: ${profileData.qualification} <br>
-                           Working: ${profileData.workingStatus} <br>
-                           Marital: ${profileData.maritalStatus} <br>
-                           Location: ${profileData.location}`;
   }
 
   // Edit
@@ -202,10 +179,6 @@
     email.value = profileData.email;
     gender.value = profileData.gender;
     dob.value = profileData.dob;
-    qualification.value = profileData.qualification;
-    workingStatus.value = profileData.workingStatus;
-    maritalStatus.value = profileData.maritalStatus;
-    location.value = profileData.location;
     bio.value = profileData.bio;
   });
 
@@ -216,7 +189,6 @@
       .then(() => alert('Profile saved to Firebase successfully!'))
       .catch(err => alert('Error: ' + err.message));
   });
-
 </script>
 </body>
 </html>
