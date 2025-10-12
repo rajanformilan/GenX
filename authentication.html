@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisitBook Sign Up - All Steps</title>
+    <title>VisitBook Sign Up - Cloudinary Upload</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* Base & Global Styles */
@@ -11,7 +11,7 @@
         .signup-container { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); width: 100%; max-width: 550px; text-align: center; } 
         h1 { margin-bottom: 10px; font-size: 2rem; color: #1c1e21; }
         p { color: #606770; margin-bottom: 30px; }
-        
+
         /* Form & Step Management */
         .step-form { display: none; } /* Hide all steps by default */
         .step-form.active { display: block; } /* Show the active step */
@@ -87,7 +87,7 @@
             <li class="progress-step" id="step-3-indicator"><div class="step-circle">3</div></li>
         </ul>
         <form id="multi-step-form" action="#" method="POST" enctype="multipart/form-data">
-            
+
             <div class="step-form active" id="step-1">
                 <h1>Create Your VisitBook Account</h1>
                 <p>Start your travel journal in just a few steps.</p>
@@ -137,7 +137,7 @@
             <div class="step-form" id="step-3">
                 <h1>Add Your Travel Photos</h1>
                 <p>Show off your style! (Profile photo is required)</p>
-                
+
                 <div class="upload-section">
                     <label for="profilePhoto" class="upload-box profile-photo-box" id="profile-preview-box">
                         <div class="upload-placeholder">
@@ -163,28 +163,13 @@
         </form>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-    
     <script>
-        // --- YOUR FIREBASE CONFIGURATION ---
-        const firebaseConfig = {
-            apiKey: "bb4a4c93c9da81ab4f2408a72db80b8cec1f2d68",
-            authDomain: "genx-7a5b3.firebaseapp.com",
-            projectId: "genx-7a5b3",
-            storageBucket: "genx-7a5b3.firebasestorage.app",
-            messagingSenderId: "1293731877",
-            appId: "1:1293731877:web:a330360ade1db5e68897cc"
-        };
-        // --- END CONFIGURATION ---
-
-        // Initialize Firebase services
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
+        // --- CLOUDINARY CONFIGURATION ---
+        // 🚨 IMPORTANT: Change 'YOUR_CLOUD_NAME 'dnntyhoot'
+        // 🚨 IMPORTANT: Change 'YOUR_UPLOAD_PRESET' to the UNSIGNED preset you create in your Cloudinary console.
+        const CLOUD_NAME = 'dnntyhoot';
+        const CLOUDINARY_UPLOAD_PRESET = 'unsigned_genxisvisitbook'; // Replace with your actual Unsigned Upload Preset name
+        // ---------------------------------
 
         let currentStep = 1;
 
@@ -209,7 +194,7 @@
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
                 const confirm = document.getElementById('confirmPassword').value;
-                // Basic check for password length (Firebase minimum is 6)
+                
                 if (!email || password.length < 6 || password !== confirm) {
                     alert('Please fill in a valid email, and ensure passwords are at least 6 characters and match.');
                     return;
@@ -222,7 +207,7 @@
                     return;
                 }
             }
-            
+
             currentStep++;
             updateSteps();
         }
@@ -232,11 +217,37 @@
             updateSteps();
         }
 
-        // The core function to handle registration and data saving to Firebase
-        async function finishSignup(event) {
-            // Prevent default form submission (though the button is type="button")
-            event.preventDefault(); 
+        /**
+         * Uploads a file to Cloudinary using an unsigned upload.
+         * @param {File} file - The file to upload.
+         * @returns {Promise<string>} The secure URL of the uploaded image.
+         */
+        async function uploadToCloudinary(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+            const uploadURL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
             
+            const response = await fetch(uploadURL, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error(`Cloudinary upload failed: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            // Data contains public_id, secure_url, etc. We return the secure URL.
+            return data.secure_url;
+        }
+
+
+        // The core function to handle registration and data saving
+        async function finishSignup(event) {
+            event.preventDefault(); 
+
             const profileInput = document.getElementById('profilePhoto');
             if (!profileInput.files.length) {
                 alert('Please upload a Profile Photo to complete registration.');
@@ -246,9 +257,9 @@
             // Disable the button and show progress
             const finishButton = event.target;
             finishButton.disabled = true;
-            finishButton.textContent = 'Registering...';
+            finishButton.textContent = 'Uploading Photos...';
 
-            // 1. Collect all form data
+            // 1. Collect form data
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const firstName = document.getElementById('firstName').value;
@@ -259,62 +270,72 @@
             const coverPhotoFile = document.getElementById('coverPhoto').files[0]; 
 
             try {
-                // 2. Create user with Email/Password in Firebase Authentication
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-                const uid = user.uid; // Get the unique user ID
+                let profilePhotoURL = '';
+                let coverPhotoURL = '';
+                
+                // 2. Upload Profile Photo to Cloudinary
+                profilePhotoURL = await uploadToCloudinary(profilePhotoFile);
 
-                // 3. Upload Profile Photo to Storage and get URL
-                const profilePhotoRef = storage.ref(`profile-photos/${uid}/${profilePhotoFile.name}`);
-                await profilePhotoRef.put(profilePhotoFile);
-                const profilePhotoURL = await profilePhotoRef.getDownloadURL();
-
-                let coverPhotoURL = ''; 
-                // 4. (Optional) Upload Cover Photo
+                // 3. (Optional) Upload Cover Photo
                 if (coverPhotoFile) {
-                    const coverPhotoRef = storage.ref(`cover-photos/${uid}/${coverPhotoFile.name}`);
-                    await coverPhotoRef.put(coverPhotoFile);
-                    coverPhotoURL = await coverPhotoRef.getDownloadURL();
+                    finishButton.textContent = 'Uploading Cover Photo...';
+                    coverPhotoURL = await uploadToCloudinary(coverPhotoFile);
                 }
 
-                // 5. Save all user data to Firestore
-                await db.collection('users').doc(uid).set({
+                // 4. Gather ALL Data to send to your Backend
+                const finalUserData = {
+                    email: email,
+                    password: password, // Note: In a real app, this should be handled securely by your backend
                     firstName: firstName,
                     lastName: lastName,
-                    email: email,
                     dob: dob,
                     gender: gender,
-                    profilePhotoURL: profilePhotoURL,
-                    coverPhotoURL: coverPhotoURL, 
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp() // Good practice to timestamp creation
-                });
+                    profilePhotoURL: profilePhotoURL, // THE CLOUDINARY URLS!
+                    coverPhotoURL: coverPhotoURL 
+                };
+
+                // 5. 🚨 CRITICAL: Send final data to your secure backend API
+                // fetch('YOUR_BACKEND_API_ENDPOINT/register', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify(finalUserData)
+                // });
+                // Instead of a real API call, we'll log the data for demonstration.
                 
+                console.log("--- FINAL USER DATA READY FOR BACKEND ---");
+                console.log("Profile Photo URL (Cloudinary):", profilePhotoURL);
+                console.log("Cover Photo URL (Cloudinary):", coverPhotoURL || 'N/A');
+                console.log("All User Data:", finalUserData);
+                console.log("-----------------------------------------");
+
+
                 // 6. Final success & Redirect
-                alert('Success! Your VisitBook account is created.');
-                window.location.href = "profile.html"; 
+                alert('Success! Photos uploaded to Cloudinary. Data logged to console.');
+                // window.location.href = "profile.html"; // Redirect after successful backend save
 
             } catch (error) {
-                console.error("Firebase Sign Up Error:", error);
+                console.error("Sign Up Error:", error);
                 alert("Error creating account: " + error.message);
-                
-                // Re-enable button on error
+
+            } finally {
+                // Re-enable button
                 finishButton.disabled = false;
                 finishButton.textContent = 'Finish & Explore';
             }
         }
 
-        // Image Preview Function
+        // Image Preview Function (remains the same)
         function previewImage(input, previewId) {
             const previewBox = document.getElementById(previewId);
-            
+
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                
+
                 reader.onload = function(e) {
                     previewBox.style.backgroundImage = 'url(' + e.target.result + ')';
                     previewBox.classList.add('has-image');
                 };
-                
+
                 reader.readAsDataURL(input.files[0]);
             } else {
                 previewBox.style.backgroundImage = '';
