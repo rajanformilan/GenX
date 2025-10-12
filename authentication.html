@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisitBook Sign Up - Cloudinary Upload</title>
+    <title>VisitBook Sign Up - Cloudinary Upload Complete</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* Base & Global Styles */
@@ -165,10 +165,11 @@
 
     <script>
         // --- CLOUDINARY CONFIGURATION ---
-        // 🚨 IMPORTANT: Change 'YOUR_CLOUD_NAME 'dnntyhoot'
-        // 🚨 IMPORTANT: Change 'YOUR_UPLOAD_PRESET' to the UNSIGNED preset you create in your Cloudinary console.
-        const CLOUD_NAME = 'dnntyhoot';
-        const CLOUDINARY_UPLOAD_PRESET = 'unsigned_genxisvisitbook'; // Replace with your actual Unsigned Upload Preset name
+        // CLOUD_NAME from your Dashboard
+        const CLOUD_NAME = 'dnntyhoot'; 
+        
+        // Unsigned Upload Preset name you created in Cloudinary Settings
+        const CLOUDINARY_UPLOAD_PRESET = 'unsigned_genxisvisitbook'; 
         // ---------------------------------
 
         let currentStep = 1;
@@ -235,11 +236,11 @@
             });
 
             if (!response.ok) {
-                throw new Error(`Cloudinary upload failed: ${response.statusText}`);
+                const errorData = await response.json();
+                throw new Error(`Cloudinary upload failed: ${response.status} - ${errorData.error.message || response.statusText}`);
             }
 
             const data = await response.json();
-            // Data contains public_id, secure_url, etc. We return the secure URL.
             return data.secure_url;
         }
 
@@ -259,13 +260,7 @@
             finishButton.disabled = true;
             finishButton.textContent = 'Uploading Photos...';
 
-            // 1. Collect form data
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const firstName = document.getElementById('firstName').value;
-            const lastName = document.getElementById('lastName').value;
-            const dob = document.getElementById('dob').value;
-            const gender = document.querySelector('input[name="gender"]:checked').value;
+            // Collect form data
             const profilePhotoFile = profileInput.files[0];
             const coverPhotoFile = document.getElementById('coverPhoto').files[0]; 
 
@@ -273,58 +268,53 @@
                 let profilePhotoURL = '';
                 let coverPhotoURL = '';
                 
-                // 2. Upload Profile Photo to Cloudinary
+                // 1. Upload Profile Photo to Cloudinary
                 profilePhotoURL = await uploadToCloudinary(profilePhotoFile);
 
-                // 3. (Optional) Upload Cover Photo
+                // 2. (Optional) Upload Cover Photo
                 if (coverPhotoFile) {
                     finishButton.textContent = 'Uploading Cover Photo...';
                     coverPhotoURL = await uploadToCloudinary(coverPhotoFile);
                 }
 
-                // 4. Gather ALL Data to send to your Backend
+                // 3. Gather ALL Data (for backend in a real app)
                 const finalUserData = {
-                    email: email,
-                    password: password, // Note: In a real app, this should be handled securely by your backend
-                    firstName: firstName,
-                    lastName: lastName,
-                    dob: dob,
-                    gender: gender,
-                    profilePhotoURL: profilePhotoURL, // THE CLOUDINARY URLS!
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value,
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    dob: document.getElementById('dob').value,
+                    gender: document.querySelector('input[name="gender"]:checked').value,
+                    profilePhotoURL: profilePhotoURL,
                     coverPhotoURL: coverPhotoURL 
                 };
 
-                // 5. 🚨 CRITICAL: Send final data to your secure backend API
-                // fetch('YOUR_BACKEND_API_ENDPOINT/register', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify(finalUserData)
-                // });
-                // Instead of a real API call, we'll log the data for demonstration.
+                // 4. 🚨 In a production app, you would send finalUserData to your secure backend API here!
                 
+                // Log data and show success message
                 console.log("--- FINAL USER DATA READY FOR BACKEND ---");
                 console.log("Profile Photo URL (Cloudinary):", profilePhotoURL);
                 console.log("Cover Photo URL (Cloudinary):", coverPhotoURL || 'N/A');
                 console.log("All User Data:", finalUserData);
                 console.log("-----------------------------------------");
 
-
-                // 6. Final success & Redirect
                 alert('Success! Photos uploaded to Cloudinary. Data logged to console.');
-                // window.location.href = "profile.html"; // Redirect after successful backend save
+
+                // ⭐ FINAL REDIRECTION ⭐
+                window.location.href = "profile.html"; 
 
             } catch (error) {
                 console.error("Sign Up Error:", error);
                 alert("Error creating account: " + error.message);
 
             } finally {
-                // Re-enable button
+                // Re-enable button on error/completion (if redirection fails)
                 finishButton.disabled = false;
                 finishButton.textContent = 'Finish & Explore';
             }
         }
 
-        // Image Preview Function (remains the same)
+        // Image Preview Function
         function previewImage(input, previewId) {
             const previewBox = document.getElementById(previewId);
 
