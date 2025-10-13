@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisitBook Sign Up - Cloudinary Upload Complete</title>
+    <title>VisitBook Sign Up - Cloudinary Upload</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* Base & Global Styles */
@@ -78,7 +79,9 @@
         .btn:disabled { cursor: not-allowed; opacity: 0.6; } /* Style for disabled button */
 
     </style>
+
 </head>
+
 <body>
     <div class="signup-container">
         <ul class="progress-bar" id="progress-bar">
@@ -165,13 +168,13 @@
 
     <script>
         // --- CLOUDINARY CONFIGURATION ---
-        // CLOUD_NAME from your Dashboard
+        // CLOUD_NAME is 'dnntyhoot'
         const CLOUD_NAME = 'dnntyhoot'; 
-        
-        // Unsigned Upload Preset name you created in Cloudinary Settings
+
+        // CLOUDINARY_UPLOAD_PRESET is the exact name 'unsigned_genxisvisitbook'
         const CLOUDINARY_UPLOAD_PRESET = 'unsigned_genxisvisitbook'; 
         // ---------------------------------
-
+        
         let currentStep = 1;
 
         function updateSteps() {
@@ -245,7 +248,7 @@
         }
 
 
-        // The core function to handle registration and data saving
+        // The core function to handle registration, file upload, and redirection
         async function finishSignup(event) {
             event.preventDefault(); 
 
@@ -261,6 +264,11 @@
             finishButton.textContent = 'Uploading Photos...';
 
             // Collect form data
+            const email = document.getElementById('email').value;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const dob = document.getElementById('dob').value;
+            const gender = document.querySelector('input[name="gender"]:checked').value;
             const profilePhotoFile = profileInput.files[0];
             const coverPhotoFile = document.getElementById('coverPhoto').files[0]; 
 
@@ -279,19 +287,16 @@
 
                 // 3. Gather ALL Data (for backend in a real app)
                 const finalUserData = {
-                    email: document.getElementById('email').value,
-                    password: document.getElementById('password').value,
-                    firstName: document.getElementById('firstName').value,
-                    lastName: document.getElementById('lastName').value,
-                    dob: document.getElementById('dob').value,
-                    gender: document.querySelector('input[name="gender"]:checked').value,
-                    profilePhotoURL: profilePhotoURL,
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    dob: dob,
+                    gender: gender,
+                    profilePhotoURL: profilePhotoURL, // THE CLOUDINARY URLS!
                     coverPhotoURL: coverPhotoURL 
                 };
 
-                // 4. 🚨 In a production app, you would send finalUserData to your secure backend API here!
-                
-                // Log data and show success message
+                // Log data and show success message (Console output is confirmed working)
                 console.log("--- FINAL USER DATA READY FOR BACKEND ---");
                 console.log("Profile Photo URL (Cloudinary):", profilePhotoURL);
                 console.log("Cover Photo URL (Cloudinary):", coverPhotoURL || 'N/A');
@@ -300,7 +305,7 @@
 
                 alert('Success! Photos uploaded to Cloudinary. Data logged to console.');
 
-                // ⭐ FINAL REDIRECTION ⭐
+                // ⭐ REDIRECT TO PROFILE PAGE ⭐
                 window.location.href = "profile.html"; 
 
             } catch (error) {
@@ -308,7 +313,7 @@
                 alert("Error creating account: " + error.message);
 
             } finally {
-                // Re-enable button on error/completion (if redirection fails)
+                // Re-enable button
                 finishButton.disabled = false;
                 finishButton.textContent = 'Finish & Explore';
             }
