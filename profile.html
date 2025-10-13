@@ -3,39 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>GenX — My Profile</title>
+<title>VisitBook — My Profile</title>
 <style>
   body { font-family: "Poppins", Arial, sans-serif; background: #f0f2f5; margin:0; padding:0; }
   .profile-container { max-width:600px; margin:20px auto; background:white; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.1); overflow:hidden; }
   .cover-photo { width:100%; height:180px; object-fit:cover; }
   .profile-info { text-align:center; padding:15px; margin-top:-60px; }
-  .profile-info img { width:110px; height:110px; border-radius:50%; border:4px solid white; }
+  .profile-info img { width:110px; height:110px; border-radius:50%; border:4px solid white; object-fit:cover; }
   .profile-info h2 { margin:10px 0 5px; color:#1877f2; }
   .profile-info p { margin:4px 0; color:#555; }
   .bio { background:#f8f9fa; padding:15px; border-radius:10px; margin:10px; text-align:center; font-style:italic; }
   .btns { text-align:center; margin:15px; }
   .btn { display:inline-block; background:#1877f2; color:white; padding:10px 20px; border-radius:8px; margin:5px; text-decoration:none; font-weight:500; }
   .btn:hover { background:#165ec9; }
-  .no-profile { text-align:center; padding:50px; color:#666; }
-  .post-section { max-width:600px; margin:20px auto; background:white; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.1); padding:15px; }
-  textarea { width:100%; border:1px solid #ccc; border-radius:8px; padding:10px; resize:none; font-family:inherit; }
-  input[type="file"], select { margin-top:8px; display:block; }
-  button { background:#1877f2; color:white; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; }
-  button:hover { background:#165ec9; }
-  .feed { max-width:600px; margin:20px auto; }
-  .post { background:white; margin-bottom:15px; border-radius:12px; box-shadow:0 2px 5px rgba(0,0,0,0.1); padding:15px; }
-  .post-header { display:flex; justify-content:space-between; font-weight:bold; color:#1877f2; }
-  .post-time { color:gray; font-size:12px; }
-  .post img, .post video { width:100%; border-radius:10px; margin-top:10px; }
-  .actions { margin-top:10px; }
-  .actions button { background:none; border:none; color:#555; margin-right:10px; cursor:pointer; }
-  .actions button:hover { color:#1877f2; }
-  .actions button.liked { color:red; font-weight:bold; }
+  .post-box { padding:15px; border-top:1px solid #ddd; text-align:center; }
+  .post-box textarea { width:100%; height:80px; border-radius:8px; border:1px solid #ccc; padding:10px; resize:none; }
+  .post-box input[type="file"] { margin-top:8px; }
+  .post-box button { margin-top:8px; padding:8px 16px; background:#1877f2; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+  .post-box button:hover { background:#155dc9; }
+  .post { background:white; margin:15px; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.1); overflow:hidden; }
+  .post-header { display:flex; align-items:center; padding:10px; }
+  .post-header img { width:40px; height:40px; border-radius:50%; margin-right:10px; }
+  .post-content { padding:10px; }
+  .post-content img, .post-content video { width:100%; border-radius:8px; margin-top:10px; }
 </style>
 </head>
 <body>
 
-<!-- Profile -->
 <div id="profileSection" class="profile-container" style="display:none;">
   <img id="coverImage" class="cover-photo" src="" alt="Cover Photo">
   <div class="profile-info">
@@ -46,6 +40,17 @@
     <p id="profileDob"></p>
   </div>
   <div class="bio" id="profileBio"></div>
+
+  <!-- ✏️ Post creation -->
+  <div class="post-box">
+    <textarea id="postText" placeholder="What's on your mind?"></textarea><br>
+    <input type="file" id="postMedia" accept="image/*,video/*"><br>
+    <button onclick="createPost()">Post</button>
+  </div>
+
+  <!-- 📄 Posts -->
+  <div id="postsContainer"></div>
+
   <div class="btns">
     <a href="edit-profile.html" class="btn">Edit Profile</a>
     <a href="index.html" class="btn" style="background:#42b72a;">Go to Home</a>
@@ -55,170 +60,113 @@
 <div id="noProfile" class="no-profile">
   <h3>No Profile Found</h3>
   <p>Please set up your profile first.</p>
-  <a href="authentication.html" class="btn">Create Profile</a>
+  <a href="signup.html" class="btn">Create Profile</a>
 </div>
 
-<!-- Create Post -->
-<div id="postSection" class="post-section" style="display:none;">
-  <h3>Create a Post</h3>
-  <textarea id="postText" placeholder="What's on your mind?" rows="3"></textarea>
-  <input type="file" id="mediaInput" accept="image/*,video/*">
-  <select id="privacySelect">
-    <option value="public">🌍 Public</option>
-    <option value="friends">👥 Friends</option>
-    <option value="private">🔒 Only Me</option>
-  </select>
-  <button id="postBtn">Post</button>
-</div>
-
-<!-- User Posts -->
-<div class="feed">
-  <h3 style="text-align:center;">Your Posts</h3>
-  <div id="myPosts"></div>
-</div>
-
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js"></script>
+<!-- Supabase + Cloudinary -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-  // 🔥 Firebase Configuration
-  const firebaseConfig = {
-    // YOUR_FIREBASE_CONFIG_HERE
-  };
+  // --- ⚙️ CONFIGURATIONS ---
+  const CLOUD_NAME = 'dnntyhoot';
+  const CLOUDINARY_UPLOAD_PRESET = 'unsigned_genxisvisitbook';
+  const SUPABASE_URL = 'https://jywisobgiiervzqqbpau.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_goJaWIQJ5jZ9h65wMlzuEw_if0g8BkP';
+  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // -------------------------
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const storage = firebase.storage();
-
-  const savedProfile = JSON.parse(localStorage.getItem("userProfile"));
   const profileSection = document.getElementById("profileSection");
   const noProfile = document.getElementById("noProfile");
-  const postSection = document.getElementById("postSection");
-  const postText = document.getElementById("postText");
-  const mediaInput = document.getElementById("mediaInput");
-  const privacySelect = document.getElementById("privacySelect");
-  const postBtn = document.getElementById("postBtn");
-  const myPosts = document.getElementById("myPosts");
+  const postsContainer = document.getElementById("postsContainer");
 
-  let username = "";
-  let userEmail = "";
+  const urlParams = new URLSearchParams(window.location.search);
+  const profileId = urlParams.get("id");
 
-  if (savedProfile) {
+  // 🧩 Load profile
+  async function loadProfile() {
+    if (!profileId) return noProfile.style.display = "block";
+
+    const { data, error } = await client.from("profiles").select("*").eq("id", profileId).single();
+    if (error || !data) return noProfile.style.display = "block";
+
     profileSection.style.display = "block";
-    postSection.style.display = "block";
     noProfile.style.display = "none";
 
-    document.getElementById("coverImage").src = savedProfile.cover || "https://via.placeholder.com/600x150";
-    document.getElementById("profileImage").src = savedProfile.avatar || "https://via.placeholder.com/100";
-    document.getElementById("profileName").textContent = savedProfile.name || "Unnamed User";
-    document.getElementById("profileEmail").textContent = "Email: " + (savedProfile.email || "Not Provided");
-    document.getElementById("profileGender").textContent = "Gender: " + (savedProfile.gender || "N/A");
-    document.getElementById("profileDob").textContent = "DOB: " + (savedProfile.dob || "N/A");
-    document.getElementById("profileBio").textContent = savedProfile.bio || "No bio added yet.";
+    document.getElementById("coverImage").src = data.cover_url || "https://via.placeholder.com/600x150";
+    document.getElementById("profileImage").src = data.avatar_url || "https://via.placeholder.com/100";
+    document.getElementById("profileName").textContent = data.full_name || "Unnamed User";
+    document.getElementById("profileEmail").textContent = "Email: " + (data.email || "Not Provided");
+    document.getElementById("profileGender").textContent = "Gender: " + (data.gender || "N/A");
+    document.getElementById("profileDob").textContent = "DOB: " + (data.date_of_birth || "N/A");
+    document.getElementById("profileBio").textContent = data.bio || "No bio added yet.";
 
-    username = savedProfile.name;
-    userEmail = savedProfile.email;
+    loadPosts();
   }
 
-  // 🔹 Create Post with Firebase Storage
-  postBtn.addEventListener("click", async () => {
-    const text = postText.value.trim();
-    const file = mediaInput.files[0];
-    const privacy = privacySelect.value;
-
-    if (!text && !file) return alert("Write something or add media!");
-    postBtn.disabled = true;
-
-    let mediaURL = "";
-    let mediaType = "";
-
-    if (file) {
-      const ref = storage.ref(`posts/${Date.now()}-${file.name}`);
-      await ref.put(file);
-      mediaURL = await ref.getDownloadURL();
-      mediaType = file.type;
-    }
-
-    await db.collection("posts").add({
-      username,
-      email: userEmail,
-      text,
-      media: mediaURL,
-      type: mediaType,
-      privacy,
-      time: new Date().toISOString(),
-      likesArray: [],
-      comments: []
+  // 🖼️ Upload to Cloudinary
+  async function uploadToCloudinary(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, {
+      method: "POST",
+      body: formData,
     });
-
-    postText.value = "";
-    mediaInput.value = "";
-    postBtn.disabled = false;
-    alert("✅ Post uploaded!");
-  });
-
-  // 🔹 Load user posts
-  function loadMyPosts() {
-    db.collection("posts")
-      .where("email", "==", userEmail)
-      .orderBy("time", "desc")
-      .onSnapshot(snapshot => {
-        myPosts.innerHTML = "";
-        if (snapshot.empty) {
-          myPosts.innerHTML = '<div class="no-posts">You have not posted yet.</div>';
-          return;
-        }
-        snapshot.forEach(doc => {
-          const post = doc.data();
-          const div = document.createElement("div");
-          div.classList.add("post");
-
-          // Check if current user liked this post
-          const liked = post.likesArray && post.likesArray.includes(username);
-
-          div.innerHTML = `
-            <div class="post-header">${post.username} — <span style="font-size:12px;color:gray;">${post.privacy || 'public'}</span></div>
-            <div class="post-time">${new Date(post.time).toLocaleString()}</div>
-            <p>${post.text}</p>
-            ${post.media ? (post.type.startsWith('image') ? `<img src="${post.media}" alt="Post image">` : `<video controls><source src="${post.media}" type="${post.type}"></video>`) : ''}
-            <div class="actions">
-              <button class="${liked ? 'liked' : ''}" onclick="likePost('${doc.id}')">${liked ? '💔 Unlike' : '❤️ Like'} (${post.likesArray?.length || 0})</button>
-              <button onclick="commentPost('${doc.id}')">💬 Comment (${post.comments?.length || 0})</button>
-            </div>
-          `;
-          myPosts.appendChild(div);
-        });
-      });
+    const data = await response.json();
+    return data.secure_url;
   }
 
-  // 🔹 Like post
-  async function likePost(docId) {
-    const postRef = db.collection("posts").doc(docId);
-    const postDoc = await postRef.get();
-    const post = postDoc.data();
-    const likesArray = post.likesArray || [];
-    const index = likesArray.indexOf(username);
-    if (index === -1) likesArray.push(username);
-    else likesArray.splice(index, 1);
-    await postRef.update({ likesArray });
+  // 📝 Create a post
+  async function createPost() {
+    const text = document.getElementById("postText").value.trim();
+    const media = document.getElementById("postMedia").files[0];
+    if (!text && !media) return alert("Write something or add media first.");
+
+    let mediaUrl = null;
+    if (media) mediaUrl = await uploadToCloudinary(media);
+
+    await client.from("posts").insert([
+      { user_id: profileId, content: text, media_url: mediaUrl }
+    ]);
+
+    document.getElementById("postText").value = "";
+    document.getElementById("postMedia").value = "";
+    loadPosts();
   }
 
-  // 🔹 Comment post
-  async function commentPost(docId) {
-    const commentText = prompt("Write your comment:");
-    if (!commentText) return;
-    const postRef = db.collection("posts").doc(docId);
-    const postDoc = await postRef.get();
-    const post = postDoc.data();
-    const comments = post.comments || [];
-    comments.push({ user: username, text: commentText, time: new Date().toISOString() });
-    await postRef.update({ comments });
-    alert("Comment added!");
+  // 📥 Load posts
+  async function loadPosts() {
+    const { data, error } = await client
+      .from("posts")
+      .select("*")
+      .eq("user_id", profileId)
+      .order("created_at", { ascending: false });
+
+    if (error) return console.error("Post load error:", error);
+
+    postsContainer.innerHTML = "";
+    data.forEach(post => {
+      const div = document.createElement("div");
+      div.className = "post";
+      div.innerHTML = `
+        <div class="post-header">
+          <img src="${document.getElementById("profileImage").src}">
+          <strong>${document.getElementById("profileName").textContent}</strong>
+        </div>
+        <div class="post-content">
+          <p>${post.content || ""}</p>
+          ${post.media_url ? (
+            post.media_url.match(/\.mp4|\.webm|\.ogg/)
+              ? `<video controls src="${post.media_url}"></video>`
+              : `<img src="${post.media_url}">`
+          ) : ""}
+        </div>
+      `;
+      postsContainer.appendChild(div);
+    });
   }
 
-  if (userEmail) loadMyPosts();
+  loadProfile();
 </script>
 </body>
 </html>
