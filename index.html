@@ -87,11 +87,12 @@
     .post-text { margin: 10px 0; white-space: pre-wrap; font-size: 15px; }
     .post img { 
         width: 100%; 
-        height: auto; /* Ensures image scales proportionally */
-        max-height: 400px; /* Limits the height of large images */
-        object-fit: cover; /* Ensures image fills the container without distortion */
+        height: auto; 
+        max-height: 400px; 
+        object-fit: cover; 
         margin-top: 10px; 
         border-radius: 10px; 
+        background-color: #eee;
     }
     .actions { margin-top: 10px; display: flex; gap: 10px; border-top: 1px solid #eee; padding-top: 10px; }
     .actions button { 
@@ -125,7 +126,6 @@
     .comment-input button:hover { background-color: #155db2; }
 
 </style>
-
 </head>
 
 <body>
@@ -188,7 +188,7 @@
             document.addEventListener('click', e => { if (!e.target.closest('.search-bar')) searchResults.classList.remove('active'); });
 
 
-            // --- 2. Dynamic Post Generator Function ---
+            // --- 2. Dynamic Post Generator Function (Image and Time stability fixed) ---
             function generateMockPosts(count = 50) {
                 const names = ["Alex J.", "Zara K.", "Omar S.", "Priya N.", "David G.", "Emi H.", "GenX Team"];
                 const texts = [
@@ -204,85 +204,72 @@
                     "Thinking about adopting a rescue dog. Any advice from pet owners?"
                 ];
                 
-                // *** RELIABLE RANDOM IMAGE URLs from PICSUM/UNSPLASH ***
-                const imageCategories = [
-                    'https://picsum.photos/600/400?random=1&category=nature', // Random Nature Image
-                    'https://picsum.photos/600/400?random=2&category=technology', // Random Tech Image
-                    'https://picsum.photos/600/400?random=3&category=food', // Random Food Image
-                    '' // Text-only post option
-                ];
-                // *******************************************************
-                
+                // Stable list of image IDs for reliable loading
+                const imageIds = [237, 10, 20, 30, 42, 53, 64, 88, 102, 119, 122, 141, 155, 163, 171, 180, 201, 219, 239, 245, 251, 260, 271, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440];
                 const privacies = ['public', 'public', 'friends'];
                 const newPosts = [];
 
                 for (let i = 0; i < count; i++) {
                     const randomName = names[Math.floor(Math.random() * names.length)];
                     const randomText = texts[Math.floor(Math.random() * texts.length)];
+                    const shouldHaveImage = Math.random() > 0.4;
+                    let randomImage = '';
                     
-                    // Select a random image URL template
-                    const imageTemplate = imageCategories[Math.floor(Math.random() * imageCategories.length)];
-                    
-                    // Append a unique timestamp/index to force a different image load each time
-                    const randomImage = imageTemplate ? `${imageTemplate}&seed=${Date.now() + i}` : ''; 
-                    
-                    const randomPrivacy = privacies[Math.floor(Math.random() * privacies.length)];
-                    const randomLikes = Math.floor(Math.random() * 150) + 5;
-                    const randomCommentsCount = Math.floor(Math.random() * 5);
-                    const isLiked = Math.random() < 0.3;
-
-                    const comments = [];
-                    for (let j = 0; j < randomCommentsCount; j++) {
-                        comments.push(`Random User ${j + 1}: Great post, ${randomName}!`);
+                    if (shouldHaveImage) {
+                        const imageIdIndex = i % imageIds.length;
+                        const randomId = imageIds[imageIdIndex];
+                        randomImage = `https://picsum.photos/id/${randomId}/600/400`;
                     }
+                    
+                    // *** CRITICAL TIME ADJUSTMENT for Sorting ***
+                    // Mock posts are made significantly older (1 to 50 days ago) 
+                    // This ensures new user-created posts (using Date.now()) appear first.
+                    const daysAgo = i + 1; // 1 to 50 days ago
+                    const timeDifferenceMs = daysAgo * 86400000; 
                     
                     newPosts.push({
                         id: Date.now() + i, 
                         authorName: randomName, 
-                        text: randomText + (Math.random() < 0.2 ? ' #RandomTag' : ''),
+                        text: randomText,
                         image: randomImage, 
-                        privacy: randomPrivacy, 
-                        likes: randomLikes + (isLiked ? 1 : 0),
-                        liked: isLiked, 
-                        comments: comments, 
-                        time: new Date(Date.now() - (i * 3600000)).toISOString()
+                        privacy: privacies[Math.floor(Math.random() * privacies.length)], 
+                        likes: Math.floor(Math.random() * 150) + 5,
+                        liked: Math.random() < 0.3, 
+                        comments: [], 
+                        time: new Date(Date.now() - timeDifferenceMs).toISOString() 
                     });
                 }
                 return newPosts;
             }
 
 
-            // --- 3. Post Data Initialization and Utilities (COMBINED FEED LOGIC) ---
+            // --- 3. Post Data Initialization (CRITICAL FIX FOR DUPLICATES) ---
             const feedContainer = document.getElementById('feedContainer');
             
-            // Load posts from localStorage
             let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
-            
-            // Logic to either initialize a huge feed OR inject new content into the existing feed
-            if (posts.length === 0) {
-                // Scenario 1: First-time load (storage is empty) -> Initialize with 100 mock posts
-                posts = generateMockPosts(100); 
-            } else {
-                // Scenario 2: User has existing posts -> Generate 20 new mock posts and add them
-                const newMockPosts = generateMockPosts(20);
+            const mockPostsGenerated = localStorage.getItem('mockPostsGenerated');
+
+            if (!mockPostsGenerated) {
+                console.log("First visit: Generating stable mock posts.");
+                const mockPosts = generateMockPosts(50);
+                posts = [...mockPosts, ...posts]; 
                 
-                // Add the new mock posts to the beginning of the array to appear as "new"
-                // No need for complex ID checking, as Date.now() is highly unique for the small batches.
-                posts = [...newMockPosts, ...posts]; 
+                localStorage.setItem('mockPostsGenerated', 'true');
+                localStorage.setItem('fbPosts', JSON.stringify(posts));
+            } else {
+                console.log("Mock posts already exist. Loading current posts.");
             }
             
-            // Save the combined or newly generated array back to storage
-            localStorage.setItem('fbPosts', JSON.stringify(posts));
-            
             const currentUserProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
-            const currentUserName = currentUserProfile.name || "Feed Viewer"; 
+            const currentUserName = currentUserProfile.name || "Rajan Kandel"; 
 
             function saveAndRender() {
                 localStorage.setItem('fbPosts', JSON.stringify(posts));
                 renderPosts();
             }
 
-            // --- 4. Comment and Post Rendering Logic ---
+            // --- 4. Rendering and Event Listener Logic ---
+
             function renderComments(postIndex, container) {
                 container.innerHTML = '';
                 const comments = posts[postIndex].comments || [];
@@ -302,19 +289,17 @@
                 feedContainer.innerHTML = "";
                 let hasVisiblePosts = false;
                 
-                // Sort a copy of posts by time in descending order (newest first)
-                const sortedPosts = [...posts].sort((a, b) => new Date(b.time) - new Date(a.time));
+                // **THIS IS THE SORTING LINE:** Newest posts (highest time value) will be at the start.
+                const sortedPosts = [...posts].sort((a, b) => new Date(b.time) - new Date(a.time)); 
 
                 sortedPosts.forEach((post) => {
-                    // Privacy Filter
                     if (post.privacy === 'onlyme' && post.authorName !== currentUserName) {
                         return; 
                     }
 
                     hasVisiblePosts = true;
-                    // Find the original index of the post in the unsorted array for data manipulation
                     const originalIndex = posts.findIndex(p => p.id === post.id);
-                    if (originalIndex === -1) return; // Skip if index is somehow lost
+                    if (originalIndex === -1) return; 
 
                     const postDiv = document.createElement('div');
                     postDiv.classList.add('post');
@@ -360,7 +345,6 @@
                 attachEventListeners();
             }
 
-            // --- 5. Event Listeners for Interactions ---
             function attachEventListeners() {
                 document.querySelectorAll('.like-btn').forEach(btn => {
                     btn.onclick = function() {
@@ -410,7 +394,7 @@
                 });
             }
 
-            // --- 6. Initialization ---
+            // --- 5. Initialization ---
             renderPosts();
         });
     </script>
