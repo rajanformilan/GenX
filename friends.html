@@ -80,14 +80,34 @@
         .person-card:not(:last-child) {
             border-bottom: 1px solid #f9f9f9;
         }
-        .profile-pic {
+        
+        /* Shared Avatar Styles */
+        .avatar {
             width: 55px;
             height: 55px;
             border-radius: 50%;
-            object-fit: cover;
             margin-right: 15px;
             border: 2px solid #e0e0e0;
+            min-width: 55px; 
+            min-height: 55px;
+            box-sizing: border-box;
         }
+
+        /* Image Avatar (Default) */
+        .profile-pic {
+            object-fit: cover;
+        }
+        
+        /* Initials Avatar (Fallback) */
+        .initials-avatar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            color: white;
+            font-weight: 600;
+        }
+
         .info {
             flex-grow: 1;
         }
@@ -128,7 +148,7 @@
         
         /* --- Responsive fix: Stack buttons vertically on small screens --- */
         @media (max-width: 480px) {
-            .profile-pic { width: 45px; height: 45px; }
+            .avatar { width: 45px; height: 45px; min-width: 45px; min-height: 45px; font-size: 1em;}
             .info h3 { font-size: 0.9em; }
             .info p { font-size: 0.75em; }
             
@@ -170,7 +190,7 @@
             background-color: #218838;
         }
         
-        /* --- Chat Board Overlay Styles --- */
+        /* --- Chat Board Overlay Styles (Kept for completeness) --- */
         .chat-overlay {
             position: fixed;
             top: 0;
@@ -207,7 +227,7 @@
             padding: 0 10px;
             transition: color 0.2s;
         }
-        .chat-header .profile-pic {
+        .chat-header .avatar {
              width: 30px;
              height: 30px;
              margin-right: 10px;
@@ -223,7 +243,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            background-color: #e5ddd5; /* WhatsApp-like background */
+            background-color: #e5ddd5;
             background-size: 50px 50px;
         }
         .chat-input {
@@ -306,12 +326,12 @@
     <div class="chat-overlay" id="chat-overlay">
         <div class="chat-header">
             <button class="btn-close-chat" onclick="hideChat()">&#10005;</button>
-            <img id="chat-profile-avatar" src="" alt="Profile" class="profile-pic">
+            <div id="chat-profile-avatar-container"></div> 
             <h1 id="chat-profile-name">Chatting with...</h1>
             <div style="width: 30px;"></div>
         </div>
         <div class="chat-body" id="chat-body">
-            </div>
+        </div>
         <div class="chat-input">
             <input type="text" id="chat-input-text" placeholder="Type a message..." onkeyup="handleEnterKey(event)">
             <button onclick="sendMessage()">Send</button>
@@ -319,9 +339,8 @@
     </div>
     <script>
         // --- LOCAL STORAGE & DATA MANAGEMENT ---
-        const STORAGE_KEY = 'socialAppProfiles'; // Used by both follow.html and chat.html
-
-        // Function to save all current data to localStorage
+        const STORAGE_KEY = 'socialAppProfiles'; 
+        
         function saveDataToLocalStorage() {
             try {
                 const dataToSave = {
@@ -334,8 +353,7 @@
                 console.error("Could not save data to localStorage", e);
             }
         }
-
-        // Function to load data from localStorage
+        
         function loadDataFromLocalStorage() {
             const savedData = localStorage.getItem(STORAGE_KEY);
             if (savedData) {
@@ -348,17 +366,39 @@
             return null;
         }
 
-        // --- 1. DATA GENERATION & INITIALIZATION (IMPROVED for Image Persistence) ---
+        // --- 1. DATA GENERATION & INITIALIZATION ---
         
         const nepaliMaleNames = ["Aayush", "Bishal", "Milan", "Prajwal", "Sagar", "Yubraj", "Amrit", "Gaurav", "Nabin", "Bikram"];
         const nepaliFemaleNames = ["Deepa", "Kriti", "Rina", "Sunita", "Shreya", "Anju", "Pooja", "Samikshya", "Priya"];
-        const foreignMaleNames = ["Ethan", "Liam", "Noah", "Elijah", "Oliver", "Ryan", "Thomas", "Ben", "Jack", "Leo"];
-        const foreignFemaleNames = ["Sophia", "Olivia", "Emma", "Ava", "Isabella", "Mia", "Amelia", "Charlotte", "Grace", "Kate"];
-        const allMaleNames = [...nepaliMaleNames, ...foreignMaleNames];
-        const allFemaleNames = [...nepaliFemaleNames, ...foreignFemaleNames];
-        const allLastNames = ["Shrestha", "Maharjan", "Thapa", "Rana", "Khadka", "Nepali", "Rai", "Limbu", "Tamang", "Gurung", "Smith", "Jones", "Wilson", "Taylor", "Miller", "Clark", "Lewis", "King", "Baker", "Walker"];
+        const diverseMaleNames = ["Arjun", "Kiran", "Rahul", "Dev", "Ishan", "Raj", "Vijay", "Omar"];
+        const diverseFemaleNames = ["Anjali", "Sita", "Laxmi", "Nisha", "Mala", "Aisha", "Jasmin", "Zara"];
+
+        const allMaleNames = [...nepaliMaleNames, ...diverseMaleNames, "Liam", "Noah", "Ethan", "Oliver", "Ryan"];
+        const allFemaleNames = [...nepaliFemaleNames, ...diverseFemaleNames, "Sophia", "Olivia", "Emma", "Ava", "Mia"];
+        const allLastNames = ["Shrestha", "Maharjan", "Thapa", "Rana", "Khadka", "Nepali", "Rai", "Limbu", "Tamang", "Gurung", "Singh", "Shah", "Khan", "Sharma", "Yadav", "Smith", "Jones", "Wilson", "Taylor"];
         
-        // This function generates a stable image URL based on index and type
+        function stringToColor(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            let color = '#';
+            for (let i = 0; i < 3; i++) {
+                const value = (hash >> (i * 8)) & 0xFF;
+                color += ('00' + value.toString(16)).substr(-2);
+            }
+            // Ensure color is not too light for white text
+            return color.substring(0, 7); 
+        }
+
+        function getInitials(fullName) {
+            const parts = fullName.split(' ');
+            if (parts.length > 1) {
+                return parts[0].charAt(0) + parts[1].charAt(0);
+            }
+            return parts[0].charAt(0);
+        }
+
         function generateProfile(index, type) {
             const names = getRandomNameAndGender();
             const fullName = `${names.firstName} ${names.lastName}`;
@@ -373,10 +413,15 @@
                 mutuals = Math.floor(Math.random() * 25) + 16;
             }
             
-            const genderString = names.isMale ? 'male' : 'female';
-            // Use a specific unique index to generate a STABLE image URL
-            const avatarIndex = (type === 'request' ? index : index + 50); 
-            const avatarUrl = `https://xsgames.co/randomusers/assets/avatars/${genderString}/${avatarIndex}.jpg`; 
+            const genderString = names.isMale ? 'men' : 'women';
+            const avatarSeed = (type === 'request' ? index : index + 50); 
+            
+            // Image URL (Primary option)
+            const imageUrl = `https://randomuser.me/api/portraits/${genderString}/${avatarSeed}.jpg`; 
+            
+            // Fallback Initials (Guaranteed option)
+            const initials = getInitials(fullName).toUpperCase();
+            const backgroundColor = stringToColor(fullName); 
             
             const initialStatus = type === 'request' ? 'Confirm' : 'Follow';
             
@@ -385,7 +430,9 @@
                 name: fullName,
                 mutuals: mutuals, 
                 type: type,
-                avatar: avatarUrl, // The stable URL is generated here
+                avatar: imageUrl, // Real photo link
+                initials: initials, // Initials for display
+                color: backgroundColor, // Stable color for initials
                 status: initialStatus, 
             };
         }
@@ -405,58 +452,51 @@
         // --- Data Variables Declaration ---
         let friendRequests;
         let originalSuggestions;
-        let chatHistories = {}; // Map to hold chat messages for all IDs: {id: [{text, type}, ...]}
-
+        let chatHistories = {};
+        
         function initializeData() {
-            const savedData = loadDataFromLocalStorage();
-            
-            if (savedData && savedData.suggestions && savedData.requests) {
-                // Load saved data if available
-                friendRequests = savedData.requests;
-                originalSuggestions = savedData.suggestions;
-                chatHistories = savedData.chatHistory || {};
-            } else {
-                // Generate default data and save for the first time
-                const defaultRequests = [];
-                for (let i = 0; i < 5; i++) { 
-                    defaultRequests.push(generateProfile(i, 'request'));
-                }
-                const defaultSuggestions = [];
-                for (let i = 0; i < 50; i++) { 
-                    defaultSuggestions.push(generateProfile(i + 5, 'suggestion')); 
-                }
-                
-                friendRequests = defaultRequests;
-                originalSuggestions = defaultSuggestions;
-                saveDataToLocalStorage();
+            // Force new data generation to cut old broken links and bring in new people
+            const defaultRequests = [];
+            for (let i = 0; i < 5; i++) { 
+                defaultRequests.push(generateProfile(i, 'request'));
+            }
+            const defaultSuggestions = [];
+            for (let i = 0; i < 80; i++) { 
+                defaultSuggestions.push(generateProfile(i + 5, 'suggestion')); 
             }
             
+            const savedData = loadDataFromLocalStorage();
+            chatHistories = savedData ? (savedData.chatHistory || {}) : {};
+
+            friendRequests = defaultRequests;
+            originalSuggestions = defaultSuggestions;
+            
+            saveDataToLocalStorage();
             currentSuggestions = [...originalSuggestions]; 
         }
-
-        // Current active chat data
+        
         let currentSuggestions; 
         let activeChatId = null;
         let activeChatName = '';
-        let activeChatAvatar = '';
+        let activeChatAvatar = ''; 
+        let activeChatInitials = ''; 
+        let activeChatColor = ''; 
 
         // DOM elements
         const requestsList = document.getElementById('friend-requests-list');
         const chatOverlay = document.getElementById('chat-overlay');
         const chatProfileName = document.getElementById('chat-profile-name');
-        const chatProfileAvatar = document.getElementById('chat-profile-avatar');
+        const chatProfileAvatarContainer = document.getElementById('chat-profile-avatar-container');
         const chatBody = document.getElementById('chat-body');
         const chatInputText = document.getElementById('chat-input-text');
-
+        
         // --- 2. CORE RENDERING FUNCTION ---
-
         function renderCard(person) {
             const isRequest = person.type === 'request';
             let actionsHTML;
-            const nameForFunction = person.name.replace(/'/g, "\\'"); 
-            
+            const nameForFunction = person.name.replace(/'/g, "&apos;"); 
             const personId = person.id; 
-
+            
             if (isRequest) {
                 actionsHTML = `
                     <button class="btn btn-primary" onclick="handleRequest('${personId}', 'Confirm')">Confirm</button>
@@ -465,10 +505,9 @@
             } else {
                 const isFollowing = person.status === 'Following';
                 if (isFollowing) {
-                    // Pass ID, Name, and Avatar URL to showChat
                     actionsHTML = `
                         <button class="btn btn-secondary" onclick="handleSuggestion('${personId}')">Following</button>
-                        <button class="btn btn-message" onclick="showChat('${personId}', '${nameForFunction}', '${person.avatar}')">Message</button>
+                        <button class="btn btn-message" onclick="showChat('${personId}', '${nameForFunction}', '${person.avatar}', '${person.initials}', '${person.color}')">Message</button>
                     `;
                 } else {
                     actionsHTML = `
@@ -476,9 +515,24 @@
                     `;
                 }
             }
+            
+            // AVATAR RENDERING LOGIC: Use the Image tag with error handling
+            // If the image fails to load, it will be replaced by the Initials Div.
+            const avatarHTML = `
+                <img 
+                    src="${person.avatar}" 
+                    alt="${person.name} Profile" 
+                    class="profile-pic avatar" 
+                    onerror="
+                        this.onerror=null; 
+                        this.outerHTML = '<div class=\\'initials-avatar avatar\\' style=\\'background-color:${person.color};\\'>${person.initials}</div>';
+                    "
+                >
+            `;
+
             return `
                 <div class="person-card" id="${personId}">
-                    <img src="${person.avatar}" alt="${person.name} Profile" class="profile-pic" onerror="this.onerror=null; this.src='https://via.placeholder.com/55?text=${person.name.charAt(0)}';">
+                    ${avatarHTML}
                     <div class="info">
                         <h3>${person.name}</h3>
                         <p>${person.mutuals} mutual connections</p>
@@ -491,7 +545,6 @@
         }
 
         // --- 3. CHAT MESSAGE FUNCTIONS ---
-
         function renderChatHistory(id) {
             chatBody.innerHTML = '';
             const history = chatHistories[id] || [];
@@ -499,7 +552,7 @@
             if (history.length === 0) {
                 chatBody.innerHTML = '<p class="no-chat-history">Start a new conversation!</p>';
             }
-
+            
             history.forEach(msg => {
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message', msg.type);
@@ -508,37 +561,38 @@
             });
             chatBody.scrollTop = chatBody.scrollHeight;
         }
-
         function addMessage(id, text, type) {
-            // Save to chatHistories map
             if (!chatHistories[id]) {
                 chatHistories[id] = [];
             }
-            // Add new message object with text and type
             chatHistories[id].push({ text: text, type: type });
-            
-            // Rerender chat body to show new message
             renderChatHistory(id); 
-            
-            // Save entire data structure to LocalStorage
             saveDataToLocalStorage(); 
         }
-
+        
         function sendMessage() {
             const messageText = chatInputText.value.trim();
             if (!messageText || !activeChatId) return;
             
-            // 1. Add sent message and save
             addMessage(activeChatId, messageText, 'sent');
             chatInputText.value = '';
             
-            // 2. Simulate reply after 1 second and save again
+            let replyText = "Got your message! I'll reply soon.";
+            const lowerCaseMessage = messageText.toLowerCase();
+
+            if (lowerCaseMessage.includes("hi") || lowerCaseMessage.includes("hello")) {
+                replyText = "Hey there! How are you doing?";
+            } else if (lowerCaseMessage.includes("ok") || lowerCaseMessage.includes("thanks")) {
+                replyText = "No problem at all. Talk soon!";
+            } else if (lowerCaseMessage.length > 25) {
+                replyText = "That's a bit long! Can you summarize that for me?";
+            }
+
             setTimeout(() => {
-                const replyText = "Got your message! I'll reply soon.";
                 addMessage(activeChatId, replyText, 'received');
             }, 1000); 
         }
-        
+
         function handleEnterKey(event) {
             if (event.key === 'Enter') {
                 sendMessage();
@@ -546,59 +600,64 @@
         }
         
         // --- 4. CHAT REDIRECTION SIMULATION FUNCTIONS ---
-
-        function showChat(id, name, avatarUrl) {
+        // Updated to accept initials and color
+        function showChat(id, name, avatarUrl, initials, color) {
             activeChatId = id; 
             activeChatName = name;
             activeChatAvatar = avatarUrl;
+            activeChatInitials = initials;
+            activeChatColor = color;
 
-            // Update chat header with name and avatar
             chatProfileName.textContent = name;
-            chatProfileAvatar.src = avatarUrl;
             
-            // Load and display chat history for this specific ID
+            // Dynamic Chat Header Avatar Rendering
+            const avatarHtml = `
+                <img 
+                    id="chat-profile-avatar"
+                    src="${avatarUrl}" 
+                    alt="${name} Profile" 
+                    class="profile-pic avatar" 
+                    onerror="
+                        this.onerror=null; 
+                        this.outerHTML = '<div id=\\'chat-profile-avatar\\' class=\\'initials-avatar avatar\\' style=\\'background-color:${color};\\'>${initials}</div>';
+                    "
+                >`;
+
+            chatProfileAvatarContainer.innerHTML = avatarHtml;
+
             renderChatHistory(id); 
             
             chatOverlay.style.display = 'flex';
             document.body.style.overflow = 'hidden'; 
             chatInputText.focus();
         }
-
         function hideChat() {
             activeChatId = null; 
             chatOverlay.style.display = 'none';
             document.body.style.overflow = 'auto'; 
         }
-
         // --- 5. LIST MANAGEMENT & FILTERING FUNCTIONS ---
-
         function renderRequestsList() {
             const requestCountElement = document.getElementById('request-count');
             requestCountElement.textContent = friendRequests.length;
             requestsList.innerHTML = '';
-
             if (friendRequests.length === 0) {
                 requestsList.innerHTML = '<p class="no-requests-msg">No new requests.</p>';
                 return;
             }
-
             const cardsHTML = friendRequests.map(renderCard).join('');
             requestsList.innerHTML = cardsHTML;
         }
-
         function renderSuggestionsList() {
             const suggestionsList = document.getElementById('suggestions-list');
             suggestionsList.innerHTML = '';
-
             if (currentSuggestions.length === 0) {
                 suggestionsList.innerHTML = '<p class="no-results-msg">No profiles match your search criteria.</p>';
                 return;
             }
-
             const cardsHTML = currentSuggestions.map(renderCard).join('');
             suggestionsList.innerHTML = cardsHTML;
         }
-
         function filterSuggestions() {
             const query = document.getElementById('suggestion-search').value.toLowerCase().trim();
             if (query === "") {
@@ -610,17 +669,12 @@
             }
             renderSuggestionsList();
         }
-
         // --- 6. ACTION HANDLERS ---
-
         function handleRequest(id, action) {
             const index = friendRequests.findIndex(p => p.id === id);
             if (index > -1) {
-                // If confirmed, theoretically the profile moves to 'Following' but here we just delete it from requests.
                 friendRequests.splice(index, 1); 
-                
-                saveDataToLocalStorage(); // Save changes
-
+                saveDataToLocalStorage(); 
                 const card = document.getElementById(id);
                 if (card) {
                     card.style.opacity = '0';
@@ -636,30 +690,23 @@
                 }
             }
         }
-
         function handleSuggestion(id) {
             const person = originalSuggestions.find(p => p.id === id);
             if (person) {
-                // Toggle status: Follow -> Following, Following -> Follow
                 person.status = (person.status === 'Follow' ? 'Following' : 'Follow');
-                
-                saveDataToLocalStorage(); // Save status change
-                
-                // Update the single card's HTML to show the new button state
+                saveDataToLocalStorage(); 
                 const cardElement = document.getElementById(id);
                 if (cardElement) {
                     cardElement.outerHTML = renderCard(person);
                 }
             }
         }
-
         // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
-            initializeData(); // Load data from storage or generate new
+            initializeData(); 
             renderRequestsList();
             renderSuggestionsList();
         });
-
     </script>
 </body>
 </html>
