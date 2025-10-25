@@ -1,227 +1,665 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GenX - Friends</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f2f5;
-      margin: 0;
-    }
-    header {
-      background: #1877f2;
-      color: #fff;
-      padding: 12px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-    }
-    .tabs {
-      display: flex;
-      justify-content: space-around;
-      background: #fff;
-      border-bottom: 1px solid #ddd;
-    }
-    .tab {
-      flex: 1;
-      text-align: center;
-      padding: 12px;
-      cursor: pointer;
-      font-weight: bold;
-      color: #65676b;
-    }
-    .tab.active {
-      border-bottom: 3px solid #1877f2;
-      color: #1877f2;
-    }
-    .container {
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 0 10px;
-    }
-    .card {
-      background: #fff;
-      padding: 15px;
-      margin: 12px 0;
-      border-radius: 10px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .user-info {
-      display: flex;
-      align-items: center;
-    }
-    .user-info img {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      margin-right: 12px;
-    }
-    .user-info .name {
-      font-weight: bold;
-      color: #050505;
-    }
-    .user-info .mutual {
-      font-size: 13px;
-      color: #65676b;
-    }
-    .buttons button {
-      margin-left: 5px;
-      padding: 6px 12px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    .add { background: #1877f2; color: #fff; }
-    .cancel { background: #e4e6eb; color: #050505; }
-    .accept { background: #1877f2; color: white; }
-    .reject { background: #e4e6eb; color: #050505; }
-    .friend { background: #e4e6eb; color: #050505; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Feed with Profile Images</title>
+    <style>
+        /* --- Base & Layout (Vibrant Green Theme) --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 1; 
+        }
+        /* --- Search Input Styling --- */
+        .search-container {
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+        }
+        .search-container input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .search-container input:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+            outline: none;
+        }
+        /* --- Card Group Container --- */
+        .card-group {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .header h2 {
+            font-size: 1.1em;
+            color: #212529;
+            font-weight: bold;
+            margin: 0;
+        }
+        /* --- Individual Person Card --- */
+        .person-card {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            margin-bottom: 5px;
+            transition: all 0.4s ease-out;
+            position: relative;
+        }
+        .person-card:not(:last-child) {
+            border-bottom: 1px solid #f9f9f9;
+        }
+        .profile-pic {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 2px solid #e0e0e0;
+        }
+        .info {
+            flex-grow: 1;
+        }
+        .info h3 {
+            margin: 0;
+            font-size: 1em;
+            color: #343a40;
+        }
+        .info p {
+            margin: 2px 0 0 0;
+            font-size: 0.8em;
+            color: #6c757d;
+        }
+        
+        /* --- FIXED BUTTON PLACEMENT CSS --- */
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+            justify-content: flex-end;
+            align-items: center;
+            flex-direction: row; 
+        }
+        .btn {
+            padding: 8px 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            text-align: center;
+            white-space: nowrap;
+            flex-basis: 48%; 
+            max-width: 120px;
+            min-width: 80px;
+        }
+        
+        /* --- Responsive fix: Stack buttons vertically on small screens --- */
+        @media (max-width: 480px) {
+            .profile-pic { width: 45px; height: 45px; }
+            .info h3 { font-size: 0.9em; }
+            .info p { font-size: 0.75em; }
+            
+            .actions { 
+                flex-direction: column; 
+                gap: 5px; 
+            }
+            .btn { 
+                flex-basis: 100%; 
+                max-width: none; 
+                min-width: 100px;
+            }
+        }
+        /* --- END FIXED BUTTON PLACEMENT CSS --- */
+        /* --- Button Colors --- */
+        .btn-primary {
+            background-color: #28a745;
+            color: white;
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+        }
+        .btn-primary:hover {
+            background-color: #218838;
+        }
+        .btn-secondary {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        .btn-secondary:hover {
+            background-color: #dae0e5;
+        }
+        /* Message button is now primary color */
+        .btn-message {
+            background-color: #28a745; 
+            color: white;
+            border: 1px solid #28a745;
+            flex-basis: 48%;
+        }
+        .btn-message:hover {
+            background-color: #218838;
+        }
+        
+        /* --- Chat Board Overlay Styles --- */
+        .chat-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f5f7fa;
+            z-index: 1000;
+            display: none; 
+            flex-direction: column;
+            transition: opacity 0.3s ease;
+        }
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .chat-header h1 {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
+        .btn-close-chat {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 0 10px;
+            transition: color 0.2s;
+        }
+        .chat-header .profile-pic {
+             width: 30px;
+             height: 30px;
+             margin-right: 10px;
+             border: none;
+        }
+        .btn-close-chat:hover {
+            color: #e9ecef;
+        }
+        .chat-body {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #e5ddd5; /* WhatsApp-like background */
+            background-size: 50px 50px;
+        }
+        .chat-input {
+            padding: 15px;
+            background-color: white;
+            border-top: 1px solid #ddd;
+            display: flex;
+            align-items: center; 
+        }
+        .chat-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            margin-right: 10px;
+            font-size: 1em;
+            min-width: 0; 
+        }
+        .chat-input button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            white-space: nowrap; 
+        }
+        .chat-input button:hover {
+            background-color: #218838;
+        }
+        /* Message Bubbles */
+        .message {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+            word-wrap: break-word; 
+        }
+        .sent {
+            align-self: flex-end;
+            background-color: #dcf8c6;
+        }
+        .received {
+            align-self: flex-start;
+            background-color: white;
+            border: 1px solid #e0e0e0;
+        }
+        .no-requests-msg, .no-results-msg, .no-chat-history {
+            padding: 10px 0;
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 <body>
-
-<header>Friends</header>
-
-<div class="tabs">
-  <div class="tab active" onclick="showTab('suggestions')">Suggestions</div>
-  <div class="tab" onclick="showTab('requests')">Friend Requests</div>
-  <div class="tab" onclick="showTab('friends')">All Friends</div>
-</div>
-
-<div class="container">
-  <div id="suggestions"></div>
-  <div id="requests" style="display:none"></div>
-  <div id="friends" style="display:none"></div>
-</div>
-
-<script>
-  let currentUser = "Milan";
-
-  let users = JSON.parse(localStorage.getItem("genxUsers")) || {
-    "Milan": { friends: [], requestsSent: [], requestsReceived: [], avatar:"https://i.pravatar.cc/150?u=Milan" },
-    "Sita": { friends: [], requestsSent: [], requestsReceived: [], avatar:"https://i.pravatar.cc/150?u=Sita" },
-    "Ram": { friends: [], requestsSent: [], requestsReceived: [], avatar:"https://i.pravatar.cc/150?u=Ram" },
-    "Hari": { friends: [], requestsSent: [], requestsReceived: [], avatar:"https://i.pravatar.cc/150?u=Hari" }
-  };
-
-  function saveUsers() {
-    localStorage.setItem("genxUsers", JSON.stringify(users));
-  }
-
-  function sendRequest(toUser) {
-    if (!users[currentUser].requestsSent.includes(toUser) &&
-        !users[currentUser].friends.includes(toUser) &&
-        toUser !== currentUser) {
-      users[currentUser].requestsSent.push(toUser);
-      users[toUser].requestsReceived.push(currentUser);
-      saveUsers();
-      render();
-    }
-  }
-
-  function cancelRequest(toUser) {
-    users[currentUser].requestsSent =
-      users[currentUser].requestsSent.filter(u => u !== toUser);
-    users[toUser].requestsReceived =
-      users[toUser].requestsReceived.filter(u => u !== currentUser);
-    saveUsers();
-    render();
-  }
-
-  function acceptRequest(fromUser) {
-    users[currentUser].friends.push(fromUser);
-    users[fromUser].friends.push(currentUser);
-    users[currentUser].requestsReceived =
-      users[currentUser].requestsReceived.filter(u => u !== fromUser);
-    users[fromUser].requestsSent =
-      users[fromUser].requestsSent.filter(u => u !== currentUser);
-    saveUsers();
-    render();
-  }
-
-  function rejectRequest(fromUser) {
-    users[currentUser].requestsReceived =
-      users[currentUser].requestsReceived.filter(u => u !== fromUser);
-    users[fromUser].requestsSent =
-      users[fromUser].requestsSent.filter(u => u !== currentUser);
-    saveUsers();
-    render();
-  }
-
-  function showTab(tab) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelector(`.tab[onclick="showTab('${tab}')"]`).classList.add('active');
-    document.querySelectorAll('.container > div').forEach(d => d.style.display = "none");
-    document.getElementById(tab).style.display = "block";
-  }
-
-  function render() {
-    // Suggestions
-    document.getElementById("suggestions").innerHTML = Object.keys(users).map(u => {
-      if (u === currentUser) return "";
-      let status = "";
-      if (users[currentUser].friends.includes(u)) {
-        status = `<button class="friend">Friends</button>`;
-      } else if (users[currentUser].requestsSent.includes(u)) {
-        status = `<button class="cancel" onclick="cancelRequest('${u}')">Cancel Request</button>`;
-      } else {
-        status = `<button class="add" onclick="sendRequest('${u}')">Add Friend</button>`;
-      }
-      return `
-        <div class="card">
-          <div class="user-info">
-            <img src="${users[u].avatar}">
-            <div>
-              <div class="name">${u}</div>
-              <div class="mutual">3 mutual friends</div>
+    <div class="container">
+        <div class="card-group">
+            <div class="header">
+                <h2>Friend Requests (<span id="request-count"></span>)</h2>
             </div>
-          </div>
-          <div class="buttons">${status}</div>
-        </div>`;
-    }).join("");
-
-    // Requests
-    document.getElementById("requests").innerHTML =
-      users[currentUser].requestsReceived.map(u => `
-        <div class="card">
-          <div class="user-info">
-            <img src="${users[u].avatar}">
-            <div>
-              <div class="name">${u}</div>
-              <div class="mutual">1 mutual friend</div>
+            <div id="friend-requests-list">
             </div>
-          </div>
-          <div class="buttons">
-            <button class="accept" onclick="acceptRequest('${u}')">Confirm</button>
-            <button class="reject" onclick="rejectRequest('${u}')">Delete</button>
-          </div>
         </div>
-      `).join("") || "<p>No friend requests</p>";
-
-    // Friends
-    document.getElementById("friends").innerHTML =
-      users[currentUser].friends.map(u => `
-        <div class="card">
-          <div class="user-info">
-            <img src="${users[u].avatar}">
-            <div>
-              <div class="name">${u}</div>
-              <div class="mutual">2 mutual friends</div>
-            </div>
-          </div>
-          <div class="buttons"><button class="friend">Friends</button></div>
+        <div class="search-container">
+            <input type="text" id="suggestion-search" onkeyup="filterSuggestions()" placeholder="Filter Profiles by Name...">
         </div>
-      `).join("") || "<p>No friends yet</p>";
-  }
+        <div class="card-group">
+            <div class="header">
+                <h2>People You May Know</h2>
+            </div>
+            <div id="suggestions-list">
+            </div>
+        </div>
+    </div>
+    <div class="chat-overlay" id="chat-overlay">
+        <div class="chat-header">
+            <button class="btn-close-chat" onclick="hideChat()">&#10005;</button>
+            <img id="chat-profile-avatar" src="" alt="Profile" class="profile-pic">
+            <h1 id="chat-profile-name">Chatting with...</h1>
+            <div style="width: 30px;"></div>
+        </div>
+        <div class="chat-body" id="chat-body">
+            </div>
+        <div class="chat-input">
+            <input type="text" id="chat-input-text" placeholder="Type a message..." onkeyup="handleEnterKey(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <script>
+        // --- LOCAL STORAGE & DATA MANAGEMENT ---
+        const STORAGE_KEY = 'socialAppProfiles'; // Used by both follow.html and chat.html
 
-  render();
-</script>
+        // Function to save all current data to localStorage
+        function saveDataToLocalStorage() {
+            try {
+                const dataToSave = {
+                    requests: friendRequests,
+                    suggestions: originalSuggestions,
+                    chatHistory: chatHistories 
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+            } catch (e) {
+                console.error("Could not save data to localStorage", e);
+            }
+        }
 
+        // Function to load data from localStorage
+        function loadDataFromLocalStorage() {
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            if (savedData) {
+                try {
+                    return JSON.parse(savedData);
+                } catch (e) {
+                    console.error("Error parsing data from localStorage", e);
+                }
+            }
+            return null;
+        }
+
+        // --- 1. DATA GENERATION & INITIALIZATION (IMPROVED for Image Persistence) ---
+        
+        const nepaliMaleNames = ["Aayush", "Bishal", "Milan", "Prajwal", "Sagar", "Yubraj", "Amrit", "Gaurav", "Nabin", "Bikram"];
+        const nepaliFemaleNames = ["Deepa", "Kriti", "Rina", "Sunita", "Shreya", "Anju", "Pooja", "Samikshya", "Priya"];
+        const foreignMaleNames = ["Ethan", "Liam", "Noah", "Elijah", "Oliver", "Ryan", "Thomas", "Ben", "Jack", "Leo"];
+        const foreignFemaleNames = ["Sophia", "Olivia", "Emma", "Ava", "Isabella", "Mia", "Amelia", "Charlotte", "Grace", "Kate"];
+        const allMaleNames = [...nepaliMaleNames, ...foreignMaleNames];
+        const allFemaleNames = [...nepaliFemaleNames, ...foreignFemaleNames];
+        const allLastNames = ["Shrestha", "Maharjan", "Thapa", "Rana", "Khadka", "Nepali", "Rai", "Limbu", "Tamang", "Gurung", "Smith", "Jones", "Wilson", "Taylor", "Miller", "Clark", "Lewis", "King", "Baker", "Walker"];
+        
+        // This function generates a stable image URL based on index and type
+        function generateProfile(index, type) {
+            const names = getRandomNameAndGender();
+            const fullName = `${names.firstName} ${names.lastName}`;
+            
+            let mutuals;
+            const rand = Math.random();
+            if (rand < 0.6) { 
+                mutuals = Math.floor(Math.random() * 5) + 1;
+            } else if (rand < 0.9) { 
+                mutuals = Math.floor(Math.random() * 10) + 6;
+            } else { 
+                mutuals = Math.floor(Math.random() * 25) + 16;
+            }
+            
+            const genderString = names.isMale ? 'male' : 'female';
+            // Use a specific unique index to generate a STABLE image URL
+            const avatarIndex = (type === 'request' ? index : index + 50); 
+            const avatarUrl = `https://xsgames.co/randomusers/assets/avatars/${genderString}/${avatarIndex}.jpg`; 
+            
+            const initialStatus = type === 'request' ? 'Confirm' : 'Follow';
+            
+            return {
+                id: `${type}-${index}`,
+                name: fullName,
+                mutuals: mutuals, 
+                type: type,
+                avatar: avatarUrl, // The stable URL is generated here
+                status: initialStatus, 
+            };
+        }
+        
+        function getRandomNameAndGender() {
+            const isMale = Math.random() < 0.5;
+            let firstName;
+            if (isMale) {
+                firstName = allMaleNames[Math.floor(Math.random() * allMaleNames.length)];
+            } else {
+                firstName = allFemaleNames[Math.floor(Math.random() * allFemaleNames.length)];
+            }
+            const lastName = allLastNames[Math.floor(Math.random() * allLastNames.length)];
+            return { firstName, lastName, isMale }; 
+        }
+
+        // --- Data Variables Declaration ---
+        let friendRequests;
+        let originalSuggestions;
+        let chatHistories = {}; // Map to hold chat messages for all IDs: {id: [{text, type}, ...]}
+
+        function initializeData() {
+            const savedData = loadDataFromLocalStorage();
+            
+            if (savedData && savedData.suggestions && savedData.requests) {
+                // Load saved data if available
+                friendRequests = savedData.requests;
+                originalSuggestions = savedData.suggestions;
+                chatHistories = savedData.chatHistory || {};
+            } else {
+                // Generate default data and save for the first time
+                const defaultRequests = [];
+                for (let i = 0; i < 5; i++) { 
+                    defaultRequests.push(generateProfile(i, 'request'));
+                }
+                const defaultSuggestions = [];
+                for (let i = 0; i < 50; i++) { 
+                    defaultSuggestions.push(generateProfile(i + 5, 'suggestion')); 
+                }
+                
+                friendRequests = defaultRequests;
+                originalSuggestions = defaultSuggestions;
+                saveDataToLocalStorage();
+            }
+            
+            currentSuggestions = [...originalSuggestions]; 
+        }
+
+        // Current active chat data
+        let currentSuggestions; 
+        let activeChatId = null;
+        let activeChatName = '';
+        let activeChatAvatar = '';
+
+        // DOM elements
+        const requestsList = document.getElementById('friend-requests-list');
+        const chatOverlay = document.getElementById('chat-overlay');
+        const chatProfileName = document.getElementById('chat-profile-name');
+        const chatProfileAvatar = document.getElementById('chat-profile-avatar');
+        const chatBody = document.getElementById('chat-body');
+        const chatInputText = document.getElementById('chat-input-text');
+
+        // --- 2. CORE RENDERING FUNCTION ---
+
+        function renderCard(person) {
+            const isRequest = person.type === 'request';
+            let actionsHTML;
+            const nameForFunction = person.name.replace(/'/g, "\\'"); 
+            
+            const personId = person.id; 
+
+            if (isRequest) {
+                actionsHTML = `
+                    <button class="btn btn-primary" onclick="handleRequest('${personId}', 'Confirm')">Confirm</button>
+                    <button class="btn btn-secondary" onclick="handleRequest('${personId}', 'Delete')">Delete</button>
+                `;
+            } else {
+                const isFollowing = person.status === 'Following';
+                if (isFollowing) {
+                    // Pass ID, Name, and Avatar URL to showChat
+                    actionsHTML = `
+                        <button class="btn btn-secondary" onclick="handleSuggestion('${personId}')">Following</button>
+                        <button class="btn btn-message" onclick="showChat('${personId}', '${nameForFunction}', '${person.avatar}')">Message</button>
+                    `;
+                } else {
+                    actionsHTML = `
+                        <button class="btn btn-primary" onclick="handleSuggestion('${personId}')">Follow</button>
+                    `;
+                }
+            }
+            return `
+                <div class="person-card" id="${personId}">
+                    <img src="${person.avatar}" alt="${person.name} Profile" class="profile-pic" onerror="this.onerror=null; this.src='https://via.placeholder.com/55?text=${person.name.charAt(0)}';">
+                    <div class="info">
+                        <h3>${person.name}</h3>
+                        <p>${person.mutuals} mutual connections</p>
+                    </div>
+                    <div class="actions">
+                        ${actionsHTML}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- 3. CHAT MESSAGE FUNCTIONS ---
+
+        function renderChatHistory(id) {
+            chatBody.innerHTML = '';
+            const history = chatHistories[id] || [];
+            
+            if (history.length === 0) {
+                chatBody.innerHTML = '<p class="no-chat-history">Start a new conversation!</p>';
+            }
+
+            history.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', msg.type);
+                messageDiv.textContent = msg.text;
+                chatBody.appendChild(messageDiv);
+            });
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function addMessage(id, text, type) {
+            // Save to chatHistories map
+            if (!chatHistories[id]) {
+                chatHistories[id] = [];
+            }
+            // Add new message object with text and type
+            chatHistories[id].push({ text: text, type: type });
+            
+            // Rerender chat body to show new message
+            renderChatHistory(id); 
+            
+            // Save entire data structure to LocalStorage
+            saveDataToLocalStorage(); 
+        }
+
+        function sendMessage() {
+            const messageText = chatInputText.value.trim();
+            if (!messageText || !activeChatId) return;
+            
+            // 1. Add sent message and save
+            addMessage(activeChatId, messageText, 'sent');
+            chatInputText.value = '';
+            
+            // 2. Simulate reply after 1 second and save again
+            setTimeout(() => {
+                const replyText = "Got your message! I'll reply soon.";
+                addMessage(activeChatId, replyText, 'received');
+            }, 1000); 
+        }
+        
+        function handleEnterKey(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        // --- 4. CHAT REDIRECTION SIMULATION FUNCTIONS ---
+
+        function showChat(id, name, avatarUrl) {
+            activeChatId = id; 
+            activeChatName = name;
+            activeChatAvatar = avatarUrl;
+
+            // Update chat header with name and avatar
+            chatProfileName.textContent = name;
+            chatProfileAvatar.src = avatarUrl;
+            
+            // Load and display chat history for this specific ID
+            renderChatHistory(id); 
+            
+            chatOverlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+            chatInputText.focus();
+        }
+
+        function hideChat() {
+            activeChatId = null; 
+            chatOverlay.style.display = 'none';
+            document.body.style.overflow = 'auto'; 
+        }
+
+        // --- 5. LIST MANAGEMENT & FILTERING FUNCTIONS ---
+
+        function renderRequestsList() {
+            const requestCountElement = document.getElementById('request-count');
+            requestCountElement.textContent = friendRequests.length;
+            requestsList.innerHTML = '';
+
+            if (friendRequests.length === 0) {
+                requestsList.innerHTML = '<p class="no-requests-msg">No new requests.</p>';
+                return;
+            }
+
+            const cardsHTML = friendRequests.map(renderCard).join('');
+            requestsList.innerHTML = cardsHTML;
+        }
+
+        function renderSuggestionsList() {
+            const suggestionsList = document.getElementById('suggestions-list');
+            suggestionsList.innerHTML = '';
+
+            if (currentSuggestions.length === 0) {
+                suggestionsList.innerHTML = '<p class="no-results-msg">No profiles match your search criteria.</p>';
+                return;
+            }
+
+            const cardsHTML = currentSuggestions.map(renderCard).join('');
+            suggestionsList.innerHTML = cardsHTML;
+        }
+
+        function filterSuggestions() {
+            const query = document.getElementById('suggestion-search').value.toLowerCase().trim();
+            if (query === "") {
+                currentSuggestions = originalSuggestions.filter(p => true); 
+            } else {
+                currentSuggestions = originalSuggestions.filter(person => 
+                    person.name.toLowerCase().includes(query)
+                );
+            }
+            renderSuggestionsList();
+        }
+
+        // --- 6. ACTION HANDLERS ---
+
+        function handleRequest(id, action) {
+            const index = friendRequests.findIndex(p => p.id === id);
+            if (index > -1) {
+                // If confirmed, theoretically the profile moves to 'Following' but here we just delete it from requests.
+                friendRequests.splice(index, 1); 
+                
+                saveDataToLocalStorage(); // Save changes
+
+                const card = document.getElementById(id);
+                if (card) {
+                    card.style.opacity = '0';
+                    card.style.maxHeight = '0';
+                    card.style.padding = '0';
+                    card.style.margin = '0';
+                    card.style.borderBottom = 'none';
+                    card.style.overflow = 'hidden';
+                    setTimeout(() => {
+                        card.remove();
+                        renderRequestsList();
+                    }, 400); 
+                }
+            }
+        }
+
+        function handleSuggestion(id) {
+            const person = originalSuggestions.find(p => p.id === id);
+            if (person) {
+                // Toggle status: Follow -> Following, Following -> Follow
+                person.status = (person.status === 'Follow' ? 'Following' : 'Follow');
+                
+                saveDataToLocalStorage(); // Save status change
+                
+                // Update the single card's HTML to show the new button state
+                const cardElement = document.getElementById(id);
+                if (cardElement) {
+                    cardElement.outerHTML = renderCard(person);
+                }
+            }
+        }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeData(); // Load data from storage or generate new
+            renderRequestsList();
+            renderSuggestionsList();
+        });
+
+    </script>
 </body>
 </html>
