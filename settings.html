@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GenX — Settings</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f0f2f5;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 600px;
+        margin: 30px auto;
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+        text-align: center;
+        color: #1877f2;
+        margin-bottom: 25px;
+        font-size: 24px;
+    }
+    /* Settings Item Styles (from previous version, slightly modified) */
+    .setting-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 10px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+        transition: background-color 0.1s;
+    }
+    .setting-item:hover:not(#logoutItem) {
+        background-color: #f7f7f7;
+    }
+    .setting-item:last-child {
+        border-bottom: none;
+    }
+    .setting-item a, .setting-item button {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        font-size: 16px;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        text-align: left;
+        flex-grow: 1;
+    }
+    .setting-item button {
+        color: #fa383e; 
+        font-weight: bold;
+    }
+    .icon {
+        color: #1877f2;
+        font-size: 20px;
+        margin-right: 15px;
+    }
+    .arrow {
+        color: #aaa;
+        font-weight: bold;
+    }
+
+    /* 🤖 CHATBOT STYLES */
+    #chatbotContainer {
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+        margin-top: 20px;
+        display: none; /* Initially hidden */
+        flex-direction: column;
+        height: 400px;
+    }
+    #chatDisplay {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        background-color: #f9f9f9;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .message {
+        max-width: 80%;
+        padding: 8px 12px;
+        border-radius: 15px;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+    .user-message {
+        align-self: flex-end;
+        background-color: #1877f2;
+        color: white;
+        border-bottom-right-radius: 2px;
+    }
+    .bot-message {
+        align-self: flex-start;
+        background-color: #e5e5ea;
+        color: #333;
+        border-bottom-left-radius: 2px;
+    }
+    #chatInputForm {
+        display: flex;
+        gap: 5px;
+    }
+    #chatInput {
+        flex-grow: 1;
+        padding: 10px;
+        border-radius: 20px;
+        border: 1px solid #ccc;
+    }
+    #chatSendBtn {
+        padding: 10px 15px;
+        border-radius: 20px;
+        background-color: #1877f2;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Account Settings</h2>
+
+    <div class="setting-item" onclick="toggleChatbot()">
+        <span class="icon">❓</span>
+        <a href="javascript:void(0)">Help & Support (AI Chat)</a>
+        <span class="arrow">&gt;</span>
+    </div>
+
+    <div id="chatbotContainer">
+        <div id="chatDisplay">
+            <div class="message bot-message">Hello! I'm the GenX Support Bot. How can I help you fix problems with your profile or posts?</div>
+        </div>
+        <form id="chatInputForm">
+            <input type="text" id="chatInput" placeholder="Ask a question (e.g., 'How to post?')" required>
+            <button type="submit" id="chatSendBtn">Send</button>
+        </form>
+    </div>
+
+    <div class="setting-item">
+        <span class="icon">🔒</span>
+        <a href="privacy.html">Privacy Policy</a>
+        <span class="arrow">&gt;</span>
+    </div>
+    
+    <div class="setting-item">
+        <span class="icon">ℹ️</span>
+        <a href="terms.html">About GenX & Terms</a>
+        <span class="arrow">&gt;</span>
+    </div>
+
+    <div class="setting-item" id="logoutItem">
+        <span class="icon">👋</span>
+        <button onclick="logoutUser()">Log Out</button>
+    </div>
+
+</div>
+
+<script>
+    // --- SETTINGS FUNCTIONS ---
+
+    function logoutUser() {
+        if (confirm("Are you sure you want to log out?")) {
+            localStorage.removeItem('userProfile');
+            localStorage.removeItem('fbPosts');
+            window.location.href = "index.html";
+        }
+    }
+
+    // --- CHATBOT LOGIC ---
+    const chatDisplay = document.getElementById('chatDisplay');
+    const chatInputForm = document.getElementById('chatInputForm');
+    const chatInput = document.getElementById('chatInput');
+    const chatbotContainer = document.getElementById('chatbotContainer');
+
+    function toggleChatbot() {
+        chatbotContainer.style.display = chatbotContainer.style.display === 'flex' ? 'none' : 'flex';
+        if (chatbotContainer.style.display === 'flex') {
+             // Scroll to the latest message when opening
+             chatDisplay.scrollTop = chatDisplay.scrollHeight; 
+        }
+    }
+
+    // Knowledge Base for the Bot (Keywords and Answers)
+    const knowledgeBase = {
+        'profile': "To edit your profile, go back to the Profile page and click the **Edit Profile** button. All changes are saved to your device.",
+        'edit': "To edit your profile, go back to the Profile page and click the **Edit Profile** button. All changes are saved to your device.",
+        'post': "To create a post, use the **Create Post** section on the main page. Enter text, optionally select an image file, choose privacy, and click **Post**.",
+        'delete': "The option to delete posts is not yet available, but we are working on it! For now, posts are saved automatically.",
+        'like': "To like a post, simply click the **Like** button beneath the post. The count will update automatically and is saved locally.",
+        'privacy': "You can set post privacy to **Public, Friends, or Only Me** when creating a new post. This feature is for display only in the current version.",
+        'support': "If the AI cannot solve your problem, please try clearing your browser's local storage for a fresh start, or contact the developer directly.",
+        'logout': "To log out, click the **Log Out** button on this Settings page. This will clear your profile and posts from this device."
+    };
+
+    chatInputForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const userText = chatInput.value.trim().toLowerCase();
+        if (!userText) return;
+
+        // Display user message
+        displayMessage(userText, 'user');
+        chatInput.value = '';
+
+        // Generate bot response
+        setTimeout(() => {
+            const botResponse = getBotResponse(userText);
+            displayMessage(botResponse, 'bot');
+        }, 500); // Simulate bot "thinking" time
+    });
+
+    function getBotResponse(text) {
+        // Simple keyword matching for a static bot
+        for (const keyword in knowledgeBase) {
+            if (text.includes(keyword)) {
+                return knowledgeBase[keyword];
+            }
+        }
+        return "I'm sorry, I don't understand that question. I can help with topics like **'post', 'profile', 'like', 'delete', or 'logout'**.";
+    }
+
+    function displayMessage(text, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}-message`;
+        messageDiv.innerHTML = text; // Use innerHTML for bolding
+        chatDisplay.appendChild(messageDiv);
+        // Auto-scroll to the bottom
+        chatDisplay.scrollTop = chatDisplay.scrollHeight;
+    }
+</script>
+
+</body>
+</html>
