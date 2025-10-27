@@ -66,7 +66,6 @@
         color: #aaa;
         font-weight: bold;
     }
-
     /* 🤖 CHATBOT STYLES */
     #chatbotContainer {
         border-top: 1px solid #eee;
@@ -129,16 +128,13 @@
 </style>
 </head>
 <body>
-
 <div class="container">
     <h2>Account Settings</h2>
-
     <div class="setting-item" onclick="toggleChatbot()">
         <span class="icon">❓</span>
         <a href="javascript:void(0)">Help & Support (AI Chat)</a>
         <span class="arrow">&gt;</span>
     </div>
-
     <div id="chatbotContainer">
         <div id="chatDisplay">
             <div class="message bot-message">Hello! I'm the GenX Support Bot. How can I help you fix problems with your profile or posts?</div>
@@ -148,7 +144,6 @@
             <button type="submit" id="chatSendBtn">Send</button>
         </form>
     </div>
-
     <div class="setting-item">
         <span class="icon">🔒</span>
         <a href="privacy.html">Privacy Policy</a>
@@ -160,31 +155,36 @@
         <a href="terms.html">About GenX & Terms</a>
         <span class="arrow">&gt;</span>
     </div>
-
     <div class="setting-item" id="logoutItem">
         <span class="icon">👋</span>
         <button onclick="logoutUser()">Log Out</button>
     </div>
-
 </div>
-
 <script>
     // --- SETTINGS FUNCTIONS ---
-
     function logoutUser() {
         if (confirm("Are you sure you want to log out?")) {
-            localStorage.removeItem('userProfile');
-            localStorage.removeItem('fbPosts');
+            
+            // 🛑 IMPORTANT CHANGE: 
+            // We are commenting out the localStorage.removeItem lines 
+            // so the profile details and posts persist on the device (as requested).
+            
+            // In a real application, you would clear an 'isLoggedIn' flag here.
+            // Since the entire profile object is currently the only login flag, 
+            // simply redirecting without clearing data simulates a 'soft' logout.
+
+            // localStorage.removeItem('userProfile'); // Commented out to retain profile details
+            // localStorage.removeItem('fbPosts');    // Commented out to retain posts
+
             window.location.href = "index.html";
         }
     }
-
     // --- CHATBOT LOGIC ---
     const chatDisplay = document.getElementById('chatDisplay');
     const chatInputForm = document.getElementById('chatInputForm');
     const chatInput = document.getElementById('chatInput');
     const chatbotContainer = document.getElementById('chatbotContainer');
-
+    
     function toggleChatbot() {
         chatbotContainer.style.display = chatbotContainer.style.display === 'flex' ? 'none' : 'flex';
         if (chatbotContainer.style.display === 'flex') {
@@ -192,7 +192,7 @@
              chatDisplay.scrollTop = chatDisplay.scrollHeight; 
         }
     }
-
+    
     // Knowledge Base for the Bot (Keywords and Answers)
     const knowledgeBase = {
         'profile': "To edit your profile, go back to the Profile page and click the **Edit Profile** button. All changes are saved to your device.",
@@ -204,23 +204,22 @@
         'support': "If the AI cannot solve your problem, please try clearing your browser's local storage for a fresh start, or contact the developer directly.",
         'logout': "To log out, click the **Log Out** button on this Settings page. This will clear your profile and posts from this device."
     };
-
+    
     chatInputForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const userText = chatInput.value.trim().toLowerCase();
         if (!userText) return;
-
         // Display user message
         displayMessage(userText, 'user');
         chatInput.value = '';
-
+        
         // Generate bot response
         setTimeout(() => {
             const botResponse = getBotResponse(userText);
             displayMessage(botResponse, 'bot');
         }, 500); // Simulate bot "thinking" time
     });
-
+    
     function getBotResponse(text) {
         // Simple keyword matching for a static bot
         for (const keyword in knowledgeBase) {
@@ -230,7 +229,7 @@
         }
         return "I'm sorry, I don't understand that question. I can help with topics like **'post', 'profile', 'like', 'delete', or 'logout'**.";
     }
-
+    
     function displayMessage(text, sender) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}-message`;
@@ -240,6 +239,5 @@
         chatDisplay.scrollTop = chatDisplay.scrollHeight;
     }
 </script>
-
 </body>
 </html>
