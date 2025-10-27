@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GenX (VisitBook) - Forgot Password</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Define brand colors */
+            --primary-color: #5E3BEE;
+            --secondary-color: #6C757D;
+            --accent-color: #00BCD4;
+            --text-dark: #333;
+            --text-light: #fff;
+            --bg-light: #f8f9fa;
+            --bg-dark-form: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #d3e0f0 0%, #e8f0f8 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .container {
+            max-width: 400px;
+            width: 90%;
+            padding: 30px;
+            background: var(--bg-dark-form);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            text-align: center;
+        }
+        .brand-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            letter-spacing: -1px;
+        }
+        .brand-tagline {
+            font-size: 0.9em;
+            color: var(--secondary-color);
+            margin-bottom: 25px;
+            font-weight: 400;
+        }
+        h2.form-header {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8em;
+            color: var(--text-dark);
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        p.instruction {
+            margin-bottom: 20px;
+            font-size: 0.95em;
+            color: var(--secondary-color);
+        }
+        /* Form Controls */
+        input {
+            width: calc(100% - 24px);
+            margin: 12px 0;
+            padding: 14px;
+            font-size: 1em;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+            background-color: var(--bg-light);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            outline: none;
+        }
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(94, 59, 238, 0.2);
+        }
+        label {
+            display: block;
+            text-align: left;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        /* Buttons */
+        button {
+            width: 100%;
+            margin: 25px 0 15px 0;
+            padding: 14px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            outline: none;
+        }
+        button.primary {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+        }
+        button.primary:hover {
+            background-color: #4b2cc2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        /* Link for sign in/signup */
+        .alt-action {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: var(--secondary-color);
+        }
+        .alt-action a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .alt-action a:hover {
+            color: #4b2cc2;
+            text-decoration: underline;
+        }
+        /* Alert styling from the original signup form */
+        .alert-message {
+            background-color: #ffe0b2; /* Light orange */
+            color: #e65100; /* Darker orange */
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            font-weight: 500;
+            display: none; /* Hidden by default */
+        }
+        .alert-success {
+             background-color: #d4edda; /* Light green for success */
+             color: #155724; /* Dark green for success */
+             display: block;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="brand-logo">GenX</div>
+        <div class="brand-tagline">VisitBook Password Recovery</div>
+        <h2 class="form-header">Reset Your Password</h2>
+
+        <p class="instruction">
+            Enter the email address associated with your account and we'll send you a link to reset your password.
+        </p>
+        
+        <div class="alert-message" id="form-alert"></div>
+
+        <form id="resetForm">
+            <label for="reset-email">Email Address</label>
+            <input type="email" id="reset-email" placeholder="e.g., your.email@domain.com" required />
+            
+            <button type="submit" class="primary">Send Reset Link</button>
+        </form>
+
+        <div class="alt-action">
+            Remember your password? <a href="login.html">Sign In</a>
+        </div>
+    </div>
+    <script>
+        const formAlert = document.getElementById('form-alert');
+        
+        function showAlert(message, isSuccess = false) {
+            formAlert.textContent = message;
+            formAlert.style.display = 'block';
+            if (isSuccess) {
+                formAlert.className = 'alert-message alert-success';
+            } else {
+                formAlert.className = 'alert-message';
+            }
+        }
+        
+        document.getElementById('resetForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            formAlert.style.display = 'none';
+
+            const emailInput = document.getElementById('reset-email');
+            const email = emailInput.value.trim();
+
+            if (email === '') {
+                showAlert('Please enter your email address.');
+                emailInput.style.borderColor = 'red';
+                return;
+            }
+            
+            // Basic email format validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showAlert('Please enter a valid email address.');
+                emailInput.style.borderColor = 'red';
+                return;
+            }
+            
+            emailInput.style.borderColor = 'var(--border-color)';
+            
+            // In a real application, you would send an AJAX request to your server here.
+            
+            // Simulate success
+            showAlert(`A password reset link has been sent to ${email}. Please check your inbox.`, true);
+
+            // Optional: Disable button and clear input after submission
+            document.querySelector('button.primary').disabled = true;
+            emailInput.value = '';
+        });
+    </script>
+</body>
+</html>
