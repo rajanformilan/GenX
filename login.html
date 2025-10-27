@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GenX (VisitBook) - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Define brand colors */
+            --primary-color: #5E3BEE; /* A vibrant purple */
+            --secondary-color: #6C757D; /* Grey for secondary actions */
+            --accent-color: #00BCD4; /* A bright cyan */
+            --text-dark: #333;
+            --text-light: #fff;
+            --bg-light: #f8f9fa;
+            --bg-dark-form: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #d3e0f0 0%, #e8f0f8 100%); /* Soft gradient background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .container {
+            max-width: 400px; /* Adjusted max width for a simpler login form */
+            width: 90%;
+            padding: 30px;
+            background: var(--bg-dark-form);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            text-align: center;
+        }
+        .brand-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            letter-spacing: -1px;
+        }
+        .brand-tagline {
+            font-size: 0.9em;
+            color: var(--secondary-color);
+            margin-bottom: 25px;
+            font-weight: 400;
+        }
+        h2.form-header { /* Renamed for clarity in login form */
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8em;
+            color: var(--text-dark);
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        /* Form Controls */
+        input {
+            width: calc(100% - 24px); /* Account for padding */
+            margin: 12px 0;
+            padding: 14px;
+            font-size: 1em;
+            border-radius: 8px; /* Softer edges */
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+            background-color: var(--bg-light);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            outline: none; /* Remove default outline */
+        }
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(94, 59, 238, 0.2); /* Soft focus glow */
+        }
+        label {
+            display: block;
+            text-align: left;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        /* Buttons */
+        button {
+            width: 100%;
+            margin: 25px 0 15px 0; /* Adjust button margins */
+            padding: 14px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            outline: none;
+        }
+        button.primary {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+        }
+        button.primary:hover {
+            background-color: #4b2cc2; /* Darker primary */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        /* Link for signup/forgot password */
+        .alt-action {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: var(--secondary-color);
+        }
+        .alt-action a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .alt-action a:hover {
+            color: #4b2cc2;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="brand-logo">GenX</div>
+        <div class="brand-tagline">Your digital identity on VisitBook</div>
+        <h2 class="form-header">Sign In</h2>
+
+        <form id="loginForm">
+            <label for="login-email">Email Address</label>
+            <input type="email" id="login-email" placeholder="Enter your email" required />
+
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="Enter your password" required />
+            
+            <button type="submit" class="primary">Sign In</button>
+        </form>
+
+        <div class="alt-action">
+            Don't have an account? <a href="authentication.html">Sign Up</a>
+        </div>
+        <div class="alt-action" style="margin-top: 10px;">
+            <a href="forgot-password.html">Forgot Password?</a>
+        </div>
+    </div>
+    <script>
+        // Simple client-side validation for login form
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+
+            if (email === '' || password === '') {
+                alert('Please enter both email and password.');
+            } else {
+                // In a real application, you would send this data to your server.
+                console.log('Attempting to log in with:', { email, password });
+                alert('Login attempted. (In a real app, this redirects to the dashboard)');
+                // window.location.href = 'dashboard.html'; // Example redirect
+            }
+        });
+    </script>
+</body>
+</html>
