@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>GenX (VisitBook) - Signup</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-
     <style>
         :root {
             /* Define brand colors */
@@ -23,10 +20,9 @@
             --shadow-light: rgba(0, 0, 0, 0.1);
             --shadow-medium: rgba(0, 0, 0, 0.15);
         }
-
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #d3e0f0 0%, #e8f0f8 100%); /* Soft gradient background */
+            background: linear-gradient(135deg, #d3e0f0 0%, #e8f0f8 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -36,19 +32,17 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-
         .container {
-            max-width: 450px; /* Slightly wider for better layout */
-            width: 90%; /* Responsive width */
+            max-width: 450px;
+            width: 90%;
             padding: 30px;
             background: var(--bg-dark-form);
             border-radius: 15px;
             box-shadow: 0 10px 30px var(--shadow-medium);
             text-align: center;
             position: relative;
-            overflow: hidden; /* For smooth transitions if we add them */
+            overflow: hidden;
         }
-
         .brand-logo {
             font-family: 'Montserrat', sans-serif;
             font-size: 2.5em;
@@ -58,14 +52,12 @@
             letter-spacing: -1px;
             position: relative;
         }
-
         .brand-tagline {
             font-size: 0.9em;
             color: var(--secondary-color);
             margin-bottom: 25px;
             font-weight: 400;
         }
-
         h2.step-header {
             font-family: 'Poppins', sans-serif;
             font-size: 1.8em;
@@ -74,22 +66,19 @@
             margin-bottom: 25px;
             font-weight: 600;
         }
-
         h3 {
             font-size: 1.3em;
             color: var(--primary-color);
             margin-bottom: 20px;
             font-weight: 600;
         }
-
         /* Step Indicators */
         .steps-indicator {
             display: flex;
             justify-content: center;
             margin-bottom: 30px;
-            gap: 15px; /* Space between dots */
+            gap: 15px;
         }
-
         .step-dot {
             height: 14px;
             width: 14px;
@@ -97,33 +86,29 @@
             border-radius: 50%;
             display: inline-block;
             transition: background-color 0.4s ease-in-out, transform 0.2s ease-in-out;
-            cursor: pointer; /* Indicate clickability */
+            cursor: pointer;
         }
-
         .step-dot.active {
             background-color: var(--primary-color);
-            transform: scale(1.2); /* Make active dot slightly larger */
+            transform: scale(1.2);
         }
-
         /* Form Controls */
         input, select {
-            width: calc(100% - 24px); /* Account for padding */
+            width: calc(100% - 24px);
             margin: 12px 0;
             padding: 14px;
             font-size: 1em;
-            border-radius: 8px; /* Softer edges */
+            border-radius: 8px;
             border: 1px solid var(--border-color);
             box-sizing: border-box;
             background-color: var(--bg-light);
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            outline: none; /* Remove default outline */
+            outline: none;
         }
-
         input:focus, select:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(94, 59, 238, 0.2); /* Soft focus glow */
+            box-shadow: 0 0 0 3px rgba(94, 59, 238, 0.2);
         }
-
         label {
             display: block;
             text-align: left;
@@ -132,11 +117,10 @@
             font-weight: 600;
             color: var(--text-dark);
         }
-
         /* Buttons */
         button {
             width: 100%;
-            margin: 15px 0 5px 0; /* Adjust button margins */
+            margin: 15px 0 5px 0;
             padding: 14px;
             font-size: 1.1em;
             border-radius: 8px;
@@ -146,42 +130,36 @@
             transition: background-color 0.3s ease, transform 0.2s ease;
             outline: none;
         }
-
         button.primary {
             background-color: var(--primary-color);
             color: var(--text-light);
         }
-
         button.primary:hover {
-            background-color: #4b2cc2; /* Darker primary */
+            background-color: #4b2cc2;
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-
         button.secondary {
             background-color: var(--secondary-color);
             color: var(--text-light);
-            margin-top: 5px; /* Closer to the previous button */
+            margin-top: 5px;
         }
-
         button.secondary:hover {
-            background-color: #5a6268; /* Darker secondary */
+            background-color: #5a6268;
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-
         /* Avatar Preview */
         img#preview {
-            width: 150px; /* Slightly larger */
+            width: 150px;
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
             display: block;
             margin: 20px auto;
-            border: 4px solid var(--accent-color); /* Use accent color for border */
+            border: 4px solid var(--accent-color);
             box-shadow: 0 5px 15px var(--shadow-light);
         }
-
         /* Step Container Transition */
         .step-container {
             display: none;
@@ -189,53 +167,45 @@
             transform: translateX(20px);
             transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
-
         .step-container.active {
             display: block;
             opacity: 1;
             transform: translateX(0);
         }
-
         /* Alert styling */
         .alert-message {
-            background-color: #ffe0b2; /* Light orange */
-            color: #e65100; /* Darker orange */
+            background-color: #ffe0b2;
+            color: #e65100;
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 15px;
             font-size: 0.9em;
             font-weight: 500;
-            display: none; /* Hidden by default */
+            display: none;
         }
+
     </style>
-
 </head>
-
 <body>
-
     <div class="container">
         <div class="brand-logo">GenX</div>
         <div class="brand-tagline">Your digital identity on VisitBook</div>
-
         <h2 class="step-header">Create Your Profile</h2>
-
         <div class="steps-indicator">
             <span class="step-dot active" id="dot-1" onclick="jumpToStep(1)"></span>
             <span class="step-dot" id="dot-2" onclick="jumpToStep(2)"></span>
             <span class="step-dot" id="dot-3" onclick="jumpToStep(3)"></span>
         </div>
-
         <div class="alert-message" id="form-alert"></div>
-
         <form id="authForm" novalidate>
-
             <div id="step-1" class="step-container active">
                 <h3>Step 1: Your Credentials</h3>
                 <input type="text" id="name" placeholder="Full Name" required />
                 <input type="email" id="email" placeholder="Email" required />
+                <input type="password" id="password" placeholder="Password" required />
+                <input type="password" id="confirm-password" placeholder="Confirm Password" required />
                 <button type="button" class="primary" onclick="nextStep(2)">Next</button>
             </div>
-
             <div id="step-2" class="step-container">
                 <h3>Step 2: Personal Details</h3>
                 <select id="gender" required>
@@ -248,7 +218,6 @@
                 <button type="button" class="secondary" onclick="prevStep(1)">Back</button>
                 <button type="button" class="primary" onclick="nextStep(3)">Next</button>
             </div>
-
             <div id="step-3" class="step-container">
                 <h3>Step 3: Profile Picture</h3>
                 <label for="avatarUpload">Upload Avatar Image:</label>
@@ -257,29 +226,31 @@
                 <button type="button" class="secondary" onclick="prevStep(2)">Back</button>
                 <button type="submit" class="primary">Save Profile</button>
             </div>
-
         </form>
-
     </div> <script>
         const avatarUpload = document.getElementById('avatarUpload');
         const preview = document.getElementById('preview');
         const formAlert = document.getElementById('form-alert');
         let avatarBase64 = '';
         let currentStep = 1;
-
         // --- Helper for displaying alerts ---
-        function showAlert(message) {
+        function showAlert(message, isSuccess = false) {
             formAlert.textContent = message;
             formAlert.style.display = 'block';
+            if (isSuccess) {
+                formAlert.style.backgroundColor = '#d4edda'; /* Light green for success */
+                formAlert.style.color = '#155724'; /* Dark green for success */
+            } else {
+                formAlert.style.backgroundColor = '#ffe0b2'; /* Light orange for error */
+                formAlert.style.color = '#e65100'; /* Dark orange for error */
+            }
         }
-
         function hideAlert() {
             formAlert.style.display = 'none';
         }
-
         // --- Image Preview Logic ---
         avatarUpload.addEventListener('change', function() {
-            hideAlert(); // Clear any previous avatar upload alerts
+            hideAlert();
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -290,78 +261,86 @@
                 reader.readAsDataURL(file);
             }
         });
-
         // --- Step Navigation Functions ---
         function updateSteps(stepNumber) {
-            hideAlert(); // Clear alert when changing steps
-
+            hideAlert();
             // Hide all steps
             document.querySelectorAll('.step-container').forEach(step => {
                 step.classList.remove('active');
             });
             // Show the current step
             document.getElementById(`step-${stepNumber}`).classList.add('active');
-
             // Update step indicators (dots)
             document.querySelectorAll('.step-dot').forEach(dot => {
                 dot.classList.remove('active');
             });
             document.getElementById(`dot-${stepNumber}`).classList.add('active');
-
             currentStep = stepNumber;
         }
-
         function validateStep(stepNumber) {
             let isValid = true;
             let fieldsToValidate = [];
 
             if (stepNumber === 1) {
-                fieldsToValidate = ['name', 'email'];
+                fieldsToValidate = ['name', 'email', 'password', 'confirm-password'];
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                
+                // Password Matching Check
+                if (password !== confirmPassword) {
+                    isValid = false;
+                    showAlert('Passwords do not match.');
+                    document.getElementById('password').style.borderColor = 'red';
+                    document.getElementById('confirm-password').style.borderColor = 'red';
+                } else if (password.length < 6) { 
+                    // Basic Length Check
+                    isValid = false;
+                    showAlert('Password must be at least 6 characters long.');
+                    document.getElementById('password').style.borderColor = 'red';
+                    document.getElementById('confirm-password').style.borderColor = 'red';
+                } else {
+                    document.getElementById('password').style.borderColor = 'var(--border-color)';
+                    document.getElementById('confirm-password').style.borderColor = 'var(--border-color)';
+                }
+
             } else if (stepNumber === 2) {
                 fieldsToValidate = ['gender', 'dob'];
             } else if (stepNumber === 3) {
-                 // For step 3, only check avatar if it's the final submission,
-                 // or if they are trying to proceed from step 3 (though there's no next button)
-                 // The final submit listener handles the avatar check
-                 return true;
+                return true; // Final validation on submit
             }
-
 
             fieldsToValidate.forEach(id => {
                 const element = document.getElementById(id);
-                if (element) { // Ensure element exists
+                if (element) {
                     if (element.value.trim() === '' || (element.tagName === 'SELECT' && element.value === '')) {
                         isValid = false;
-                        element.style.borderColor = 'red'; // Highlight error
-                    } else {
-                        element.style.borderColor = 'var(--border-color)'; // Reset border
+                        element.style.borderColor = 'red';
+                    } else if (id !== 'password' && id !== 'confirm-password') { // Don't reset password borders if a password error was found
+                        element.style.borderColor = 'var(--border-color)';
                     }
                 }
             });
 
+            if (!isValid && currentStep === stepNumber) {
+                 showAlert('Please fill in all required fields to continue.');
+            }
+            
             return isValid;
         }
-
         function nextStep(stepNumber) {
             if (validateStep(currentStep)) {
                 updateSteps(stepNumber);
-            } else {
-                showAlert('Please fill in all required fields to continue.');
             }
         }
-
         function prevStep(stepNumber) {
             updateSteps(stepNumber);
         }
-
         function jumpToStep(stepNumber) {
-            // Allow jumping to previous steps freely
             if (stepNumber < currentStep) {
                 updateSteps(stepNumber);
             } else if (stepNumber === currentStep) {
                 // Do nothing if clicking current step
             } else {
-                // If trying to jump forward, validate current step
                 if (validateStep(currentStep)) {
                     updateSteps(stepNumber);
                 } else {
@@ -369,55 +348,53 @@
                 }
             }
         }
-
         // --- Final Submission Logic ---
         document.getElementById('authForm').addEventListener('submit', function(e) {
             e.preventDefault();
             hideAlert();
-
-            // Final validation for all steps, just in case
+            
+            // Final validation for all steps
             if (!validateStep(1)) {
-                updateSteps(1); // Go back to step 1 to show error
-                showAlert('Please complete Step 1: Your Credentials.');
+                updateSteps(1); 
                 return;
             }
+
             if (!validateStep(2)) {
-                updateSteps(2); // Go back to step 2 to show error
-                showAlert('Please complete Step 2: Personal Details.');
+                updateSteps(2); 
                 return;
             }
 
             // Additional validation for avatar in the final step (Step 3)
             if (!avatarBase64) {
                 showAlert('Please upload an avatar image.');
+                updateSteps(3); // Go to step 3 to show the error
                 return;
             }
-
+            
             const userProfile = {
                 name: document.getElementById('name').value.trim(),
                 email: document.getElementById('email').value.trim(),
+                password: document.getElementById('password').value, // **NEW: Include password**
                 gender: document.getElementById('gender').value,
                 dob: document.getElementById('dob').value,
                 avatar: avatarBase64
             };
-
+            
+            // For a real app, you'd hash the password before sending/storing it!
+            
             // Save to localStorage
             localStorage.setItem('userProfile', JSON.stringify(userProfile));
-
+            
             // Show success message
-            showAlert('Profile saved successfully! Redirecting...');
-            formAlert.style.backgroundColor = '#d4edda'; /* Light green for success */
-            formAlert.style.color = '#155724'; /* Dark green for success */
-
+            showAlert('Profile saved successfully! Redirecting...', true);
 
             // Redirect after a short delay to allow user to see success message
             setTimeout(() => {
                 window.location.href = 'profile.html';
-            }, 1500); // Redirect after 1.5 seconds
+            }, 1500);
         });
-
         // Initialize to Step 1 on load
-        updateSteps(1); 
+        updateSteps(1);
     </script>
 </body>
 </html>
