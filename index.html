@@ -104,7 +104,7 @@
     .actions button:hover { background: #f0f2f5; }
     .actions button.liked { color: #1877f2; font-weight: bold; }
     .no-posts { text-align: center; color: #888; padding: 30px; }
-    
+
     /* --- Comment Section Styles --- */
     .comments-section { margin-top: 10px; border-top: 1px solid #ddd; padding-top: 10px; }
     .comments-list { max-height: 150px; overflow-y: auto; margin-bottom: 10px; }
@@ -152,7 +152,7 @@
     <div class="feed" id="feedContainer">
         <div class="no-posts">Loading posts...</div>
     </div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
@@ -203,7 +203,7 @@
                     "GenX is rolling out new chat features next week! Stay tuned for updates. 💬",
                     "Thinking about adopting a rescue dog. Any advice from pet owners?"
                 ];
-                
+
                 // Stable list of image IDs for reliable loading
                 const imageIds = [237, 10, 20, 30, 42, 53, 64, 88, 102, 119, 122, 141, 155, 163, 171, 180, 201, 219, 239, 245, 251, 260, 271, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440];
                 const privacies = ['public', 'public', 'friends'];
@@ -214,19 +214,19 @@
                     const randomText = texts[Math.floor(Math.random() * texts.length)];
                     const shouldHaveImage = Math.random() > 0.4;
                     let randomImage = '';
-                    
+
                     if (shouldHaveImage) {
                         const imageIdIndex = i % imageIds.length;
                         const randomId = imageIds[imageIdIndex];
                         randomImage = `https://picsum.photos/id/${randomId}/600/400`;
                     }
-                    
+
                     // *** CRITICAL TIME ADJUSTMENT for Sorting ***
                     // Mock posts are made significantly older (1 to 50 days ago) 
                     // This ensures new user-created posts (using Date.now()) appear first.
                     const daysAgo = i + 1; // 1 to 50 days ago
                     const timeDifferenceMs = daysAgo * 86400000; 
-                    
+
                     newPosts.push({
                         id: Date.now() + i, 
                         authorName: randomName, 
@@ -245,7 +245,7 @@
 
             // --- 3. Post Data Initialization (CRITICAL FIX FOR DUPLICATES) ---
             const feedContainer = document.getElementById('feedContainer');
-            
+
             let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
             const mockPostsGenerated = localStorage.getItem('mockPostsGenerated');
 
@@ -253,13 +253,13 @@
                 console.log("First visit: Generating stable mock posts.");
                 const mockPosts = generateMockPosts(50);
                 posts = [...mockPosts, ...posts]; 
-                
+
                 localStorage.setItem('mockPostsGenerated', 'true');
                 localStorage.setItem('fbPosts', JSON.stringify(posts));
             } else {
                 console.log("Mock posts already exist. Loading current posts.");
             }
-            
+
             const currentUserProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
             const currentUserName = currentUserProfile.name || "Rajan Kandel"; 
 
@@ -288,7 +288,7 @@
             function renderPosts() {
                 feedContainer.innerHTML = "";
                 let hasVisiblePosts = false;
-                
+
                 // **THIS IS THE SORTING LINE:** Newest posts (highest time value) will be at the start.
                 const sortedPosts = [...posts].sort((a, b) => new Date(b.time) - new Date(a.time)); 
 
@@ -341,7 +341,7 @@
                 if (!hasVisiblePosts) {
                     feedContainer.innerHTML = '<div class="no-posts">No public posts found. Create one on your profile!</div>';
                 }
-            
+
                 attachEventListeners();
             }
 
