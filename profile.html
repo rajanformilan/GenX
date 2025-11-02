@@ -1,565 +1,465 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>User Profile and Posts</title>
-<style>
-/* 🎨 GENERAL STYLES */
-body {
-    font-family: Arial, sans-serif;
-    max-width: 600px;
-    margin: 20px auto;
-    background: #f0f2f5;
-    padding: 10px;
-    border-radius: 10px;
-}
-
-h2 { 
-    margin: 20px 0 10px; 
-    text-align: center; 
-    color: #1877f2; 
-}
-
-/* 🖼️ PROFILE SECTION STYLES */
-.profile-info {
-    padding: 15px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-}
-
-img.profile-pic {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #007bff;
-    margin-bottom: 10px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.profile-info p { 
-    margin: 5px 0; 
-    color: #555; 
-    text-align: center; 
-}
-
-/* ✍️ POST FORM STYLES */
-#postForm {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 15px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-}
-
-#postText {
-    width: 100%;
-    min-height: 80px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    resize: vertical;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
-
-#postForm input[type="file"] {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-}
-
-#postPrivacy {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    width: fit-content; /* Make the select box fit its content */
-}
-
-/* 📌 BUTTON STYLES (General) */
-button {
-    background-color: #1877f2; /* Facebook Blue */
-    border: none;
-    color: white;
-    padding: 10px 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-}
-button:hover { 
-    background-color: #165ec9; 
-}
-
-/* Override general button styles for specific elements */
-#postForm button[type="submit"] {
-    align-self: flex-end;
-    margin-top: 0;
-    padding: 8px 15px;
-    font-size: 14px;
-}
-
-.edit-btn-container {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-/* 📰 FEED STYLES */
-.post {
-    background: white;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    position: relative;
-}
-
-.posted-by {
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #1877f2;
-    text-align: left; 
-}
-
-.post-text {
-    margin: 10px 0;
-    color: #333;
-    white-space: pre-wrap; 
-    text-align: left;
-}
-
-.post-image {
-    max-width: 100%;
-    height: auto;
-    border-radius: 6px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.post-actions {
-    display: flex;
-    justify-content: space-around;
-    border-top: 1px solid #eee;
-    padding-top: 10px;
-    margin-top: 10px;
-}
-
-.post-actions button {
-    background: transparent;
-    color: #606770;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 0;
-    display: inline-flex;
-    align-items: center;
-    font-weight: 600;
-}
-
-.post-actions button:hover {
-    background: #f2f2f2;
-}
-
-/* --- REVISED MENU BUTTON STYLE (Fixed the spacing issue) --- */
-.post-menu-btn {
-    position: absolute;
-    top: 15px; /* Increased from 10px for better spacing */
-    right: 15px; /* Increased from 10px for better spacing */
-    background: none;
-    border: none;
-    color: #606770;
-    font-size: 20px;
-    padding: 5px; /* Added padding to increase click area and space out the icon */
-    margin: 0;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    border-radius: 50%;
-    z-index: 10; /* Ensure button is above other content */
-}
-
-.post-menu-btn:hover {
-    background-color: #f2f2f2;
-}
-
-/* Style for the dropdown menu */
-.post-menu-dropdown {
-    position: absolute;
-    top: 45px; /* Position below the three dots button */
-    right: 15px;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    z-index: 20;
-    display: none; /* Hidden by default */
-}
-
-.post-menu-dropdown button {
-    display: block;
-    width: 100%;
-    padding: 10px 20px;
-    background: none;
-    color: #333;
-    text-align: left;
-    border: none;
-    font-size: 14px;
-    font-weight: normal;
-    border-radius: 0;
-}
-
-.post-menu-dropdown button:hover {
-    background: #f2f2f2;
-}
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile and Posts</title>
+    <style>
+        /* 🎨 GENERAL STYLES */
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            background: #f0f2f5;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        h2 { 
+            margin: 20px 0 10px; 
+            text-align: center; 
+            color: #1877f2; 
+        }
+        /* 🖼️ PROFILE SECTION STYLES */
+        .profile-info {
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        img.profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #007bff;
+            margin-bottom: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .profile-info p { 
+            margin: 5px 0; 
+            color: #555; 
+            text-align: center; 
+        }
+        /* ✍️ POST FORM STYLES */
+        #postForm {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        #postText {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        #postForm input[type="file"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        #postPrivacy {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            width: fit-content;
+        }
+        /* 📌 BUTTON STYLES (General) */
+        button {
+            background-color: #1877f2; /* Facebook Blue */
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button:hover { 
+            background-color: #165ec9; 
+        }
+        /* Override general button styles for specific elements */
+        #postForm button[type="submit"] {
+            align-self: flex-end;
+            margin-top: 0;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+        .edit-btn-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        /* 📰 FEED STYLES */
+        .post {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .posted-by {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #1877f2;
+            text-align: left; 
+        }
+        .post-text {
+            margin: 10px 0;
+            color: #333;
+            white-space: pre-wrap; 
+            text-align: left;
+        }
+        .post-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        .post-actions button {
+            background: transparent;
+            color: #606770;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0;
+            display: inline-flex;
+            align-items: center;
+            font-weight: 600;
+        }
+        .post-actions button:hover {
+            background: #f2f2f2;
+        }
+        /* --- MENU BUTTON STYLE --- */
+        .post-menu-btn {
+            position: absolute;
+            top: 15px; 
+            right: 15px; 
+            background: none;
+            border: none;
+            color: #606770;
+            font-size: 20px;
+            padding: 5px; 
+            margin: 0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-radius: 50%;
+            z-index: 10;
+        }
+        .post-menu-btn:hover {
+            background-color: #f2f2f2;
+        }
+        /* Style for the dropdown menu */
+        .post-menu-dropdown {
+            position: absolute;
+            top: 45px;
+            right: 15px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 20;
+            display: none; 
+        }
+        .post-menu-dropdown button {
+            display: block;
+            width: 100%;
+            padding: 10px 20px;
+            background: none;
+            color: #333;
+            text-align: left;
+            border: none;
+            font-size: 14px;
+            font-weight: normal;
+            border-radius: 0;
+        }
+        .post-menu-dropdown button:hover {
+            background: #f2f2f2;
+        }
+    </style>
 </head>
-
 <body>
-<div class="profile-info">
-    <img id="profileImage" class="profile-pic" src="https://via.placeholder.com/120" alt="Profile Picture" />
-    <h2 id="userName">Name</h2>
-    <p><strong>Email:</strong> <span id="userEmail"></span></p>
-    <p><strong>Gender:</strong> <span id="userGender"></span></p>
-    <p><strong>Date of Birth:</strong> <span id="userDob"></span></p>
-</div>
+    <div class="profile-info">
+        <img id="profileImage" class="profile-pic" src="https://via.placeholder.com/120/1877f2/ffffff?text=Profile" alt="Profile Picture" />
+        <h2 id="userName">Loading Name...</h2>
+        <p><strong>Email:</strong> <span id="userEmail">N/A</span></p>
+        <p><strong>Gender:</strong> <span id="userGender">N/A</span></p>
+        <p><strong>Date of Birth:</strong> <span id="userDob">N/A</span></p>
+    </div>
 
-<div class="edit-btn-container">
-    <button onclick="editProfile()">Edit Profile</button>
-</div>
+    <div class="edit-btn-container">
+        <button onclick="editProfile()">Edit Profile</button>
+    </div>
 
-<h2>Create Post</h2>
-<form id="postForm">
-    <textarea id="postText" placeholder="What's on your mind?" required></textarea>
-    <input type="file" id="postImage" accept="image/*" />
-    <select id="postPrivacy" required>
-        <option value="public" selected>Public</option>
-        <option value="friends">Friends</option>
-        <option value="onlyme">Only Me</option>
-    </select>
-    <button type="submit">Post</button>
-</form>
+    <h2>Create Post</h2>
+    <form id="postForm">
+        <textarea id="postText" placeholder="What's on your mind, Current User?" required></textarea>
+        <input type="file" id="postImage" accept="image/*" />
+        <select id="postPrivacy" required>
+            <option value="public" selected>Public</option>
+            <option value="friends">Friends</option>
+            <option value="onlyme">Only Me</option>
+        </select>
+        <button type="submit">Post</button>
+    </form>
 
-<h2>All Posts</h2>
-<div id="feed"></div>
+    <h2>My Posts</h2>
+    <div id="feed">
+        <p style="text-align: center; color: #888;">No posts yet. Create one above!</p>
+    </div>
 
-<script>
-// --- GLOBAL STATE ---
-// Temporary array to hold posts fetched from Firestore (refreshed on every snapshot)
-let posts = []; 
-const currentUser = JSON.parse(localStorage.getItem('userProfile')) || { name: 'Current User' };
-const currentUserName = currentUser.name || 'Current User';
-
-
-// --- PROFILE & EDIT FUNCTIONS (Local Storage) ---
-
-function loadProfile() {
-    const storedProfile = localStorage.getItem('userProfile');
-    if (!storedProfile) return;
-    const profile = JSON.parse(storedProfile);
-    document.getElementById('profileImage').src = profile.avatar || 'https://via.placeholder.com/120';
-    document.getElementById('userName').textContent = profile.name || 'Unknown';
-    document.getElementById('userEmail').textContent = profile.email || '';
-    document.getElementById('userGender').textContent = profile.gender || '';
-    document.getElementById('userDob').textContent = profile.dob || '';
-}
-
-function editProfile() {
-    alert("Redirecting to Edit Profile Page (edit-profile.html is required).");
-    // window.location.href = "edit-profile.html"; 
-}
-
-loadProfile();
-
-
-// --- POST/FEED LOGIC (FIREBASE FIRETORE) ---
-
-const postForm = document.getElementById('postForm');
-const postText = document.getElementById('postText');
-const postImage = document.getElementById('postImage');
-const postPrivacy = document.getElementById('postPrivacy');
-const feed = document.getElementById('feed');
-
-
-function attachEventListeners() {
-    document.querySelectorAll('.like-btn').forEach(button => {
-        button.onclick = handleLike;
-    });
-    document.querySelectorAll('.post-menu-btn').forEach(button => {
-        button.onclick = handlePostMenu;
-    });
-    // Global click listener to close menus
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.post-menu-btn') && !e.target.closest('.post-menu-dropdown')) {
-            document.querySelectorAll('.post-menu-dropdown').forEach(menu => {
-                menu.style.display = 'none';
-            });
-        }
-    });
-}
-
-function handlePostMenu(e) {
-    e.stopPropagation(); // Prevent the global click listener from immediately closing it
-    const index = parseInt(e.currentTarget.dataset.index);
-    const menu = document.getElementById(`menu-${index}`);
-    
-    // Close all other menus
-    document.querySelectorAll('.post-menu-dropdown').forEach(m => {
-        if (m !== menu) {
-            m.style.display = 'none';
-        }
-    });
-
-    // Toggle current menu
-    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-}
-
-// --- FIREBASE WRITE OPERATIONS ---
-
-async function addPost(text, image, authorName, privacy) {
-    if (!window.db || !window.addDoc || !window.collection) {
-        return alert("Firebase functions not available. Check module imports.");
-    }
-    
-    try {
-        await window.addDoc(window.collection(window.db, "posts"), { 
-            text: text, 
-            image: image, 
-            likes: 0, 
-            likedBy: [], // Use an array to store user IDs who liked it for proper toggling
-            authorName: authorName, 
-            privacy: privacy, 
-            timestamp: Date.now() // Use client timestamp as a quick fix for ordering
-        });
+    <script>
+        // --- PROFILE & EDIT FUNCTIONS ---
+        const DEFAULT_USER = { 
+            name: 'Rajan Kandel', 
+            email: 'rajan@example.com', 
+            gender: 'Male', 
+            dob: '2000-01-01',
+            avatar: 'https://via.placeholder.com/120/1877f2/ffffff?text=User'
+        };
         
-        console.log("Post successfully written to Firestore!");
-        postForm.reset();
-        
-    } catch (e) {
-        console.error("Error adding document: ", e);
-        alert("Failed to post: " + e.message);
-    }
-}
-
-async function handleLike(e) {
-    if (!window.db || !window.updateDoc || !window.doc) {
-        return alert("Firebase functions not available.");
-    }
-    
-    const index = parseInt(e.currentTarget.dataset.index);
-    const post = posts[index];
-    
-    if (!post || !post.id) return;
-    
-    const postRef = window.doc(window.db, "posts", post.id);
-    let newLikes = post.likes || 0;
-    
-    // Simplification: just increment/decrement the counter for now
-    if (post.liked) {
-        newLikes -= 1;
-    } else {
-        newLikes += 1;
-    }
-    
-    // Optimistic UI update (client-side property), the actual 'liked' status should be based on user ID in Firestore
-    posts[index].liked = !post.liked;
-
-    try {
-        await window.updateDoc(postRef, {
-            likes: newLikes
-        });
-        // The onSnapshot listener will re-render the feed with the new data
-    } catch (e) {
-        console.error("Error updating like count: ", e);
-    }
-}
-
-async function editPost(index) {
-    if (!window.db || !window.updateDoc || !window.doc) {
-        return alert("Firebase functions not available.");
-    }
-    
-    const post = posts[index];
-    if (post.authorName !== currentUserName) {
-        return alert("You can only edit your own posts.");
-    }
-
-    const newText = prompt("Edit your post:", post.text);
-    if (newText !== null && newText.trim() !== "" && newText !== post.text) {
-        const postRef = window.doc(window.db, "posts", post.id);
-        
-        try {
-            await window.updateDoc(postRef, {
-                text: newText.trim()
-            });
-        } catch (e) {
-            console.error("Error updating document: ", e);
-        }
-    }
-    document.getElementById(`menu-${index}`).style.display = 'none';
-}
-
-async function deletePost(index) {
-    if (!window.db || !window.deleteDoc || !window.doc) {
-        return alert("Firebase functions not available.");
-    }
-
-    const post = posts[index];
-    if (post.authorName !== currentUserName) {
-        return alert("You can only delete your own posts.");
-    }
-    
-    if (confirm("Are you sure you want to delete this post?")) {
-        try {
-            const postRef = window.doc(window.db, "posts", post.id);
-            await window.deleteDoc(postRef);
-        } catch (e) {
-            console.error("Error deleting document: ", e);
-        }
-    }
-    document.getElementById(`menu-${index}`).style.display = 'none';
-}
-
-
-// --- FIREBASE READ OPERATIONS (Real-time Feed) ---
-
-function fetchPosts() {
-    if (!window.db || !window.collection || !window.onSnapshot || !window.query || !window.orderBy) {
-        // Wait for Firebase to load
-        setTimeout(fetchPosts, 500); 
-        return;
-    }
-
-    const postsCollectionRef = window.collection(window.db, "posts");
-    
-    // Order posts by timestamp (newest first)
-    const q = window.query(postsCollectionRef, window.orderBy("timestamp", "desc"));
-
-    // Set up real-time listener (onSnapshot)
-    window.onSnapshot(q, (snapshot) => {
-        feed.innerHTML = ''; 
-        posts = []; // Clear local array
-
-        snapshot.forEach((doc) => {
-            const postData = doc.data();
+        function loadProfile() {
+            let profile = JSON.parse(localStorage.getItem('userProfile'));
             
-            // Store the full post data including Firestore ID
-            posts.push({ 
-                ...postData,
-                id: doc.id, 
-                // Client-side property: determine if the current user liked it (simplification)
-                liked: postData.liked || false, 
-            });
-            
-            const originalIndex = posts.length - 1; // Index in the temporary 'posts' array
-            
-            const postDiv = document.createElement('div');
-            postDiv.className = 'post';
-            
-            let imgHTML = postData.image ? `<img src="${postData.image}" class="post-image" />` : '';
-            const likedClass = postData.liked ? 'liked' : '';
-            const commentsCount = postData.comments ? postData.comments.length : 0;
-            
-            // Only show the menu button if the post belongs to the current user
-            const isMyPost = postData.authorName === currentUserName;
-            let menuHTML = '';
-            if (isMyPost) {
-                menuHTML = `
-                    <button class="post-menu-btn" data-index="${originalIndex}" aria-controls="menu-${originalIndex}">&#8942;</button>
-                    <div id="menu-${originalIndex}" class="post-menu-dropdown">
-                        <button onclick="editPost(${originalIndex})">Edit</button>
-                        <button onclick="deletePost(${originalIndex})">Delete</button>
-                    </div>`;
+            // Initialize with default data if not present (important for initial run)
+            if (!profile) {
+                profile = DEFAULT_USER;
+                localStorage.setItem('userProfile', JSON.stringify(profile));
             }
 
-            postDiv.innerHTML = `
-                ${menuHTML}
-                <div class="posted-by">Posted by: ${postData.authorName || 'Unknown'}</div>
-                <div class="post-text">${postData.text}</div>
-                ${imgHTML}
-                <div class="post-actions">
-                    <button class="like-btn ${likedClass}" data-index="${originalIndex}">👍 ${postData.likes || 0} Like</button>
-                    <button class="comment-btn" data-index="${originalIndex}">💬 Comment (${commentsCount})</button>
-                </div>`;
+            document.getElementById('profileImage').src = profile.avatar || 'https://via.placeholder.com/120/1877f2/ffffff?text=Profile';
+            document.getElementById('userName').textContent = profile.name || 'Unknown User';
+            document.getElementById('userEmail').textContent = profile.email || 'N/A';
+            document.getElementById('userGender').textContent = profile.gender || 'N/A';
+            document.getElementById('userDob').textContent = profile.dob || 'N/A';
             
-            feed.appendChild(postDiv);
+            // Update the post textarea placeholder
+            document.getElementById('postText').placeholder = `What's on your mind, ${profile.name.split(' ')[0]}?`;
+        }
+
+        function editProfile() {
+            // For a complete app, this would open a modal or redirect to an edit page.
+            alert("This function is intended to redirect to an 'edit-profile.html' or open a modal for editing. Please implement the necessary UI.");
+            
+            // Example of how you might prompt for a quick name change for testing:
+            // const newName = prompt("Enter new name:", currentUser.name);
+            // if (newName && newName.trim() !== '') {
+            //     currentUser.name = newName.trim();
+            //     localStorage.setItem('userProfile', JSON.stringify(currentUser));
+            //     loadProfile();
+            //     renderPosts(); 
+            // }
+        }
+
+        // --- POST/FEED LOGIC ---
+        const postForm = document.getElementById('postForm');
+        const postText = document.getElementById('postText');
+        const postImage = document.getElementById('postImage');
+        const postPrivacy = document.getElementById('postPrivacy');
+        const feed = document.getElementById('feed');
+
+        let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
+        const currentUser = JSON.parse(localStorage.getItem('userProfile')) || DEFAULT_USER;
+        const currentUserName = currentUser.name || DEFAULT_USER.name;
+
+        function renderPosts() {
+            feed.innerHTML = '';
+
+            // Filter to show only the current user's posts and sort by time (newest first)
+            const userPosts = posts
+                .filter(post => post.authorName === currentUserName)
+                .sort((a, b) => b.timestamp - a.timestamp); 
+
+            if (userPosts.length === 0) {
+                feed.innerHTML = '<p style="text-align: center; color: #888;">No posts yet. Create one above!</p>';
+                return;
+            }
+
+            userPosts.forEach((post) => {
+                // Find the index in the MAIN 'posts' array for correct updates
+                const originalIndex = posts.findIndex(p => p.timestamp === post.timestamp);
+                if (originalIndex === -1) return; 
+
+                const postDiv = document.createElement('div');
+                postDiv.className = 'post';
+                postDiv.id = `post-${originalIndex}`; 
+
+                let imgHTML = post.image ? `<img src="${post.image}" class="post-image" alt="Post Image" />` : '';
+                const likedClass = post.liked ? 'liked' : '';
+                const commentsCount = post.comments ? post.comments.length : 0;
+                const postDate = new Date(post.timestamp).toLocaleString();
+                
+                postDiv.innerHTML = `
+                    <button class="post-menu-btn" data-index="${originalIndex}" aria-controls="menu-${originalIndex}">&#8942;</button>
+                    <div id="menu-${originalIndex}" class="post-menu-dropdown">
+                        <button onclick="editPost(${originalIndex})">Edit Post</button>
+                        <button onclick="deletePost(${originalIndex})">Delete Post</button>
+                    </div>
+                    <div class="posted-by">${post.authorName} (${post.privacy})</div>
+                    <div class="post-time" style="font-size: 12px; color: gray; margin-bottom: 5px;">${postDate}</div>
+                    <div class="post-text">${post.text}</div>
+                    ${imgHTML}
+                    <div class="post-actions">
+                        <button class="like-btn ${likedClass}" data-index="${originalIndex}">👍 ${post.likes} Like</button>
+                        <button class="comment-btn" data-index="${originalIndex}">💬 Comment (${commentsCount})</button>
+                    </div>`;
+                feed.appendChild(postDiv);
+            });
+
+            localStorage.setItem('fbPosts', JSON.stringify(posts));
+            attachEventListeners(); 
+        }
+
+        function attachEventListeners() {
+            document.querySelectorAll('.like-btn').forEach(button => {
+                button.onclick = handleLike;
+            });
+            document.querySelectorAll('.post-menu-btn').forEach(button => {
+                button.onclick = handlePostMenu;
+            });
+
+            // Global click listener to close menus
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.post-menu-btn') && !e.target.closest('.post-menu-dropdown')) {
+                    document.querySelectorAll('.post-menu-dropdown').forEach(menu => {
+                        menu.style.display = 'none';
+                    });
+                }
+            });
+        }
+
+        function handlePostMenu(e) {
+            e.stopPropagation(); 
+            const index = parseInt(e.currentTarget.dataset.index);
+            const menu = document.getElementById(`menu-${index}`);
+            
+            document.querySelectorAll('.post-menu-dropdown').forEach(m => {
+                if (m !== menu) {
+                    m.style.display = 'none';
+                }
+            });
+            
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function handleLike(e) {
+            const index = parseInt(e.currentTarget.dataset.index);
+            if (index >= 0 && index < posts.length) {
+                if (posts[index].liked) {
+                    posts[index].likes -= 1;
+                    posts[index].liked = false;
+                } else {
+                    posts[index].likes += 1;
+                    posts[index].liked = true;
+                }
+                renderPosts(); 
+            }
+        }
+
+        function addPost(text, image, authorName, privacy) {
+            posts.unshift({ 
+                id: Date.now(), // Added a unique ID for stability
+                text, 
+                image, 
+                likes: 0, 
+                liked: false, 
+                comments: [], 
+                authorName, 
+                privacy,
+                timestamp: Date.now() 
+            });
+            postForm.reset();
+            localStorage.setItem('fbPosts', JSON.stringify(posts));
+            renderPosts();
+        }
+
+        // --- POST EDIT/DELETE FUNCTIONS ---
+        window.editPost = function(index) {
+            const post = posts[index];
+            const newText = prompt("Edit your post:", post.text);
+            if (newText !== null && newText.trim() !== "" && newText !== post.text) {
+                posts[index].text = newText.trim();
+                localStorage.setItem('fbPosts', JSON.stringify(posts));
+                renderPosts();
+            }
+            document.getElementById(`menu-${index}`).style.display = 'none';
+        }
+
+        window.deletePost = function(index) {
+            if (confirm("Are you sure you want to delete this post?")) {
+                posts.splice(index, 1);
+                localStorage.setItem('fbPosts', JSON.stringify(posts));
+                renderPosts();
+            }
+            document.getElementById(`menu-${index}`).style.display = 'none';
+        }
+
+        // --- INITIAL POST FORM SUBMISSION ---
+        postForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!postText.value.trim() && !postImage.files.length) {
+                alert('Enter some text or select an image');
+                return;
+            }
+
+            const file = postImage.files[0];
+            const posterName = currentUserName;
+            const privacyValue = postPrivacy.value || 'public';
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    addPost(postText.value.trim(), e.target.result, posterName, privacyValue);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                addPost(postText.value.trim(), null, posterName, privacyValue);
+            }
         });
-        
-        attachEventListeners(); 
-        console.log(`Feed updated from Firestore. Total posts: ${posts.length}`);
-    }, (error) => {
-        console.error("Error listening to posts: ", error);
-    });
-}
 
-
-// --- INITIAL POST FORM SUBMISSION ---
-
-postForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    if (!postText.value.trim() && !postImage.files.length) return alert('Enter some text or select an image');
-
-    const file = postImage.files[0];
-    const posterName = currentUserName;
-    const privacyValue = postPrivacy.value || 'public';
-
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = e => {
-            // NOTE: You would typically upload this to Firebase Storage first, 
-            // then save the resulting URL to Firestore. Using Base64 here for simplicity.
-            addPost(postText.value.trim(), e.target.result, posterName, privacyValue);
-        };
-        reader.readAsDataURL(file);
-    } else {
-        addPost(postText.value.trim(), null, posterName, privacyValue);
-    }
-});
-
-// Start fetching posts
-fetchPosts(); 
-</script>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, query, onSnapshot, orderBy, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-    // NOTE: Keep your actual API keys private in a real application
-    apiKey: "AIzaSyAyMhgLjQg9zU1Tq2pFVmRiF_UiOBqPlj0",
-    authDomain: "genx-7a5b3.firebaseapp.com",
-    projectId: "genx-7a5b3",
-    storageBucket: "genx-7a5b3.firebasestorage.app",
-    messagingSenderId: "1293731877",
-    appId: "1:1293731877:web:a330360ade1db5e68897cc"
-};
-
-try {
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    console.log("Firebase initialized successfully.");
-
-    // EXPOSE FIREBASE FUNCTIONS GLOBALLY FOR USE IN THE NON-MODULE SCRIPT
-    window.db = db;
-    window.collection = collection;
-    window.addDoc = addDoc;
-    window.query = query;
-    window.onSnapshot = onSnapshot;
-    window.orderBy = orderBy;
-    window.updateDoc = updateDoc;
-    window.doc = doc;
-    window.deleteDoc = deleteDoc;
+        // --- INITIALIZATION ---
+        loadProfile();
+        renderPosts();
+    </script>
     
-} catch (error) {
-    console.warn("Firebase initialization failed (likely local use).");
-}
-</script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyAyMhgLjQg9zU1Tq2pFVmRiF_UiOBqPlj0",
+            authDomain: "genx-7a5b3.firebaseapp.com",
+            projectId: "genx-7a5b3",
+            storageBucket: "genx-7a5b3.firebasestorage.app",
+            messagingSenderId: "1293731877",
+            appId: "1:1293731877:web:a330360ade1db5e68897cc"
+        };
+        try {
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            console.log("Firebase initialized successfully.");
+        } catch (error) {
+            console.warn("Firebase initialization failed (likely local use).");
+        }
+    </script>
 </body>
 </html>
