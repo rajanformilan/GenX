@@ -78,7 +78,6 @@
     .search-results div { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 14px; }
     .search-results div:hover { background: #f0f2f5; }
     .category { background: #f7f7f7; font-weight: bold; color: #1877f2; text-transform: uppercase; font-size: 12px; }
-
     /* --- Feed & Post Styles --- */
     .feed { max-width: 600px; margin: 20px auto; }
     .post { background: white; margin-bottom: 15px; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -104,7 +103,6 @@
     .actions button:hover { background: #f0f2f5; }
     .actions button.liked { color: #1877f2; font-weight: bold; }
     .no-posts { text-align: center; color: #888; padding: 30px; }
-
     /* --- Comment Section Styles --- */
     .comments-section { margin-top: 10px; border-top: 1px solid #ddd; padding-top: 10px; }
     .comments-list { max-height: 150px; overflow-y: auto; margin-bottom: 10px; }
@@ -124,7 +122,6 @@
         font-weight: bold; font-size: 14px; width: auto;
     }
     .comment-input button:hover { background-color: #155db2; }
-
 </style>
 </head>
 
@@ -162,6 +159,7 @@
             menuToggle.addEventListener('click', () => {
                 navLinks.classList.toggle('active');
             });
+
             const data = {
                 users: ["Milan Kandel", "Sita Rai", "John Smith", "Aarav Shrestha"],
                 pages: ["Digital Nepal", "GenX Official", "Smart Investments", "Real Estate Hub"],
@@ -170,11 +168,13 @@
             };
             const searchInput = document.getElementById('searchInput');
             const searchResults = document.getElementById('searchResults');
+
             searchInput.addEventListener('input', () => {
                 const query = searchInput.value.toLowerCase();
                 searchResults.innerHTML = "";
                 if (!query.trim()) return searchResults.classList.remove('active');
                 let resultsHTML = "";
+
                 for (const category in data) {
                     const filtered = data[category].filter(item => item.toLowerCase().includes(query));
                     if (filtered.length) {
@@ -182,93 +182,62 @@
                         filtered.forEach(item => resultsHTML += `<div>${item}</div>`);
                     }
                 }
+
                 searchResults.innerHTML = resultsHTML || `<div>No results found</div>`;
                 searchResults.classList.add('active');
             });
+
             document.addEventListener('click', e => { if (!e.target.closest('.search-bar')) searchResults.classList.remove('active'); });
 
+            
+            // --- 2. Post Data Initialization ---
+            const feedContainer = document.getElementById('feedContainer');
+            const DEFAULT_USER = { name: 'Rajan Kandel' };
+            const currentUserProfile = JSON.parse(localStorage.getItem('userProfile')) || DEFAULT_USER;
+            const currentUserName = currentUserProfile.name || DEFAULT_USER.name;
 
-            // --- 2. Dynamic Post Generator Function (Image and Time stability fixed) ---
-            function generateMockPosts(count = 50) {
-                const names = ["Alex J.", "Zara K.", "Omar S.", "Priya N.", "David G.", "Emi H.", "GenX Team"];
-                const texts = [
-                    "Just finished building my first custom PC! So much faster now. 💻",
-                    "A beautiful sunset over the mountains today. Feeling grateful for this view. 🌄 #NatureLover",
-                    "What's the best way to learn a new language quickly? Asking for a friend! 😉",
-                    "I highly recommend this book. It completely changed my perspective on investment strategy. 📚",
-                    "Learning JavaScript promises vs callbacks. It's a journey! #CodingLife",
-                    "Throwback to last summer's road trip. Can't wait for the next one! 🚗",
-                    "Is anyone else finding it hard to focus this week? Need coffee. ☕",
-                    "New recipe success! Homemade sourdough bread finally turned out perfectly.",
-                    "GenX is rolling out new chat features next week! Stay tuned for updates. 💬",
-                    "Thinking about adopting a rescue dog. Any advice from pet owners?"
+            // Load posts from local storage or initialize an empty array
+            let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
+
+            function generateMockPosts() {
+                // Only create mock data if storage is empty
+                if (posts.length > 0) return; 
+
+                const mockContent = [
+                    { text: "Just had a great trip to the mountains! The view was incredible. ⛰️", author: "Sita Rai", privacy: "public" },
+                    { text: "Learning JavaScript today. This is the future of web dev! #coding", author: "John Smith", privacy: "public" },
+                    { text: "New investment strategy is paying off! Check out my profile for details.", author: "Aarav Shrestha", privacy: "public" },
+                    { text: "My personal private thought for today. (Should not appear in other users' feeds)", author: "Aarav Shrestha", privacy: "onlyme" },
+                    { text: "Excited for the GenX update next week!", author: "Sita Rai", privacy: "public" }
                 ];
 
-                // Stable list of image IDs for reliable loading
-                const imageIds = [237, 10, 20, 30, 42, 53, 64, 88, 102, 119, 122, 141, 155, 163, 171, 180, 201, 219, 239, 245, 251, 260, 271, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440];
-                const privacies = ['public', 'public', 'friends'];
-                const newPosts = [];
-
-                for (let i = 0; i < count; i++) {
-                    const randomName = names[Math.floor(Math.random() * names.length)];
-                    const randomText = texts[Math.floor(Math.random() * texts.length)];
-                    const shouldHaveImage = Math.random() > 0.4;
-                    let randomImage = '';
-
-                    if (shouldHaveImage) {
-                        const imageIdIndex = i % imageIds.length;
-                        const randomId = imageIds[imageIdIndex];
-                        randomImage = `https://picsum.photos/id/${randomId}/600/400`;
-                    }
-
-                    // *** CRITICAL TIME ADJUSTMENT for Sorting ***
-                    // Mock posts are made significantly older (1 to 50 days ago) 
-                    // This ensures new user-created posts (using Date.now()) appear first.
-                    const daysAgo = i + 1; // 1 to 50 days ago
-                    const timeDifferenceMs = daysAgo * 86400000; 
-
-                    newPosts.push({
-                        id: Date.now() + i, 
-                        authorName: randomName, 
-                        text: randomText,
-                        image: randomImage, 
-                        privacy: privacies[Math.floor(Math.random() * privacies.length)], 
-                        likes: Math.floor(Math.random() * 150) + 5,
-                        liked: Math.random() < 0.3, 
-                        comments: [], 
-                        time: new Date(Date.now() - timeDifferenceMs).toISOString() 
+                mockContent.forEach((item, index) => {
+                    posts.push({
+                        id: Date.now() + index,
+                        text: item.text,
+                        image: null,
+                        likes: Math.floor(Math.random() * 50) + 1,
+                        liked: false,
+                        comments: (index === 1) ? [`${currentUserName}: Great post!`, "Keep learning!"] : [],
+                        authorName: item.author,
+                        privacy: item.privacy,
+                        timestamp: Date.now() - (index * 3600000)
                     });
-                }
-                return newPosts;
-            }
+                });
 
-
-            // --- 3. Post Data Initialization (CRITICAL FIX FOR DUPLICATES) ---
-            const feedContainer = document.getElementById('feedContainer');
-
-            let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
-            const mockPostsGenerated = localStorage.getItem('mockPostsGenerated');
-
-            if (!mockPostsGenerated) {
-                console.log("First visit: Generating stable mock posts.");
-                const mockPosts = generateMockPosts(50);
-                posts = [...mockPosts, ...posts]; 
-
-                localStorage.setItem('mockPostsGenerated', 'true');
                 localStorage.setItem('fbPosts', JSON.stringify(posts));
-            } else {
-                console.log("Mock posts already exist. Loading current posts.");
+                console.log("Mock posts generated because storage was empty.");
             }
-
-            const currentUserProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
-            const currentUserName = currentUserProfile.name || "Rajan Kandel"; 
+            
+            // Run mock generation at startup
+            generateMockPosts();
 
             function saveAndRender() {
                 localStorage.setItem('fbPosts', JSON.stringify(posts));
                 renderPosts();
             }
 
-            // --- 4. Rendering and Event Listener Logic ---
+            // --- 3. Rendering and Event Listener Logic ---
 
             function renderComments(postIndex, container) {
                 container.innerHTML = '';
@@ -289,24 +258,41 @@
                 feedContainer.innerHTML = "";
                 let hasVisiblePosts = false;
 
-                // **THIS IS THE SORTING LINE:** Newest posts (highest time value) will be at the start.
-                const sortedPosts = [...posts].sort((a, b) => new Date(b.time) - new Date(a.time)); 
+                // Sorting by time: newest post first
+                const sortedPosts = [...posts].sort((a, b) => b.timestamp - a.timestamp); 
 
                 sortedPosts.forEach((post) => {
-                    if (post.privacy === 'onlyme' && post.authorName !== currentUserName) {
-                        return; 
+                    // APPLY PRIVACY FILTER
+                    let isVisible = false;
+                    
+                    if (post.privacy === 'public') {
+                        isVisible = true;
+                    } else if (post.privacy === 'friends') {
+                        // In this simple setup, 'friends' posts are only visible to the author.
+                        // In a real app, this would check if currentUserName is in the author's friend list.
+                        if (post.authorName === currentUserName) {
+                            isVisible = true;
+                        }
+                    } else if (post.privacy === 'onlyme') {
+                        if (post.authorName === currentUserName) {
+                            isVisible = true;
+                        }
                     }
 
+                    if (!isVisible) return; // Skip posts that don't pass the visibility check
+                    
                     hasVisiblePosts = true;
+                    // Find the original index for saving changes (likes/comments)
                     const originalIndex = posts.findIndex(p => p.id === post.id);
-                    if (originalIndex === -1) return; 
+                    if (originalIndex === -1) return; 
 
                     const postDiv = document.createElement('div');
                     postDiv.classList.add('post');
 
                     const likedClass = post.liked ? 'liked' : '';
                     const commentsCount = post.comments ? post.comments.length : 0;
-                    const postDate = new Date(post.time || Date.now()).toLocaleTimeString(); 
+                    // Format the time as a readable string
+                    const postDate = new Date(post.timestamp || Date.now()).toLocaleString(); 
 
                     postDiv.innerHTML = `
                         <div class="post-header">
@@ -319,7 +305,7 @@
                         
                         <div class="actions">
                             <button class="like-btn ${likedClass}" data-index="${originalIndex}">
-                                ${post.liked ? '❤️' : '👍'} <span class="like-count">${post.likes}</span> Like
+                                ${posts[originalIndex].liked ? '❤️' : '👍'} <span class="like-count">${posts[originalIndex].likes}</span> Like
                             </button>
                             <button class="comment-toggle-btn" data-index="${originalIndex}">
                                 💬 Comment (${commentsCount})
@@ -339,7 +325,7 @@
                 });
 
                 if (!hasVisiblePosts) {
-                    feedContainer.innerHTML = '<div class="no-posts">No public posts found. Create one on your profile!</div>';
+                    feedContainer.innerHTML = '<div class="no-posts">No public posts found. Start a conversation!</div>';
                 }
 
                 attachEventListeners();
@@ -371,7 +357,8 @@
                         const section = this.closest('.comments-section');
                         const input = section.querySelector('input[type="text"]');
                         if (!input.value.trim()) return;
-                        const fullComment = `${currentUserName}: ${input.value.trim()}`;
+                        const posterName = currentUserName;
+                        const fullComment = `${posterName}: ${input.value.trim()}`;
                         if (!posts[idx].comments) posts[idx].comments = [];
                         posts[idx].comments.push(fullComment);
                         input.value = '';
@@ -394,9 +381,28 @@
                 });
             }
 
-            // --- 5. Initialization ---
+            // --- 4. Initialization ---
             renderPosts();
         });
+    </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyAyMhgLjQg9zU1Tq2pFVmRiF_UiOBqPlj0",
+            authDomain: "genx-7a5b3.firebaseapp.com",
+            projectId: "genx-7a5b3",
+            storageBucket: "genx-7a5b3.firebasestorage.app",
+            messagingSenderId: "1293731877",
+            appId: "1:1293731877:web:a330360ade1db5e68897cc"
+        };
+        try {
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            console.log("Firebase initialized successfully.");
+        } catch (error) {
+            console.warn("Firebase initialization failed (likely local use).");
+        }
     </script>
 </body>
 </html>
