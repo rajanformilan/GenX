@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GenX — News Feed</title>
-
     <style>
         /* --- General Layout & Navigation Styles --- */
         body {
@@ -13,7 +11,6 @@
             font-family: "Poppins", Arial, sans-serif;
             background: #f0f2f5;
         }
-
         .navbar {
             background-color: #1877f2;
             color: white;
@@ -26,19 +23,8 @@
             z-index: 10;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
-
-        .logo {
-            font-size: 22px;
-            font-weight: 700;
-        }
-
-        .menu-toggle {
-            font-size: 28px;
-            cursor: pointer;
-            color: white;
-            margin-left: 10px;
-        }
-
+        .logo { font-size: 22px; font-weight: 700; }
+        .menu-toggle { font-size: 28px; cursor: pointer; color: white; margin-left: 10px; }
         .nav-links {
             list-style: none;
             display: none;
@@ -53,30 +39,12 @@
             text-align: center;
             z-index: 999;
         }
-
-        .nav-links li {
-            margin: 10px 0;
-        }
-
-        .nav-links a {
-            color: #333;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .nav-links a:hover {
-            color: #1877f2;
-        }
-
-        .nav-links.active {
-            display: flex;
-        }
-
+        .nav-links li { margin: 10px 0; }
+        .nav-links a { color: #333; text-decoration: none; font-weight: 600; }
+        .nav-links a:hover { color: #1877f2; }
+        .nav-links.active { display: flex; }
         @media (min-width: 768px) {
-            .menu-toggle {
-                display: none;
-            }
-
+            .menu-toggle { display: none; }
             .nav-links {
                 display: flex !important;
                 flex-direction: row;
@@ -84,33 +52,14 @@
                 background: none;
                 border: none;
             }
-
-            .nav-links li {
-                margin: 0 10px;
-            }
-
-            .nav-links a {
-                color: white;
-            }
-
-            .nav-links a:hover {
-                text-decoration: underline;
-            }
+            .nav-links li { margin: 0 10px; }
+            .nav-links a { color: white; }
+            .nav-links a:hover { text-decoration: underline; }
         }
-
         /* Search Bar */
-        .search-bar {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 15px;
-            position: relative;
-        }
-
+        .search-bar { flex: 1; display: flex; justify-content: center; align-items: center; margin: 0 15px; position: relative; }
         .search-bar input {
-            width: 100%;
-            max-width: 320px;
+            width: 100%; max-width: 320px;
             padding: 8px 36px 8px 14px;
             border-radius: 25px;
             border: none;
@@ -118,191 +67,63 @@
             font-size: 14px;
             background: white;
             color: #333;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        .search-bar::after {
-            content: "🔍";
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 15px;
-            color: #666;
-        }
-
+        .search-bar::after { content: "🔍"; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 15px; color: #666; }
         .search-results {
-            position: absolute;
-            top: 42px;
-            width: 100%;
-            max-width: 320px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-            z-index: 1000;
-            display: none;
+            position: absolute; top: 42px; width: 100%; max-width: 320px; background: white; border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15); overflow: hidden; z-index: 1000; display: none;
         }
-
-        .search-results.active {
-            display: block;
-        }
-
-        .search-results div {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .search-results div:hover {
-            background: #f0f2f5;
-        }
-
-        .category {
-            background: #f7f7f7;
-            font-weight: bold;
-            color: #1877f2;
-            text-transform: uppercase;
-            font-size: 12px;
-        }
-
+        .search-results.active { display: block; }
+        .search-results div { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 14px; }
+        .search-results div:hover { background: #f0f2f5; }
+        .category { background: #f7f7f7; font-weight: bold; color: #1877f2; text-transform: uppercase; font-size: 12px; }
         /* --- Feed & Post Styles --- */
-        .feed {
-            max-width: 600px;
-            margin: 20px auto;
-        }
-
-        .post {
-            background: white;
-            margin-bottom: 15px;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .post-header {
-            font-weight: bold;
-            color: #1877f2;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .post-time {
-            color: gray;
-            font-size: 12px;
-        }
-
-        .post-text {
-            margin: 10px 0;
-            white-space: pre-wrap;
-            font-size: 15px;
-        }
-
-        .post img {
-            width: 100%;
-            height: auto;
-            max-height: 400px;
-            object-fit: cover;
-            margin-top: 10px;
-            border-radius: 10px;
+        .feed { max-width: 600px; margin: 20px auto; }
+        .post { background: white; margin-bottom: 15px; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .post-header { font-weight: bold; color: #1877f2; display: flex; justify-content: space-between; align-items: center; }
+        .post-time { color: gray; font-size: 12px; }
+        .post-text { margin: 10px 0; white-space: pre-wrap; font-size: 15px; }
+        .post img { 
+            width: 100%; 
+            height: auto; 
+            max-height: 400px; 
+            object-fit: cover; 
+            margin-top: 10px; 
+            border-radius: 10px; 
             background-color: #eee;
         }
-
-        .actions {
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
-            border-top: 1px solid #eee;
-            padding-top: 10px;
+        .actions { margin-top: 10px; display: flex; gap: 10px; border-top: 1px solid #eee; padding-top: 10px; }
+        .actions button { 
+            background: none; border: none; color: #555; 
+            cursor: pointer; font-weight: 600; padding: 8px 12px;
+            border-radius: 5px; transition: background-color 0.2s;
+            display: flex; align-items: center; gap: 5px;
         }
-
-        .actions button {
-            background: none;
-            border: none;
-            color: #555;
-            cursor: pointer;
-            font-weight: 600;
-            padding: 8px 12px;
-            border-radius: 5px;
-            transition: background-color 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .actions button:hover {
-            background: #f0f2f5;
-        }
-
-        .actions button.liked {
-            color: #1877f2;
-            font-weight: bold;
-        }
-
-        .no-posts {
-            text-align: center;
-            color: #888;
-            padding: 30px;
-        }
-
+        .actions button:hover { background: #f0f2f5; }
+        .actions button.liked { color: #1877f2; font-weight: bold; }
+        .no-posts { text-align: center; color: #888; padding: 30px; }
         /* --- Comment Section Styles --- */
-        .comments-section {
-            margin-top: 10px;
-            border-top: 1px solid #ddd;
-            padding-top: 10px;
-        }
-
-        .comments-list {
-            max-height: 150px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-        }
-
+        .comments-section { margin-top: 10px; border-top: 1px solid #ddd; padding-top: 10px; }
+        .comments-list { max-height: 150px; overflow-y: auto; margin-bottom: 10px; }
         .comment-item {
-            background: #f0f2f5;
-            border-radius: 10px;
-            padding: 6px 10px;
-            margin-bottom: 6px;
-            font-size: 14px;
-            color: #050505;
-            word-wrap: break-word;
-            white-space: normal;
+            background: #f0f2f5; border-radius: 10px; padding: 6px 10px;
+            margin-bottom: 6px; font-size: 14px; color: #050505;
+            word-wrap: break-word; white-space: normal;
         }
-
-        .comment-input {
-            display: flex;
-            gap: 6px;
-        }
-
+        .comment-input { display: flex; gap: 6px; }
         .comment-input input[type="text"] {
-            flex-grow: 1;
-            padding: 6px 12px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
-            font-size: 14px;
+            flex-grow: 1; padding: 6px 12px; border-radius: 20px;
+            border: 1px solid #ccc; font-size: 14px;
         }
-
         .comment-input button {
-            background-color: #1877f2;
-            border: none;
-            color: white;
-            border-radius: 20px;
-            padding: 6px 16px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            width: auto;
+            background-color: #1877f2; border: none; color: white;
+            border-radius: 20px; padding: 6px 16px; cursor: pointer;
+            font-weight: bold; font-size: 14px; width: auto;
         }
-
-        .comment-input button:hover {
-            background-color: #155db2;
-        }
+        .comment-input button:hover { background-color: #155db2; }
     </style>
-
 </head>
-
 <body>
 
     <nav class="navbar">
@@ -325,26 +146,22 @@
             <li><a href="settings.html">Settings</a></li>
         </ul>
     </nav>
-
     <div class="feed" id="feedContainer">
         <div class="no-posts">Loading posts...</div>
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- 1. Navigation and Search Logic ---
-
+            // --- 1. Navigation and Search Logic (Unchanged) ---
             const menuToggle = document.getElementById('menu-toggle');
             const navLinks = document.getElementById('nav-links');
             menuToggle.addEventListener('click', () => {
                 navLinks.classList.toggle('active');
             });
-
             const data = {
                 users: ["Milan Kandel", "Sita Rai", "John Smith", "Aarav Shrestha"],
                 pages: ["Digital Nepal", "GenX Official", "Smart Investments", "Real Estate Hub"],
                 groups: ["Nepal Tech Group", "Bara Entrepreneurs", "Students Network"],
-                posts: ["How to grow your business online", "New real estate projects in Nepal", "GenX live streaming feature", "Tips for investment success"]
+                posts: ["How to grow your business online","New real estate projects in Nepal","GenX live streaming feature","Tips for investment success"]
             };
             const searchInput = document.getElementById('searchInput');
             const searchResults = document.getElementById('searchResults');
@@ -363,11 +180,9 @@
                 searchResults.innerHTML = resultsHTML || `<div>No results found</div>`;
                 searchResults.classList.add('active');
             });
-            document.addEventListener('click', e => {
-                if (!e.target.closest('.search-bar')) searchResults.classList.remove('active');
-            });
+            document.addEventListener('click', e => { if (!e.target.closest('.search-bar')) searchResults.classList.remove('active'); });
 
-            // --- 2. Dynamic Post Generator Function (Mock Data) ---
+            // --- 2. Dynamic Post Generator Function (Unchanged) ---
             function generateMockPosts(count = 50) {
                 const names = ["Alex J.", "Zara K.", "Omar S.", "Priya N.", "David G.", "Emi H.", "GenX Team"];
                 const texts = [
@@ -382,59 +197,55 @@
                     "GenX is rolling out new chat features next week! Stay tuned for updates. 💬",
                     "Thinking about adopting a rescue dog. Any advice from pet owners?"
                 ];
-                // Stable list of image IDs for reliable loading
                 const imageIds = [237, 10, 20, 30, 42, 53, 64, 88, 102, 119, 122, 141, 155, 163, 171, 180, 201, 219, 239, 245, 251, 260, 271, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440];
                 const privacies = ['public', 'public', 'friends'];
                 const newPosts = [];
-
                 for (let i = 0; i < count; i++) {
                     const randomName = names[Math.floor(Math.random() * names.length)];
                     const randomText = texts[Math.floor(Math.random() * texts.length)];
                     const shouldHaveImage = Math.random() > 0.4;
                     let randomImage = '';
-
                     if (shouldHaveImage) {
                         const imageIdIndex = i % imageIds.length;
                         const randomId = imageIds[imageIdIndex];
                         randomImage = `https://picsum.photos/id/${randomId}/600/400`;
                     }
-                    // *** CRITICAL TIME ADJUSTMENT for Sorting ***
-                    // Mock posts are made significantly older (1 to 50 days ago) 
-                    const daysAgo = i + 1; // 1 to 50 days ago
-                    const timeDifferenceMs = daysAgo * 86400000;
-
+                    const daysAgo = i + 1;
+                    const timeDifferenceMs = daysAgo * 86400000; 
                     newPosts.push({
-                        id: Date.now() + i,
-                        authorName: randomName,
+                        id: Date.now() + i, 
+                        authorName: randomName, 
                         text: randomText,
-                        image: randomImage,
-                        privacy: privacies[Math.floor(Math.random() * privacies.length)],
+                        image: randomImage, 
+                        privacy: privacies[Math.floor(Math.random() * privacies.length)], 
                         likes: Math.floor(Math.random() * 150) + 5,
-                        liked: Math.random() < 0.3,
-                        comments: [],
-                        time: new Date(Date.now() - timeDifferenceMs).toISOString()
+                        liked: Math.random() < 0.3, 
+                        comments: [], 
+                        time: new Date(Date.now() - timeDifferenceMs).toISOString() 
                     });
                 }
                 return newPosts;
             }
 
-            // --- 3. Post Data Initialization (CRITICAL FIX FOR DUPLICATES) ---
+            // --- 3. Post Data Initialization (CRITICAL FOR FEED INTEGRATION) ---
             const feedContainer = document.getElementById('feedContainer');
             let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
             const mockPostsGenerated = localStorage.getItem('mockPostsGenerated');
 
             if (!mockPostsGenerated) {
+                // Generate and prepend mock posts only on the first visit
                 console.log("First visit: Generating stable mock posts.");
                 const mockPosts = generateMockPosts(50);
-                posts = [...mockPosts, ...posts]; // Prepend mock posts
+                posts = [...mockPosts, ...posts]; 
                 localStorage.setItem('mockPostsGenerated', 'true');
                 localStorage.setItem('fbPosts', JSON.stringify(posts));
             } else {
-                console.log("Mock posts already exist. Loading current posts.");
+                console.log("Mock posts and user posts loaded from localStorage.");
             }
-
+            
+            // Get current user name for filtering 'onlyme' posts and commenting
             const currentUserProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
-            // Default user name if profile.html hasn't set one
+            // Use the name set in profile.html, default to 'Rajan Kandel' if not found
             const currentUserName = currentUserProfile.name || "Rajan Kandel"; 
 
             function saveAndRender() {
@@ -442,13 +253,33 @@
                 renderPosts();
             }
 
-            // --- 4. Rendering and Event Listener Logic ---
+            // --- 4. Rendering and Event Listener Logic (UPDATED FILTERING) ---
+            
+            function timeSince(dateString) {
+                const date = new Date(dateString);
+                const seconds = Math.floor((new Date() - date) / 1000);
+                let interval = seconds / 31536000;
+                if (interval > 1) return Math.floor(interval) + " years ago";
+                interval = seconds / 2592000;
+                if (interval > 1) return Math.floor(interval) + " months ago";
+                interval = seconds / 86400;
+                if (interval > 1) return Math.floor(interval) + " days ago";
+                interval = seconds / 3600;
+                if (interval > 1) return Math.floor(interval) + " hours ago";
+                interval = seconds / 60;
+                if (interval > 1) return Math.floor(interval) + " minutes ago";
+                return Math.floor(seconds) + " seconds ago";
+            }
+
             function renderComments(postIndex, container) {
                 container.innerHTML = '';
                 const comments = posts[postIndex].comments || [];
+                const commentsList = document.createElement('div');
+                commentsList.className = 'comments-list';
 
                 if (comments.length === 0) {
-                    container.innerHTML = '<em>No comments yet</em>';
+                    commentsList.innerHTML = '<em>No comments yet</em>';
+                    container.appendChild(commentsList);
                     return;
                 }
 
@@ -456,56 +287,61 @@
                     const div = document.createElement('div');
                     div.className = 'comment-item';
                     div.textContent = comment;
-                    container.appendChild(div);
+                    commentsList.appendChild(div);
                 });
-                // Auto-scroll to the bottom for the newest comment
-                container.scrollTop = container.scrollHeight;
+                container.appendChild(commentsList);
+                // Ensure scroll to bottom for new comments
+                commentsList.scrollTop = commentsList.scrollHeight;
             }
 
             function renderPosts() {
                 feedContainer.innerHTML = "";
                 let hasVisiblePosts = false;
                 
-                // **THIS IS THE SORTING LINE:** Newest posts (highest time value) will be at the start.
-                const sortedPosts = [...posts].sort((a, b) => new Date(b.time) - new Date(a.time));
-
+                // Sort by time (newest first)
+                const sortedPosts = [...posts].sort((a, b) => new Date(b.time) - new Date(a.time)); 
+                
+                // **CRITICAL FILTERING LOGIC:**
                 sortedPosts.forEach((post) => {
-                    // Privacy Filter: Skip posts marked 'onlyme' if the current user isn't the author
+                    // Check if the post is private AND NOT by the current logged-in user
                     if (post.privacy === 'onlyme' && post.authorName !== currentUserName) {
-                        return;
+                        return; // Skip this post
                     }
+                    // FUTURE IMPROVEMENT: Add logic here to filter 'friends' posts if the user is not a 'friend'.
+
                     hasVisiblePosts = true;
 
-                    // Get the original index in the 'posts' array for data manipulation (like/comment)
+                    // Find the index in the original 'posts' array for data manipulation (like/comment)
                     const originalIndex = posts.findIndex(p => p.id === post.id);
-                    if (originalIndex === -1) return;
+                    if (originalIndex === -1) return; 
 
                     const postDiv = document.createElement('div');
                     postDiv.classList.add('post');
 
                     const likedClass = post.liked ? 'liked' : '';
+                    const likeIcon = post.liked ? '❤️' : '👍';
                     const commentsCount = post.comments ? post.comments.length : 0;
-                    const postDate = new Date(post.time || Date.now()).toLocaleTimeString(); 
-
+                    const postTimeAgo = timeSince(post.time || Date.now()); 
+                    
                     postDiv.innerHTML = `
                         <div class="post-header">
                             <span>${post.authorName || 'Unknown'}</span>
                             <span style="font-size:12px;color:gray;">${post.privacy || 'public'}</span>
                         </div>
-                        <div class="post-time">Posted at ${postDate}</div>
+                        <div class="post-time">Posted ${postTimeAgo}</div>
                         <p class="post-text">${post.text || ''}</p>
                         ${post.image ? `<img src="${post.image}" alt="Post Image">` : ''}
                         
                         <div class="actions">
                             <button class="like-btn ${likedClass}" data-index="${originalIndex}">
-                                ${post.liked ? '❤️' : '👍'} <span class="like-count">${post.likes}</span> Like
+                                ${likeIcon} <span class="like-count">${post.likes}</span> Like
                             </button>
                             <button class="comment-toggle-btn" data-index="${originalIndex}">
                                 💬 Comment (${commentsCount})
                             </button>
                             <button class="share-btn" data-index="${originalIndex}">🔗 Share</button>
                         </div>
-                        
+
                         <div class="comments-section" style="display:none;" data-index="${originalIndex}">
                             <div class="comments-list"></div>
                             <div class="comment-input">
@@ -519,38 +355,46 @@
                 });
 
                 if (!hasVisiblePosts) {
-                    feedContainer.innerHTML = '<div class="no-posts">No public posts found. Create one on your profile!</div>';
+                    feedContainer.innerHTML = '<div class="no-posts">No public or friends posts found. Start by creating one on your profile!</div>';
                 }
 
                 attachEventListeners();
             }
 
             function attachEventListeners() {
-                // Like Button Handler
                 document.querySelectorAll('.like-btn').forEach(btn => {
                     btn.onclick = function() {
                         const idx = parseInt(this.getAttribute('data-index'));
-                        posts[idx].liked = !posts[idx].liked;
-                        posts[idx].likes += posts[idx].liked ? 1 : -1;
-                        saveAndRender();
+                        // Check if the post object exists before modifying
+                        if (posts[idx]) {
+                            posts[idx].liked = !posts[idx].liked;
+                            posts[idx].likes += posts[idx].liked ? 1 : -1;
+                            saveAndRender();
+                        }
                     };
                 });
 
-                // Comment Toggle Handler
                 document.querySelectorAll('.comment-toggle-btn').forEach(btn => {
                     btn.onclick = function() {
                         const idx = parseInt(this.getAttribute('data-index'));
                         const commentsSection = this.closest('.post').querySelector(`.comments-section`);
                         if (!commentsSection) return;
 
-                        commentsSection.style.display = commentsSection.style.display === 'block' ? 'none' : 'block';
-                        if (commentsSection.style.display === 'block') {
-                            renderComments(idx, commentsSection.querySelector('.comments-list'));
+                        const isVisible = commentsSection.style.display === 'block';
+                        
+                        // Close all other comment sections
+                        document.querySelectorAll('.comments-section').forEach(section => {
+                            section.style.display = 'none';
+                        });
+
+                        // Toggle the current one
+                        if (!isVisible) {
+                            commentsSection.style.display = 'block';
+                            renderComments(idx, commentsSection);
                         }
                     };
                 });
 
-                // Send Comment Handler
                 document.querySelectorAll('.send-comment-btn').forEach(btn => {
                     btn.onclick = function() {
                         const idx = parseInt(this.getAttribute('data-index'));
@@ -559,26 +403,21 @@
                         
                         if (!input.value.trim()) return;
 
-                        const fullComment = `${currentUserName}: ${input.value.trim()}`;
+                        const fullComment = `<strong>${currentUserName}:</strong> ${input.value.trim()}`;
                         if (!posts[idx].comments) posts[idx].comments = [];
+                        
                         posts[idx].comments.push(fullComment);
                         input.value = '';
+                        saveAndRender(); // Save state and re-render the post to update count
 
-                        // Rerender the entire feed to update comment counts and buttons
-                        saveAndRender(); 
-
-                        // Re-open comments section and render new comments on the new DOM structure
-                        setTimeout(() => {
-                            const newCommentsSection = document.querySelector(`.post:has([data-index="${idx}"]) .comments-section`);
-                            if (newCommentsSection) {
-                                newCommentsSection.style.display = 'block';
-                                renderComments(idx, newCommentsSection.querySelector('.comments-list'));
-                            }
-                        }, 50);
+                        // Re-render comments list specifically
+                        const commentsSection = document.querySelector(`.post:has([data-index="${idx}"]) .comments-section`);
+                        if (commentsSection) {
+                            renderComments(idx, commentsSection);
+                        }
                     };
                 });
 
-                // Share Button Handler
                 document.querySelectorAll('.share-btn').forEach(btn => {
                     btn.onclick = function() {
                         const idx = parseInt(this.getAttribute('data-index'));
@@ -590,9 +429,7 @@
 
             // --- 5. Initialization ---
             renderPosts();
-
         });
     </script>
 </body>
-
 </html>
