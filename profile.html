@@ -1,471 +1,822 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User Profile and Posts</title>
+    <title>GenX — User Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* 🎨 GENERAL STYLES */
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 20px auto;
-            background: #f0f2f5;
-            padding: 10px;
-            border-radius: 10px;
+        /* --- General & Navbar Styles --- */
+        body { margin: 0; font-family: "Poppins", Arial, sans-serif; background: #f0f2f5; }
+        .navbar { background-color: #1877f2; color: white; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); }
+        .logo { font-size: 22px; font-weight: 700; }
+        .menu-toggle { font-size: 28px; cursor: pointer; color: white; margin-left: 10px; display: block; }
+        .nav-links { list-style: none; display: none; flex-direction: column; position: absolute; top: 60px; right: 0; width: 100%; background: white; border-top: 1px solid #ddd; padding: 10px 0; text-align: center; z-index: 999; }
+        .nav-links li { margin: 10px 0; }
+        .nav-links a { color: #333; text-decoration: none; font-weight: 600; }
+        .nav-links a:hover { color: #1877f2; }
+        .nav-links.active { display: flex; }
+        @media (min-width: 768px) {
+            .menu-toggle { display: none; }
+            .nav-links { display: flex !important; flex-direction: row; position: static; background: none; border: none; }
+            .nav-links li { margin: 0 10px; }
+            .nav-links a { color: white; }
+            .nav-links a:hover { text-decoration: underline; }
         }
 
-        h2 {
-            margin: 20px 0 10px;
-            text-align: center;
-            color: #1877f2;
-        }
-
-        /* 🖼️ PROFILE SECTION STYLES */
-        .profile-info {
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        /* --- Profile Header (Cover Photo & Profile Pic) --- */
+        .profile-header-area { 
+            background: white; 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
         }
-
-        img.profile-pic {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #007bff;
-            margin-bottom: 10px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .profile-info p {
-            margin: 5px 0;
-            color: #555;
-            text-align: center;
-        }
-
-        /* ✍️ POST FORM STYLES */
-        #postForm {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        #postText {
+        .cover-photo {
             width: 100%;
-            min-height: 80px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            resize: vertical;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            height: 300px; 
+            background: linear-gradient(to bottom, #1877f2, #3b5998); 
+            /* Default placeholder image */
+            background-image: url('https://i.ibb.co/6P3jY0F/cover-placeholder.png'); 
+            background-size: cover;
+            background-position: center;
+            position: relative; 
         }
-
-        #postForm input[type="file"] {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
+        .profile-info-wrapper { 
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
-
-        #postPrivacy {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            width: fit-content;
-            /* Make the select box fit its content */
+        .profile-info {
+            display: flex;
+            align-items: flex-end;
+            transform: translateY(-50%); 
         }
-
-        /* 📌 BUTTON STYLES (General) */
-        button {
-            background-color: #1877f2;
-            /* Facebook Blue */
-            border: none;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 8px;
+        .profile-photo-wrapper {
+            position: relative; 
+            width: 168px; 
+            height: 168px; 
+            margin-right: 20px; 
+        }
+        .profile-photo { 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            border: 5px solid #fff; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            background-color: #eee;
+        }
+        .user-details {
+            padding-bottom: 20px;
+        }
+        .user-details h1 { 
+            margin: 0; 
+            font-size: 32px; 
+            color: #fff; 
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); 
+        }
+        
+        /* --- Photo Upload Buttons --- */
+        .photo-upload-btn {
+            position: absolute;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
+            border: none;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.2s;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 5;
         }
-
-        button:hover {
-            background-color: #165ec9;
+        .photo-upload-btn:hover {
+            background-color: #fff;
         }
-
-        /* Override general button styles for specific elements */
-        #postForm button[type="submit"] {
-            align-self: flex-end;
-            margin-top: 0;
+        .profile-photo-upload-btn {
+            bottom: 10px; 
+            right: 5px; 
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
+            text-align: center;
+            padding: 0;
+            border-radius: 50%;
+        }
+        .cover-photo-upload-btn {
+            top: 20px; 
+            right: 20px;
+            border-radius: 6px; 
             padding: 8px 15px;
+            background-color: rgba(0, 0, 0, 0.5); 
+            color: white;
             font-size: 14px;
         }
-
-        .edit-btn-container {
-            text-align: center;
-            margin-bottom: 20px;
+        .cover-photo-upload-btn:hover {
+            background-color: rgba(0, 0, 0, 0.7);
         }
-
-        /* 📰 FEED STYLES */
-        .post {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            position: relative;
+        
+        /* --- Profile Navigation (Timeline, About, etc.) --- */
+        .profile-nav {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #ddd;
+            margin-top: -80px; 
         }
-
-        .posted-by {
-            font-weight: bold;
-            margin-bottom: 5px;
+        .nav-tabs {
+            list-style: none;
+            display: flex;
+            padding: 0;
+            margin: 0;
+        }
+        .nav-tabs li a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #606770;
+            font-weight: 600;
+        }
+        .nav-tabs .active a {
             color: #1877f2;
-            text-align: left;
+            border-bottom: 3px solid #1877f2;
         }
-
-        .post-text {
-            margin: 10px 0;
-            color: #333;
-            white-space: pre-wrap;
-            text-align: left;
-        }
-
-        .post-image {
-            max-width: 100%;
-            height: auto;
+        .edit-btn { 
+            background-color: #1877f2;
+            color: white;
+            padding: 8px 15px;
+            border: none;
             border-radius: 6px;
-            margin-top: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .edit-btn:hover { background-color: #155db2; }
+
+        /* --- Profile Content Layout (Two Columns) --- */
+        .profile-content {
+            max-width: 960px;
+            margin: 20px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 20px;
+        }
+        .left-column { flex: 1; } 
+        .right-column { flex: 2; } 
+        
+        /* --- Left Column Elements (Intro Box) --- */
+        .intro-box, .photos-box {
+            background: white; 
+            padding: 15px; 
+            border-radius: 8px; 
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); 
+            margin-bottom: 15px;
+        }
+        .intro-box-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
             margin-bottom: 10px;
         }
+        .intro-box h4 { 
+            margin: 0; 
+            color: #606770; 
+            font-size: 16px; 
+        }
+        .intro-box p { font-size: 14px; color: #333; margin: 5px 0; }
+        .user-bio { 
+            font-style: italic; 
+            color: #666; 
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .edit-bio-link { 
+            color:#1877f2; 
+            text-decoration: none; 
+            font-size: 14px; 
+            font-weight: 600;
+            cursor: pointer;
+        }
 
+        /* --- Post Creation Styles --- */
+        .create-post {
+            background: white; 
+            padding: 15px; 
+            border-radius: 8px; 
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); 
+            margin-bottom: 15px;
+        }
+        .create-post h3 {
+            font-size: 16px;
+            color: #606770;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .create-post textarea {
+            width: 100%;
+            height: 80px;
+            padding: 10px 0;
+            border: none;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+            font-size: 16px;
+        }
+        .post-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid #f0f2f5;
+        }
+        .post-options button, .post-options select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #f0f2f5;
+            color: #606770;
+            font-weight: 500;
+        }
+        .post-btn {
+            width: 100%;
+            background-color: #1877f2;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+        .post-btn:disabled {
+            background-color: #a3c9f7;
+            cursor: not-allowed;
+        }
+        .post-btn:hover:not(:disabled) { background-color: #155db2; }
+
+        /* --- Post Feed Styles --- */
+        .feed-container h3 {
+            font-size: 18px;
+            color: #606770;
+            margin-bottom: 15px;
+        }
+        .post-item {
+            background: white; 
+            padding: 15px; 
+            border-radius: 8px; 
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); 
+            margin-bottom: 15px;
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            position: relative; 
+        }
+        .post-author-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+        .author-details {
+            display: flex;
+            flex-direction: column;
+        }
+        .author-details strong {
+            font-weight: 600;
+            font-size: 15px;
+            color: #050505;
+        }
+        .post-meta {
+            font-size: 12px;
+            color: #606770;
+        }
+        .post-text {
+            font-size: 15px;
+            color: #050505;
+            margin: 10px 0;
+            line-height: 1.4;
+        }
         .post-actions {
             display: flex;
             justify-content: space-around;
-            border-top: 1px solid #eee;
-            padding-top: 10px;
+            border-top: 1px solid #f0f2f5;
             margin-top: 10px;
+            padding-top: 10px;
         }
-
         .post-actions button {
-            background: transparent;
-            color: #606770;
+            background: none;
             border: none;
-            padding: 5px 10px;
+            color: #606770;
+            padding: 8px 15px;
             border-radius: 4px;
             cursor: pointer;
-            margin: 0;
-            display: inline-flex;
-            align-items: center;
             font-weight: 600;
-        }
-
-        .post-actions button:hover {
-            background: #f2f2f2;
-        }
-
-        /* --- REVISED MENU BUTTON STYLE (Fixed the spacing issue) --- */
-        .post-menu-btn {
-            position: absolute;
-            top: 15px;
-            /* Increased from 10px for better spacing */
-            right: 15px;
-            /* Increased from 10px for better spacing */
-            background: none;
-            border: none;
-            color: #606770;
-            font-size: 20px;
-            padding: 5px;
-            /* Added padding to increase click area and space out the icon */
-            margin: 0;
-            cursor: pointer;
             transition: background-color 0.2s;
-            border-radius: 50%;
-            z-index: 10;
-            /* Ensure button is above other content */
+        }
+        .post-actions button:hover {
+            background-color: #f0f2f5;
         }
 
-        .post-menu-btn:hover {
-            background-color: #f2f2f2;
+        /* --- Post Menu Styles (Three Dots) --- */
+        .post-options-menu {
+            margin-left: auto; 
+            position: relative; 
         }
-
-        /* Style for the dropdown menu */
-        .post-menu-dropdown {
-            position: absolute;
-            top: 45px;
-            /* Position below the three dots button */
-            right: 15px;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            z-index: 20;
-            display: none;
-            /* Hidden by default */
-        }
-
-        .post-menu-dropdown button {
-            display: block;
-            width: 100%;
-            padding: 10px 20px;
+        .post-options-btn {
             background: none;
-            color: #333;
-            text-align: left;
             border: none;
+            font-size: 20px;
+            color: #606770;
+            cursor: pointer;
+            padding: 0 5px; 
+            line-height: 1;
+            margin-top: -10px; 
+        }
+        .post-dropdown {
+            display: none; 
+            position: absolute;
+            top: 100%; 
+            right: 0;
+            background-color: white;
+            min-width: 120px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            border-radius: 6px;
+            z-index: 100;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .post-dropdown a {
+            color: #050505;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
             font-size: 14px;
-            font-weight: normal;
-            border-radius: 0;
+            white-space: nowrap;
+        }
+        .post-dropdown a:hover {
+            background-color: #f0f2f5;
+        }
+        .post-dropdown.show {
+            display: block; 
         }
 
-        .post-menu-dropdown button:hover {
-            background: #f2f2f2;
+        /* --- Responsive Fixes --- */
+        @media (max-width: 992px) {
+            .profile-content { flex-direction: column; }
+            .profile-info-wrapper { padding: 0 15px; } 
+            .profile-info { align-items: center; flex-direction: column; text-align: center; } 
+            
+            .profile-photo-wrapper { 
+                margin: 0 0 10px 0; 
+                width: 120px; 
+                height: 120px; 
+            }
+            .profile-photo-upload-btn {
+                bottom: 5px;
+                right: 0px;
+            }
+
+            .user-details { padding-bottom: 0; }
+            .user-details h1 { font-size: 28px; }
+            .profile-nav { margin-top: 20px; } 
+            .nav-tabs { justify-content: center; }
+            .edit-btn { margin-left: 20px; } 
+        }
+
+        @media (max-width: 600px) {
+            .profile-nav { flex-wrap: wrap; justify-content: center; gap: 10px; }
+            .nav-tabs { width: 100%; justify-content: center; }
+            .edit-btn { width: 90%; margin: 10px auto; } 
+            .profile-photo-wrapper { width: 100px; height: 100px; }
+            .post-options { flex-direction: column; gap: 10px; }
+            .post-options button, .post-options select { width: 100%; }
         }
     </style>
 </head>
-
 <body>
 
-    <div class="profile-info">
-        <img id="profileImage" class="profile-pic" src="https://via.placeholder.com/120" alt="Profile Picture" />
-        <h2 id="userName">Name</h2>
-        <p><strong>Email:</strong> <span id="userEmail"></span></p>
-        <p><strong>Gender:</strong> <span id="userGender"></span></p>
-        <p><strong>Date of Birth:</strong> <span id="userDob"></span></p>
+    <nav class="navbar">
+        <div class="logo">GenX</div>
+        <div class="menu-toggle" id="menu-toggle">☰</div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><a href="edit_profile.html">Settings</a></li>
+            <li><a href="#" id="logoutBtn">Log Out</a></li>
+        </ul>
+    </nav>
+
+    <div class="profile-header-area">
+        <div class="cover-photo">
+            <input type="file" id="coverPhotoUpload" accept="image/*" style="display: none;">
+            <button class="photo-upload-btn cover-photo-upload-btn" onclick="document.getElementById('coverPhotoUpload').click()">
+                ➕ Add Cover Photo
+            </button>
+        </div>
+
+        <div class="profile-info-wrapper">
+            <div class="profile-info">
+                <div class="profile-photo-wrapper">
+                    <img id="profilePhotoImg" src="https://i.ibb.co/L5Qf1wY/male-avatar-profile-picture-businessman-icon-vector-22123543.jpg" alt="Profile Picture" class="profile-photo">
+                    <input type="file" id="profilePhotoUpload" accept="image/*" style="display: none;">
+                    <button class="photo-upload-btn profile-photo-upload-btn" onclick="document.getElementById('profilePhotoUpload').click()">
+                        📷
+                    </button>
+                </div>
+                
+                <div class="user-details">
+                    <h1 id="profileName">Loading User...</h1>
+                    <p style="color: #ccc; margin: 0; font-size: 18px;" id="profileEmail">user@example.com</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-nav">
+            <ul class="nav-tabs">
+                <li class="active"><a href="#">Timeline</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Friends</a></li>
+                <li><a href="#">Photos</a></li>
+            </ul>
+            <button class="edit-btn" id="editProfileBtn">✏️ Edit Profile</button>
+        </div>
     </div>
-    <div class="edit-btn-container">
-        <button onclick="editProfile()">Edit Profile</button>
+
+    <div class="profile-content">
+        <div class="left-column">
+            <div class="intro-box">
+                <div class="intro-box-header">
+                    <h4>Intro</h4>
+                    <span class="edit-bio-link" onclick="window.location.href='edit_profile.html#bio'">Edit Bio</span>
+                </div>
+                
+                <p id="userBio" class="user-bio">Click 'Edit Bio' to add an introduction!</p>
+                <div id="infoDetails">
+                    <p>📍 Lives in <strong id="userLocation">Loading...</strong></p>
+                    <p>💼 Works as a <strong id="userJob">Loading...</strong></p>
+                    <p>🎓 Studied at <strong id="userSchool">Loading...</strong></p>
+                </div>
+            </div>
+            
+            <div class="photos-box">
+                <h4>Photos</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                    <img src="https://via.placeholder.com/70/f0f2f5" style="width: 70px; height: 70px; object-fit: cover; border-radius: 4px;">
+                    <img src="https://via.placeholder.com/70/f0f2f5" style="width: 70px; height: 70px; object-fit: cover; border-radius: 4px;">
+                    <img src="https://via.placeholder.com/70/f0f2f5" style="width: 70px; height: 70px; object-fit: cover; border-radius: 4px;">
+                </div>
+            </div>
+        </div>
+
+        <div class="right-column">
+            <div class="create-post">
+                <h3>Create Post</h3>
+                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <img id="postAuthorPhoto" src="https://i.ibb.co/L5Qf1wY/male-avatar-profile-picture-businessman-icon-vector-22123543.jpg" alt="Profile" class="post-author-img">
+                    <span id="postAuthorName" style="font-weight: 600;">Loading...</span>
+                </div>
+                
+                <textarea id="postText" placeholder="What's on your mind, [User]?"></textarea>
+                
+                <div class="post-options">
+                    <button onclick="document.getElementById('postImage').click()">🖼️ Photo/Video</button>
+                    <input type="file" id="postImage" accept="image/*" style="display:none;">
+                    
+                    <select id="postPrivacy">
+                        <option value="public">🌍 Public</option>
+                        <option value="friends">👥 Friends</option>
+                        <option value="onlyme">🔒 Only Me</option>
+                    </select>
+                </div>
+                <button class="post-btn" id="postButton" disabled>Post</button>
+            </div>
+            <div class="feed-container">
+                <h3>Your Timeline</h3>
+                <div id="userPosts">Loading your posts...</div>
+            </div>
+        </div>
     </div>
-
-    <h2>Create Post</h2>
-    <form id="postForm">
-        <textarea id="postText" placeholder="What's on your mind?" required></textarea>
-        <input type="file" id="postImage" accept="image/*" />
-        <select id="postPrivacy" required>
-            <option value="public" selected>Public</option>
-            <option value="friends">Friends</option>
-            <option value="onlyme">Only Me</option>
-        </select>
-        <button type="submit">Post</button>
-    </form>
-
-    <h2>My Posts</h2>
-    <div id="feed"></div>
-
-    <script>
-        // --- PROFILE & EDIT FUNCTIONS ---
-        function loadProfile() {
-            const storedProfile = localStorage.getItem('userProfile');
-            if (!storedProfile) return;
-            const profile = JSON.parse(storedProfile);
-            document.getElementById('profileImage').src = profile.avatar || 'https://via.placeholder.com/120';
-            document.getElementById('userName').textContent = profile.name || 'Unknown';
-            document.getElementById('userEmail').textContent = profile.email || '';
-            document.getElementById('userGender').textContent = profile.gender || '';
-            document.getElementById('userDob').textContent = profile.dob || '';
-        }
-
-        function editProfile() {
-            // This function assumes you have an 'edit-profile.html' page
-            alert("Redirecting to Edit Profile Page (edit-profile.html is required).");
-            // window.location.href = "edit-profile.html"; 
-        }
-
-        loadProfile();
-
-        // --- POST/FEED LOGIC ---
-        const postForm = document.getElementById('postForm');
-        const postText = document.getElementById('postText');
-        const postImage = document.getElementById('postImage');
-        const postPrivacy = document.getElementById('postPrivacy');
-        const feed = document.getElementById('feed');
-
-        // Load posts from localStorage
-        let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
-        const currentUser = JSON.parse(localStorage.getItem('userProfile')) || {
-            name: 'Current User'
-        }; // Default user if none is set
-        const currentUserName = currentUser.name || 'Current User';
-
-        function renderPosts() {
-            feed.innerHTML = '';
-            // Filter to show only the current user's posts
-            const userPosts = posts.filter(post => post.authorName === currentUserName);
-
-            userPosts.forEach((post, idx) => {
-                // Find the index in the main 'posts' array for correct updates
-                const originalIndex = posts.findIndex(p => p.timestamp === post.timestamp);
-                if (originalIndex === -1) return;
-
-                const postDiv = document.createElement('div');
-                postDiv.className = 'post';
-                postDiv.id = `post-${originalIndex}`; // Assign an ID for targeting
-
-                let imgHTML = post.image ? `<img src="${post.image}" class="post-image" />` : '';
-                const likedClass = post.liked ? 'liked' : '';
-                const commentsCount = post.comments ? post.comments.length : 0;
-
-                postDiv.innerHTML = `
-                    <button class="post-menu-btn" data-index="${originalIndex}" aria-controls="menu-${originalIndex}">&#8942;</button>
-                    <div id="menu-${originalIndex}" class="post-menu-dropdown">
-                        <button onclick="editPost(${originalIndex})">Edit</button>
-                        <button onclick="deletePost(${originalIndex})">Delete</button>
-                    </div>
-                    <div class="posted-by">Posted by: ${post.authorName || 'Unknown'}</div>
-                    <div class="post-text">${post.text}</div>
-                    ${imgHTML}
-                    <div class="post-actions">
-                        <button class="like-btn ${likedClass}" data-index="${originalIndex}">👍 ${post.likes} Like</button>
-                        <button class="comment-btn" data-index="${originalIndex}">💬 Comment (${commentsCount})</button>
-                    </div>`;
-                feed.appendChild(postDiv);
-            });
-
-            localStorage.setItem('fbPosts', JSON.stringify(posts));
-            attachEventListeners(); // Re-attach listeners after rendering
-        }
-
-        function attachEventListeners() {
-            document.querySelectorAll('.like-btn').forEach(button => {
-                button.onclick = handleLike;
-            });
-            document.querySelectorAll('.post-menu-btn').forEach(button => {
-                button.onclick = handlePostMenu;
-            });
-            // Global click listener to close menus
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.post-menu-btn') && !e.target.closest('.post-menu-dropdown')) {
-                    document.querySelectorAll('.post-menu-dropdown').forEach(menu => {
-                        menu.style.display = 'none';
-                    });
-                }
-            });
-        }
-
-        function handlePostMenu(e) {
-            e.stopPropagation(); // Prevent the global click listener from immediately closing it
-            const index = parseInt(e.currentTarget.dataset.index);
-            const menu = document.getElementById(`menu-${index}`);
-
-            // Close all other menus
-            document.querySelectorAll('.post-menu-dropdown').forEach(m => {
-                if (m !== menu) {
-                    m.style.display = 'none';
-                }
-            });
-            // Toggle current menu
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function handleLike(e) {
-            const index = parseInt(e.currentTarget.dataset.index);
-            if (index >= 0 && index < posts.length) {
-                if (posts[index].liked) {
-                    posts[index].likes -= 1;
-                    posts[index].liked = false;
-                } else {
-                    posts[index].likes += 1;
-                    posts[index].liked = true;
-                }
-                renderPosts();
-            }
-        }
-
-        function addPost(text, image, authorName, privacy) {
-            posts.unshift({
-                text,
-                image,
-                likes: 0,
-                liked: false,
-                comments: [],
-                authorName,
-                privacy,
-                timestamp: Date.now() // Unique ID for tracking
-            });
-            postForm.reset();
-            localStorage.setItem('fbPosts', JSON.stringify(posts));
-            renderPosts();
-        }
-
-        // --- POST EDIT/DELETE FUNCTIONS ---
-        function editPost(index) {
-            const post = posts[index];
-            const newText = prompt("Edit your post:", post.text);
-            if (newText !== null && newText.trim() !== "" && newText !== post.text) {
-                posts[index].text = newText.trim();
-                localStorage.setItem('fbPosts', JSON.stringify(posts));
-                renderPosts();
-            }
-            // Close the menu after action
-            document.getElementById(`menu-${index}`).style.display = 'none';
-        }
-
-        function deletePost(index) {
-            if (confirm("Are you sure you want to delete this post?")) {
-                posts.splice(index, 1);
-                localStorage.setItem('fbPosts', JSON.stringify(posts));
-                renderPosts();
-            }
-            // Close the menu after action
-            document.getElementById(`menu-${index}`).style.display = 'none';
-        }
-
-        // --- INITIAL POST FORM SUBMISSION ---
-        postForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (!postText.value.trim() && !postImage.files.length) return alert('Enter some text or select an image');
-
-            const file = postImage.files[0];
-            const posterName = currentUserName;
-            const privacyValue = postPrivacy.value || 'public';
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    addPost(postText.value.trim(), e.target.result, posterName, privacyValue);
-                };
-                reader.readAsDataURL(file);
-            } else {
-                addPost(postText.value.trim(), null, posterName, privacyValue);
-            }
-        });
-
-        renderPosts();
-    </script>
+    
     <script type="module">
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import {
-            getFirestore
-        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+        
+        // --- 1. FIREBASE CONFIGURATION ---
+        // REPLACE WITH YOUR ACTUAL CONFIGURATION
         const firebaseConfig = {
-            // NOTE: Keep your actual API keys private in a real application
             apiKey: "AIzaSyAyMhgLjQg9zU1Tq2pFVmRiF_UiOBqPlj0",
             authDomain: "genx-7a5b3.firebaseapp.com",
             projectId: "genx-7a5b3",
-            storageBucket: "genx-7a5b3.firebasestorage.app",
+            storageBucket: "genx-7a5b3.appspot.com", // Changed to .appspot.com for gsutil compatibility
             messagingSenderId: "1293731877",
             appId: "1:1293731877:web:a330360ade1db5e68897cc"
         };
 
-        try {
-            const app = initializeApp(firebaseConfig);
-            const db = getFirestore(app);
-            console.log("Firebase initialized successfully.");
-        } catch (error) {
-            console.warn("Firebase initialization failed (likely local use).");
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        let currentUser = null; 
+        let currentUserName = "Guest User"; 
+        const defaultPhotoURL = 'https://i.ibb.co/L5Qf1wY/male-avatar-profile-picture-businessman-icon-vector-22123543.jpg';
+        let currentUserPhoto = defaultPhotoURL; 
+        
+        // DOM Elements
+        const profileNameEl = document.getElementById('profileName');
+        const profileEmailEl = document.getElementById('profileEmail');
+        const profilePhotoImg = document.getElementById('profilePhotoImg'); 
+        const postAuthorPhotoEl = document.getElementById('postAuthorPhoto'); 
+        const postAuthorNameEl = document.getElementById('postAuthorName'); 
+        const postTextEl = document.getElementById('postText'); 
+        const postButton = document.getElementById('postButton');
+        const userPostsEl = document.getElementById('userPosts');
+        const editProfileBtn = document.getElementById('editProfileBtn');
+        const userBioEl = document.getElementById('userBio');
+        const userLocationEl = document.getElementById('userLocation');
+        const userJobEl = document.getElementById('userJob');
+        const userSchoolEl = document.getElementById('userSchool');
+
+        // --- UPLOAD UTILITY FUNCTION ---
+        async function uploadFileAndGetUrl(file, path, userId) {
+            if (!file) return null;
+            
+            const fileExtension = file.name.split('.').pop();
+            const fileName = `${userId}.${fileExtension}`;
+            const storageReference = storageRef(storage, `${path}${fileName}`);
+
+            try {
+                console.log(`Uploading ${path} for user ${userId}...`);
+                const snapshot = await uploadBytes(storageReference, file);
+                const downloadURL = await getDownloadURL(snapshot.ref);
+                return downloadURL;
+            } catch (error) {
+                console.error("Error during file upload:", error);
+                alert(`File upload failed: ${error.message}`);
+                return null;
+            }
         }
+
+        // --- EVENT LISTENERS FOR PHOTO UPLOADS ---
+        document.getElementById('profilePhotoUpload').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file && currentUser) {
+                const url = await uploadFileAndGetUrl(file, 'profile_images/', currentUser.uid);
+                if (url) {
+                    // 1. Update the user's Firebase Auth profile
+                    await updateProfile(currentUser, { photoURL: url });
+                    
+                    // 2. Immediately update the displayed images (UI Update)
+                    profilePhotoImg.src = url;
+                    postAuthorPhotoEl.src = url;
+                    currentUserPhoto = url; // Update local variable for new posts
+                    alert("Profile photo updated successfully!");
+                }
+            }
+        });
+
+        document.getElementById('coverPhotoUpload').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file && currentUser) {
+                const url = await uploadFileAndGetUrl(file, 'cover_images/', currentUser.uid);
+                if (url) {
+                    // Note: Cover photo URL is not stored in Firebase Auth; it must be stored in a Firestore user document.
+                    // For this simple example, we update the UI directly.
+                    document.querySelector('.cover-photo').style.backgroundImage = `url('${url}')`;
+                    alert("Cover photo updated successfully!");
+                }
+            }
+        });
+
+        // --- 2. AUTH STATE AND PROFILE DISPLAY ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                
+                // Get user details, prioritizing displayName and photoURL from Auth
+                currentUserName = user.displayName || user.email.split('@')[0]; 
+                currentUserPhoto = user.photoURL || defaultPhotoURL;
+
+                // Update UI elements
+                profileNameEl.textContent = currentUserName;
+                profileEmailEl.textContent = user.email;
+                profilePhotoImg.src = currentUserPhoto; 
+                postAuthorPhotoEl.src = currentUserPhoto;
+                postAuthorNameEl.textContent = currentUserName;
+                postTextEl.placeholder = `What's on your mind, ${currentUserName}?`;
+                
+                postButton.disabled = false;
+                loadUserPosts();
+                loadUserProfileDetails(user.uid); 
+
+            } else {
+                currentUser = null;
+                profileNameEl.textContent = "Please Log In";
+                profileEmailEl.textContent = "user@example.com";
+                postButton.disabled = true;
+                userPostsEl.innerHTML = "Log in to see your timeline.";
+                window.location.href = 'login.html'; // Redirect if not logged in
+            }
+        });
+
+        // Placeholder function for profile details (Replace with Firestore fetch later)
+        function loadUserProfileDetails(uid) {
+            const dummyProfileData = {
+                bio: "Full-stack enthusiast and coffee-lover from the Himalayas. Always coding, always learning.",
+                location: "Kathmandu, Nepal",
+                job: "Web Developer at GenX Tech",
+                school: "Tribhuwan University (2018-2022)",
+            };
+
+            userBioEl.textContent = dummyProfileData.bio || "Click 'Edit Bio' to add an introduction!";
+            userLocationEl.textContent = dummyProfileData.location || "N/A";
+            userJobEl.textContent = dummyProfileData.job || "N/A";
+            userSchoolEl.textContent = dummyProfileData.school || "N/A";
+        }
+        
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            signOut(auth).then(() => {
+                window.location.href = 'login.html'; 
+            }).catch((error) => {
+                console.error("Logout failed:", error);
+            });
+        });
+
+        // Edit Profile button
+        if (editProfileBtn) {
+            editProfileBtn.addEventListener('click', () => {
+                window.location.href = 'edit_profile.html';
+            });
+        }
+
+        // --- 3. POST CREATION FUNCTION ---
+        postButton.addEventListener('click', async () => {
+            if (!currentUser) { alert("Please log in to create a post."); return; }
+            
+            const postText = postTextEl.value.trim();
+            const postPrivacy = document.getElementById('postPrivacy').value;
+            const postImage = ''; 
+            
+            if (postText === '') { alert("Post cannot be empty."); return; }
+
+            const newPost = {
+                authorId: currentUser.uid,
+                authorName: currentUserName,
+                authorPhoto: currentUserPhoto, // Uses the currently loaded photo URL
+                text: postText,
+                image: postImage,
+                time: Date.now(),
+                privacy: postPrivacy,
+                likes: [], 
+                comments: [] 
+            };
+
+            try {
+                await addDoc(collection(db, "posts"), newPost);
+                
+                alert("Post successfully created!");
+                postTextEl.value = '';
+                document.getElementById('postPrivacy').value = 'public';
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                alert("Error creating post. Check console for details.");
+            }
+        });
+
+        // --- 4. DISPLAY USER'S OWN POSTS ---
+        function loadUserPosts() {
+            if (!currentUser) return;
+            
+            const postsCol = collection(db, "posts");
+            
+            const q = query(
+                postsCol, 
+                where("authorId", "==", currentUser.uid),
+                orderBy("time", "desc")
+            );
+            
+            onSnapshot(q, (snapshot) => {
+                if (snapshot.empty) {
+                    userPostsEl.innerHTML = "<p style='text-align: center; color: #888;'>You haven't posted anything yet. Write a new post above!</p>";
+                    return;
+                }
+                
+                userPostsEl.innerHTML = "";
+                snapshot.docs.forEach(doc => {
+                    const post = doc.data();
+                    const postId = doc.id; 
+                    
+                    const postDate = new Date(post.time).toLocaleString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric', 
+                        hour: 'numeric', 
+                        minute: '2-digit', 
+                        hour12: true 
+                    }); 
+                    
+                    const privacyIcon = post.privacy === 'public' ? '🌍' : (post.privacy === 'friends' ? '👥' : '🔒');
+                    const postDiv = document.createElement('div');
+                    postDiv.className = 'post-item';
+                    
+                    postDiv.innerHTML = `
+                        <div class="post-header">
+                            <img src="${post.authorPhoto || defaultPhotoURL}" alt="Author Photo" class="post-author-img">
+                            <div class="author-details">
+                                <strong>${post.authorName}</strong>
+                                <span class="post-meta">${postDate} · ${privacyIcon} ${post.privacy.charAt(0).toUpperCase() + post.privacy.slice(1)}</span>
+                            </div>
+                            
+                            <div class="post-options-menu">
+                                <button class="post-options-btn" onclick="window.togglePostMenu('${postId}', event)">•••</button>
+                                <div class="post-dropdown" id="menu-${postId}">
+                                    <a href="#" onclick="alert('Edit functionality typically redirects to a post edit form.'); return false;">✏️ Edit Post</a>
+                                    <a href="#" onclick="window.deletePost('${postId}'); return false;">🗑️ Delete Post</a>
+                                </div>
+                            </div>
+                            </div>
+                        <p class="post-text">${post.text}</p>
+                        <div class="post-actions">
+                            <button>👍 Like (${post.likes.length})</button>
+                            <button>💬 Comment (${post.comments.length})</button>
+                            <button>🔗 Share</button>
+                        </div>
+                    `;
+                    userPostsEl.appendChild(postDiv);
+                });
+                
+            }, (error) => {
+                console.error("Error fetching user posts:", error);
+                userPostsEl.innerHTML = 'Error loading your posts. (Check console for missing index)';
+            });
+        }
+
+        // --- 5. POST MANAGEMENT FUNCTIONS (Declared on window for global access) ---
+        window.togglePostMenu = function(postId, event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            
+            const menu = document.getElementById(`menu-${postId}`);
+            if (menu) {
+                document.querySelectorAll('.post-dropdown').forEach(d => {
+                    if (d.id !== `menu-${postId}`) {
+                        d.classList.remove('show');
+                    }
+                });
+                menu.classList.toggle('show');
+            }
+        }
+
+        window.deletePost = async (postId) => {
+            if (!confirm("Are you sure you want to delete this post?")) {
+                return;
+            }
+            
+            try {
+                const postRef = doc(db, "posts", postId);
+                await deleteDoc(postRef);
+                console.log("Post successfully deleted:", postId);
+            } catch (error) {
+                console.error("Error deleting post:", error);
+                alert("Failed to delete post. Check console.");
+            }
+        };
+
+        // Close menu if user clicks anywhere outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('post-options-btn') && !e.target.closest('.post-dropdown')) {
+                document.querySelectorAll('.post-dropdown').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+    </script>
+    
+    <script>
+        // Simple Navbar Toggle for mobile
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuToggle = document.getElementById('menu-toggle');
+            const navLinks = document.getElementById('nav-links');
+            if (menuToggle && navLinks) {
+                menuToggle.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+            }
+        });
     </script>
 </body>
-
 </html>
