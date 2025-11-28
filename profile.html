@@ -83,7 +83,6 @@
             border: 1px solid #ddd;
             border-radius: 6px;
             width: fit-content;
-            /* Make the select box fit its content */
         }
 
         /* 📌 BUTTON STYLES (General) */
@@ -103,7 +102,6 @@
             background-color: #165ec9;
         }
 
-        /* Override general button styles for specific elements */
         #postForm button[type="submit"] {
             align-self: flex-end;
             margin-top: 0;
@@ -116,7 +114,7 @@
             margin-bottom: 20px;
         }
 
-        /* 📰 FEED STYLES */
+        /* 📰 FEED STYLES (Existing styles kept) */
         .post {
             background: white;
             border-radius: 8px;
@@ -140,12 +138,15 @@
             text-align: left;
         }
 
-        .post-image {
+        /* Unified style for image and video elements */
+        .post-image,
+        .post-video {
             max-width: 100%;
             height: auto;
             border-radius: 6px;
             margin-top: 10px;
             margin-bottom: 10px;
+            display: block;
         }
 
         .post-actions {
@@ -173,36 +174,29 @@
             background: #f2f2f2;
         }
 
-        /* --- REVISED MENU BUTTON STYLE (Fixed the spacing issue) --- */
         .post-menu-btn {
             position: absolute;
             top: 15px;
-            /* Increased from 10px for better spacing */
             right: 15px;
-            /* Increased from 10px for better spacing */
             background: none;
             border: none;
             color: #606770;
             font-size: 20px;
             padding: 5px;
-            /* Added padding to increase click area and space out the icon */
             margin: 0;
             cursor: pointer;
             transition: background-color 0.2s;
             border-radius: 50%;
             z-index: 10;
-            /* Ensure button is above other content */
         }
 
         .post-menu-btn:hover {
             background-color: #f2f2f2;
         }
 
-        /* Style for the dropdown menu */
         .post-menu-dropdown {
             position: absolute;
             top: 45px;
-            /* Position below the three dots button */
             right: 15px;
             background: white;
             border: 1px solid #ddd;
@@ -210,7 +204,6 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             z-index: 20;
             display: none;
-            /* Hidden by default */
         }
 
         .post-menu-dropdown button {
@@ -229,11 +222,102 @@
         .post-menu-dropdown button:hover {
             background: #f2f2f2;
         }
+
+        /* 💰 LEGACY ASSETS STYLES */
+        .legacy-assets {
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border-left: 5px solid #ff9800;
+        }
+
+        .legacy-assets h2 {
+            color: #ff9800;
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        /* Style for the buttons in the asset section */
+        .legacy-assets button {
+            padding: 8px 12px;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 15px;
+        }
+
+        #shareIdButton {
+            background-color: #ff9800;
+        }
+
+        #shareIdButton:hover {
+            background-color: #e68900;
+        }
+
+        #postLegacyButton {
+            background-color: #4CAF50;
+            /* Green for posting */
+        }
+
+        #postLegacyButton:hover {
+            background-color: #45a049;
+        }
+
+        #saveAssetsButton {
+            background-color: #3f51b5;
+            /* Blue for saving */
+        }
+
+        #saveAssetsButton:hover {
+            background-color: #303f9f;
+        }
+
+        .asset-item {
+            border-top: 1px solid #eee;
+            padding: 10px 0;
+            font-size: 14px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .asset-item label {
+            display: block;
+            width: 130px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .asset-item input[type="text"],
+        .asset-item textarea,
+        .asset-item select {
+            width: calc(100% - 10px);
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .asset-item textarea {
+            resize: vertical;
+            min-height: 50px;
+        }
+
+        /* Class to hide content by default */
+        .hidden-info {
+            display: none;
+        }
     </style>
 
 </head>
 
-<body>
+<body onload="loadProfile()">
 
     <div class="profile-info">
         <img id="profileImage" class="profile-pic" src="https://via.placeholder.com/120" alt="Profile Picture" />
@@ -247,10 +331,127 @@
         <button onclick="editProfile()">Edit Profile</button>
     </div>
 
+    <div class="legacy-assets">
+        <h2>💰 Legacy/Asset Information</h2>
+        <button id="shareIdButton" onclick="toggleLegacyVisibility()">Share ID Info</button>
+        <button id="saveAssetsButton" onclick="saveLegacyAssets()">Save Assets</button>
+        <button id="postLegacyButton" onclick="postLegacyInfo()">Post Legacy Info</button>
+
+
+        <div id="assetDetails" class="hidden-info">
+
+            <div class="asset-item">
+                <label for="assetPropertiesInput">Properties Listing:</label>
+                <textarea id="assetPropertiesInput" placeholder="1 House in City X, Land in Village Y"></textarea>
+                <p style="color: gray; font-size: 12px;">(e.g., For younger generation / Address details)</p>
+            </div>
+
+            <div class="asset-item">
+                <label for="assetCashInput">Cash in Locker:</label>
+                <input type="text" id="assetCashInput" placeholder="Rs. 50,00,000 (Locker Key/Code details here)" />
+                <p style="color: gray; font-size: 12px;">(Include Locker Key/Code details)</p>
+            </div>
+
+            <div class="asset-item">
+                <label for="assetBankBalanceInput">Bank Balance:</label>
+                <input type="text" id="assetBankBalanceInput" placeholder="Rs. 1,20,00,000" />
+            </div>
+
+            <div class="asset-item">
+                <label for="assetBankSelect">Bank Name:</label>
+                <select id="assetBankSelect">
+                    <option value="" disabled selected>--- Select Bank by Region ---</option>
+                    <optgroup label="🇮🇳 India (South Asia)">
+                        <option value="sbi">State Bank of India (SBI)</option>
+                        <option value="hdfc">HDFC Bank</option>
+                        <option value="icici">ICICI Bank</option>
+                        <option value="pnb">Punjab National Bank (PNB)</option>
+                        <option value="axis">Axis Bank</option>
+                        <option value="kotak">Kotak Mahindra Bank</option>
+                        <option value="bandhan">Bandhan Bank</option>
+                        <option value="union">Union Bank of India</option>
+                    </optgroup>
+                    <optgroup label="🇺🇸 USA (North America)">
+                        <option value="chase">J.P. Morgan Chase</option>
+                        <option value="boa">Bank of America</option>
+                        <option value="wellsfargo">Wells Fargo</option>
+                        <option value="citi">Citibank</option>
+                        <option value="usbank">U.S. Bank</option>
+                        <option value="capitalone">Capital One</option>
+                        <option value="pnc">PNC Bank</option>
+                    </optgroup>
+                    <optgroup label="🇨🇦 Canada (North America)">
+                        <option value="rbc">Royal Bank of Canada (RBC)</option>
+                        <option value="td">Toronto-Dominion Bank (TD)</option>
+                        <option value="scotia">Bank of Nova Scotia (Scotiabank)</option>
+                        <option value="bmo">Bank of Montreal (BMO)</option>
+                        <option value="cibc">CIBC</option>
+                    </optgroup>
+                    <optgroup label="🇬🇧 UK (Europe)">
+                        <option value="lloyds">Lloyds Bank</option>
+                        <option value="barclays">Barclays</option>
+                        <option value="hsbc">HSBC</option>
+                        <option value="natwest">NatWest</option>
+                        <option value="santanderuk">Santander UK</option>
+                        <option value="standardchartered">Standard Chartered</option>
+                    </optgroup>
+                    <optgroup label="🇪🇺 Europe (Major Banks)">
+                        <option value="db">Deutsche Bank (Germany)</option>
+                        <option value="bnp">BNP Paribas (France)</option>
+                        <option value="ubs">UBS (Switzerland)</option>
+                        <option value="santander">Banco Santander (Spain)</option>
+                        <option value="ing">ING Group (Netherlands)</option>
+                        <option value="unicredit">UniCredit (Italy)</option>
+                    </optgroup>
+                    <optgroup label="🇯🇵 Japan (East Asia)">
+                        <option value="mufg">Mitsubishi UFJ Financial Group (MUFG)</option>
+                        <option value="smfg">Sumitomo Mitsui Financial Group (SMFG)</option>
+                        <option value="mizuho">Mizuho Financial Group</option>
+                    </optgroup>
+                    <optgroup label="🇨🇳 China (East Asia)">
+                        <option value="icbc">Industrial and Commercial Bank of China (ICBC)</option>
+                        <option value="ccb">China Construction Bank (CCB)</option>
+                        <option value="boc">Bank of China (BOC)</option>
+                    </optgroup>
+                    <optgroup label="🇳🇵 Nepal (South Asia)">
+                        <option value="nabil">Nabil Bank</option>
+                        <option value="rastriya">Rastriya Banijya Bank</option>
+                        <option value="himalayan">Himalayan Bank</option>
+                        <option value="everest">Everest Bank</option>
+                        <option value="siddartha">Siddartha Bank</option>
+                    </optgroup>
+                    <optgroup label="🇦🇺 Australia (Oceania)">
+                        <option value="cba">Commonwealth Bank of Australia (CBA)</option>
+                        <option value="nab">National Australia Bank (NAB)</option>
+                        <option value="anz">ANZ Banking Group</option>
+                        <option value="westpac">Westpac</option>
+                    </optgroup>
+                    <option value="other">Other/Future Bank/Micro-Finance (Specify Below)</option>
+                </select>
+                <input type="text" id="assetOtherBankInput" placeholder="Enter bank name" style="display: none; margin-top: 5px;" />
+            </div>
+            <div class="asset-item">
+                <label for="assetAccountNumberInput">Account Number:</label>
+                <input type="text" id="assetAccountNumberInput" placeholder="XXXX-XXXX-1234" />
+            </div>
+
+            <div class="asset-item">
+                <label for="assetInvestmentsInput">Investments Papers:</label>
+                <textarea id="assetInvestmentsInput" placeholder="Mutual Funds, Fixed Deposits (Location: Safe deposit box #5)"></textarea>
+                <p style="color: gray; font-size: 12px;">(Include Location of papers/Box #)</p>
+            </div>
+
+            <div class="asset-item">
+                <label for="assetSharesInput">Shares/Dividends Proof:</label>
+                <textarea id="assetSharesInput" placeholder="1000 shares of Company Z (Broker details: ABC Brokerage)"></textarea>
+                <p style="color: gray; font-size: 12px;">(Include Broker details)</p>
+            </div>
+        </div>
+    </div>
     <h2>Create Post</h2>
     <form id="postForm">
-        <textarea id="postText" placeholder="What's on your mind?" required></textarea>
-        <input type="file" id="postImage" accept="image/*" />
+        <textarea id="postText" placeholder="What's on your mind?"></textarea>
+        <input type="file" id="postMedia" accept="image/*,video/*" />
         <select id="postPrivacy" required>
             <option value="public" selected>Public</option>
             <option value="friends">Friends</option>
@@ -263,7 +464,32 @@
     <div id="feed"></div>
 
     <script>
-        // --- PROFILE & EDIT FUNCTIONS ---
+        // --- INITIAL/DEFAULT DATA STRUCTURE FOR LEGACY ASSETS ---
+        const defaultLegacyData = {
+            properties: '1 House in City X, Land in Village Y',
+            cash: 'Rs. 50,00,000 (Locker Key/Code details here)',
+            bankBalance: 'Rs. 1,20,00,000',
+            bankName: 'State Bank of India (SBI)', // Default name must match an option text or be a custom name
+            accountNumber: 'XXXX-XXXX-1234',
+            investments: 'Mutual Funds, Fixed Deposits (Location: Safe deposit box #5)',
+            shares: '1000 shares of Company Z (Broker details: ABC Brokerage)'
+        };
+
+        // --- PROFILE & EDIT FUNCTIONS (Asset Lock) ---
+
+        function setLegacyPassword() {
+            let storedProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
+
+            const newPassword = prompt("Set a new personal password for your Legacy Assets (Keep it safe!):");
+
+            if (newPassword !== null && newPassword.trim() !== "") {
+                storedProfile.legacyPassword = newPassword.trim();
+                localStorage.setItem('userProfile', JSON.stringify(storedProfile));
+                alert("Legacy Asset Password successfully updated!");
+            } else if (newPassword !== null) {
+                alert("Password cannot be empty. Password not changed.");
+            }
+        }
 
         function loadProfile() {
             const storedProfile = localStorage.getItem('userProfile');
@@ -274,47 +500,260 @@
             document.getElementById('userEmail').textContent = profile.email || '';
             document.getElementById('userGender').textContent = profile.gender || '';
             document.getElementById('userDob').textContent = profile.dob || '';
+
+            loadLegacyAssets();
         }
 
         function editProfile() {
-            // FIX APPLIED: Redirects to edit-profile.html
-            alert("Redirecting to Edit Profile Page.");
-            window.location.href = "edit-profile.html"; 
+            const action = prompt("What would you like to edit?\n\n1. General Profile Details (Redirect to edit-profile.html)\n2. Legacy Asset Password (Set/Change lock)");
+
+            if (action === '1') {
+                alert("Redirecting to Edit Profile Page.");
+                window.location.href = "edit-profile.html";
+            } else if (action === '2') {
+                setLegacyPassword();
+            } else if (action !== null) {
+                alert("Invalid choice or cancelled.");
+            }
         }
 
-        loadProfile();
+        // --- CORE LEGACY ASSET FUNCTIONS ---
+
+        function getLegacyData() {
+            const storedData = localStorage.getItem('legacyAssetsData');
+            return storedData ? JSON.parse(storedData) : defaultLegacyData;
+        }
+
+        function loadLegacyAssets() {
+            const legacyData = getLegacyData();
+
+            document.getElementById('assetPropertiesInput').value = legacyData.properties || '';
+            document.getElementById('assetCashInput').value = legacyData.cash || '';
+            document.getElementById('assetBankBalanceInput').value = legacyData.bankBalance || '';
+            document.getElementById('assetAccountNumberInput').value = legacyData.accountNumber || '';
+            document.getElementById('assetInvestmentsInput').value = legacyData.investments || '';
+            document.getElementById('assetSharesInput').value = legacyData.shares || '';
+
+            const bankSelect = document.getElementById('assetBankSelect');
+            const otherBankInput = document.getElementById('assetOtherBankInput');
+            const storedBankName = legacyData.bankName;
+
+            // Check if the stored bank name matches any option text, including those inside optgroups
+            let bankOptionFound = false;
+            // Clear selection first
+            bankSelect.value = ""; 
+            
+            for (let i = 0; i < bankSelect.options.length; i++) {
+                // We compare the saved name (storedBankName) against the visible text of each option
+                // We also check against the option's value (which is a short code) just in case
+                if (bankSelect.options[i].text.trim() === storedBankName || bankSelect.options[i].value === storedBankName) {
+                    bankSelect.value = bankSelect.options[i].value;
+                    bankOptionFound = true;
+                    break;
+                }
+            }
+
+            // If no match found (meaning it's a custom/future bank name), set select to 'other'
+            if (!bankOptionFound && storedBankName) {
+                bankSelect.value = 'other';
+                otherBankInput.style.display = 'block';
+                otherBankInput.value = storedBankName;
+            } else {
+                otherBankInput.style.display = 'none';
+                otherBankInput.value = '';
+            }
+
+            // Set visibility based on storage flag
+            const isShared = localStorage.getItem('legacyAssetsVisible') === 'true';
+            const assetDetailsDiv = document.getElementById('assetDetails');
+            const shareButton = document.getElementById('shareIdButton');
+
+            if (isShared) {
+                assetDetailsDiv.classList.remove('hidden-info');
+                shareButton.textContent = 'Unshare ID Info';
+                shareButton.style.backgroundColor = '#d9534f';
+            } else {
+                assetDetailsDiv.classList.add('hidden-info');
+                shareButton.textContent = 'Share ID Info';
+                shareButton.style.backgroundColor = '#ff9800';
+            }
+        }
+
+        function saveLegacyAssets() {
+            const bankSelect = document.getElementById('assetBankSelect');
+            const otherBankInput = document.getElementById('assetOtherBankInput');
+
+            // Determine the bank name value to save
+            let bankNameValue;
+            if (bankSelect.value === 'other') {
+                // If 'Other' is selected, save the text from the input field
+                bankNameValue = otherBankInput.value.trim();
+            } else {
+                // If a regional bank is selected, save the visible text of the option
+                bankNameValue = bankSelect.options[bankSelect.selectedIndex].text.trim();
+            }
+            
+            if (bankNameValue === '--- Select Bank by Region ---') {
+                bankNameValue = ''; // Clear if the initial disabled option is somehow saved
+            }
+
+            const updatedData = {
+                properties: document.getElementById('assetPropertiesInput').value.trim(),
+                cash: document.getElementById('assetCashInput').value.trim(),
+                bankBalance: document.getElementById('assetBankBalanceInput').value.trim(),
+                bankName: bankNameValue, // Save the determined name
+                accountNumber: document.getElementById('assetAccountNumberInput').value.trim(),
+                investments: document.getElementById('assetInvestmentsInput').value.trim(),
+                shares: document.getElementById('assetSharesInput').value.trim()
+            };
+
+            localStorage.setItem('legacyAssetsData', JSON.stringify(updatedData));
+            alert("Legacy Asset information saved successfully!");
+            // Re-load the data to ensure the select box and input show the correct saved state
+            loadLegacyAssets();
+        }
+
+        // Event listener for the bank select dropdown
+        document.addEventListener('DOMContentLoaded', () => {
+            const bankSelect = document.getElementById('assetBankSelect');
+            const otherBankInput = document.getElementById('assetOtherBankInput');
+
+            bankSelect.addEventListener('change', () => {
+                if (bankSelect.value === 'other') {
+                    otherBankInput.style.display = 'block';
+                    otherBankInput.focus();
+                } else {
+                    otherBankInput.style.display = 'none';
+                }
+            });
+            loadLegacyAssets();
+        });
+
+
+        function toggleLegacyVisibility() {
+            const assetDetailsDiv = document.getElementById('assetDetails');
+            const shareButton = document.getElementById('shareIdButton');
+            const storedProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
+            const requiredPassword = storedProfile.legacyPassword;
+
+            if (!requiredPassword) {
+                alert("You must first set a Legacy Asset Password via the 'Edit Profile' button (Option 2) before sharing.");
+                return;
+            }
+
+            const isCurrentlyVisible = !assetDetailsDiv.classList.contains('hidden-info');
+
+            if (isCurrentlyVisible) {
+                assetDetailsDiv.classList.add('hidden-info');
+                shareButton.textContent = 'Share ID Info';
+                shareButton.style.backgroundColor = '#ff9800';
+                localStorage.setItem('legacyAssetsVisible', 'false');
+                alert("Legacy/Asset information is now UN-SHARED (hidden) from visitors.");
+            } else {
+                const confirmation = prompt("Enter your personal Legacy Asset Password to share this sensitive information:");
+
+                if (confirmation === requiredPassword) {
+                    loadLegacyAssets();
+                    assetDetailsDiv.classList.remove('hidden-info');
+                    shareButton.textContent = 'Unshare ID Info';
+                    shareButton.style.backgroundColor = '#d9534f';
+                    localStorage.setItem('legacyAssetsVisible', 'true');
+                    alert("Legacy/Asset information is now SHARED (visible).");
+                } else if (confirmation !== null) {
+                    alert("Incorrect Password. Information remains hidden.");
+                }
+            }
+        }
+
+        // --- POST LEGACY ASSET DATA ---
+        function postLegacyInfo() {
+            const currentUser = JSON.parse(localStorage.getItem('userProfile')) || {
+                name: 'Current User'
+            };
+            const currentUserName = currentUser.name || 'Current User';
+            const legacyData = getLegacyData();
+
+            const assetText = `
+            --- LEGACY ASSET POST ---
+            Date Posted: ${new Date().toLocaleDateString()}
+
+            Properties: ${legacyData.properties}
+            Cash in Locker: ${legacyData.cash}
+            Bank Balance: ${legacyData.bankBalance}
+            Bank Name: ${legacyData.bankName}
+            Account Number: ${legacyData.accountNumber}
+            Investments: ${legacyData.investments}
+            Shares/Dividends: ${legacyData.shares}
+
+            *** This information is highly sensitive. Privacy is set to 'Only Me'. ***
+            `;
+
+            const confirmed = confirm(
+                "Are you sure you want to post your Legacy Asset information?\n\n" +
+                "It will be posted with 'Only Me' privacy to prevent accidental sharing. You can edit the privacy later if needed."
+            );
+
+            if (confirmed) {
+                addPost(
+                    assetText.trim(),
+                    null,
+                    currentUserName,
+                    'onlyme'
+                );
+                alert("Legacy Asset information has been posted to your feed with 'Only Me' privacy.");
+            } else {
+                alert("Posting cancelled.");
+            }
+        }
 
         // --- POST/FEED LOGIC (Uses Local Storage) ---
 
         const postForm = document.getElementById('postForm');
         const postText = document.getElementById('postText');
-        const postImage = document.getElementById('postImage');
+        const postMedia = document.getElementById('postMedia');
         const postPrivacy = document.getElementById('postPrivacy');
         const feed = document.getElementById('feed');
 
-        // Load posts from localStorage
         let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
         const currentUser = JSON.parse(localStorage.getItem('userProfile')) || {
             name: 'Current User'
-        }; // Default user if none is set
+        };
         const currentUserName = currentUser.name || 'Current User';
 
         function renderPosts() {
             feed.innerHTML = '';
-            // Filter to show only the current user's posts
             const userPosts = posts.filter(post => post.authorName === currentUserName);
 
             userPosts.forEach((post, idx) => {
-                // Find the index in the main 'posts' array for correct updates
                 const originalIndex = posts.findIndex(p => p.timestamp === post.timestamp);
                 if (originalIndex === -1) return;
 
+                let mediaHTML = '';
+                if (post.media) {
+                    if (post.media.startsWith('data:image')) {
+                        mediaHTML = `<img src="${post.media}" class="post-image" alt="User Image Post" />`;
+                    } else if (post.media.startsWith('data:video')) {
+                        mediaHTML = `<video src="${post.media}" class="post-video" controls>Your browser does not support the video tag.</video>`;
+                    }
+                }
+
                 const postDiv = document.createElement('div');
                 postDiv.className = 'post';
-                postDiv.id = `post-${originalIndex}`; // Assign an ID for targeting
-                let imgHTML = post.image ? `<img src="${post.image}" class="post-image" />` : '';
+                postDiv.id = `post-${originalIndex}`;
                 const likedClass = post.liked ? 'liked' : '';
                 const commentsCount = post.comments ? post.comments.length : 0;
+
+                function getPrivacyIcon(privacy) {
+                    switch (privacy) {
+                        case 'public':
+                            return '🌐 Public';
+                        case 'friends':
+                        case 'onlyme':
+                            return '🔒 Only Me';
+                        default:
+                            return '';
+                    }
+                }
 
                 postDiv.innerHTML = `
             <button class="post-menu-btn" data-index="${originalIndex}" aria-controls="menu-${originalIndex}">&#8942;</button>
@@ -322,9 +761,9 @@
                 <button onclick="editPost(${originalIndex})">Edit</button>
                 <button onclick="deletePost(${originalIndex})">Delete</button>
             </div>
-            <div class="posted-by">Posted by: ${post.authorName || 'Unknown'}</div>
+            <div class="posted-by">Posted by: ${post.authorName || 'Unknown'} - ${getPrivacyIcon(post.privacy)}</div>
             <div class="post-text">${post.text}</div>
-            ${imgHTML}
+            ${mediaHTML}
             <div class="post-actions">
                 <button class="like-btn ${likedClass}" data-index="${originalIndex}">👍 ${post.likes} Like</button>
                 <button class="comment-btn" data-index="${originalIndex}">💬 Comment (${commentsCount})</button>
@@ -332,7 +771,7 @@
                 feed.appendChild(postDiv);
             });
             localStorage.setItem('fbPosts', JSON.stringify(posts));
-            attachEventListeners(); // Re-attach listeners after rendering
+            attachEventListeners();
         }
 
         function attachEventListeners() {
@@ -342,7 +781,6 @@
             document.querySelectorAll('.post-menu-btn').forEach(button => {
                 button.onclick = handlePostMenu;
             });
-            // Global click listener to close menus
             document.addEventListener('click', function(e) {
                 if (!e.target.closest('.post-menu-btn') && !e.target.closest('.post-menu-dropdown')) {
                     document.querySelectorAll('.post-menu-dropdown').forEach(menu => {
@@ -353,18 +791,16 @@
         }
 
         function handlePostMenu(e) {
-            e.stopPropagation(); // Prevent the global click listener from immediately closing it
+            e.stopPropagation();
             const index = parseInt(e.currentTarget.dataset.index);
             const menu = document.getElementById(`menu-${index}`);
 
-            // Close all other menus
             document.querySelectorAll('.post-menu-dropdown').forEach(m => {
                 if (m !== menu) {
                     m.style.display = 'none';
                 }
             });
 
-            // Toggle current menu
             menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
 
@@ -382,23 +818,21 @@
             }
         }
 
-        function addPost(text, image, authorName, privacy) {
+        function addPost(text, media, authorName, privacy) {
             posts.unshift({
                 text,
-                image,
+                media,
                 likes: 0,
                 liked: false,
                 comments: [],
                 authorName,
                 privacy,
-                timestamp: Date.now() // Unique ID for tracking
+                timestamp: Date.now()
             });
             postForm.reset();
             localStorage.setItem('fbPosts', JSON.stringify(posts));
             renderPosts();
         }
-
-        // --- POST EDIT/DELETE FUNCTIONS ---
 
         function editPost(index) {
             const post = posts[index];
@@ -408,7 +842,6 @@
                 localStorage.setItem('fbPosts', JSON.stringify(posts));
                 renderPosts();
             }
-            // Close the menu after action
             document.getElementById(`menu-${index}`).style.display = 'none';
         }
 
@@ -418,60 +851,41 @@
                 localStorage.setItem('fbPosts', JSON.stringify(posts));
                 renderPosts();
             }
-            // Close the menu after action
             document.getElementById(`menu-${index}`).style.display = 'none';
         }
 
-        // --- INITIAL POST FORM SUBMISSION ---
-
         postForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            if (!postText.value.trim() && !postImage.files.length) return alert('Enter some text or select an image');
+            if (!postText.value.trim() && !postMedia.files.length) return alert('Enter some text or select an image/video');
 
-            const file = postImage.files[0];
+            const file = postMedia.files[0];
             const posterName = currentUserName;
-            const privacyValue = postPrivacy.value || 'public';
 
             if (file) {
                 const reader = new FileReader();
-                reader.onload = e => {
-                    addPost(postText.value.trim(), e.target.result, posterName, privacyValue);
+                reader.onload = function(event) {
+                    addPost(
+                        postText.value.trim(),
+                        event.target.result, // Data URL for media
+                        posterName,
+                        postPrivacy.value
+                    );
                 };
                 reader.readAsDataURL(file);
             } else {
-                addPost(postText.value.trim(), null, posterName, privacyValue);
+                addPost(
+                    postText.value.trim(),
+                    null, // No media
+                    posterName,
+                    postPrivacy.value
+                );
             }
         });
 
+        // Initial rendering of posts on load
         renderPosts();
     </script>
 
-    <script type="module">
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import {
-            getFirestore
-        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        // Your Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyAyMhgLjQg9zU1Tq2pFVmRiF_UiOBqPlj0",
-            authDomain: "genx-7a5b3.firebaseapp.com",
-            projectId: "genx-7a5b3",
-            storageBucket: "genx-7a5b3.firebasestorage.app",
-            messagingSenderId: "1293731877",
-            appId: "1:1293731877:web:a330360ade1db5e68897cc"
-        };
-
-        try {
-            const app = initializeApp(firebaseConfig);
-            const db = getFirestore(app);
-            console.log("Firebase initialized successfully.");
-        } catch (error) {
-            console.warn("Firebase initialization failed (likely local use).");
-        }
-    </script>
 </body>
 
 </html>
