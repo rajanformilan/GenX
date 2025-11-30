@@ -1,487 +1,460 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User Profile and Posts</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile & Assets</title>
     <style>
-        /* 🎨 GENERAL STYLES */
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 20px auto;
-            background: #f0f2f5;
-            padding: 10px;
-            border-radius: 10px;
+        /* General Reset & Background */
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            background-color: #f0f2f5; 
         }
 
-        h2 {
-            margin: 20px 0 10px;
-            text-align: center;
-            color: #1877f2;
+        /* Banner Styling */
+        .banner-container { 
+            width: 100%; 
+            overflow: hidden; 
+            margin-bottom: 20px; 
+        }
+        .banner-container img { 
+            width: 100%; 
+            height: auto; 
+            display: block; 
+        } 
+
+        /* Main Content Wrapper */
+        .content-wrapper { 
+            padding: 20px; 
+            max-width: 800px; /* Optional: Center content on larger screens */
+            margin: 0 auto; 
+        } 
+
+        /* Profile Info Box */
+        .profile-info { 
+            background-color: #fff; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+            margin-bottom: 20px; 
+            text-align: center; 
+        }
+        .profile-pic { 
+            width: 120px; 
+            height: 120px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            margin-bottom: 15px; 
+            border: 3px solid #1877f2; 
         }
 
-        /* 🖼️ PROFILE SECTION STYLES */
-        .profile-info {
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        img.profile-pic {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #007bff;
-            margin-bottom: 10px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .profile-info p {
-            margin: 5px 0;
-            color: #555;
-            text-align: center;
-        }
-
-        /* ✍️ POST FORM STYLES */
-        #postForm {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        #postText {
-            width: 100%;
-            min-height: 80px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            resize: vertical;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        #postForm input[type="file"] {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-        }
-
-        #postPrivacy {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            width: fit-content;
-        }
-
-        /* 📌 BUTTON STYLES (General) */
-        button {
-            background-color: #1877f2;
-            /* Facebook Blue */
-            border: none;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background-color: #165ec9;
-        }
-
-        #postForm button[type="submit"] {
-            align-self: flex-end;
-            margin-top: 0;
-            padding: 8px 15px;
-            font-size: 14px;
-        }
-
+        /* Edit Button Container (for centering/styling) */
         .edit-btn-container {
             text-align: center;
             margin-bottom: 20px;
         }
 
-        /* 📰 FEED STYLES (Existing styles kept) */
-        .post {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        .posted-by {
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #1877f2;
-            text-align: left;
-        }
-
-        .post-text {
-            margin: 10px 0;
-            color: #333;
-            white-space: pre-wrap;
-            text-align: left;
-        }
-
-        /* Unified style for image and video elements */
-        .post-image,
-        .post-video {
-            max-width: 100%;
-            height: auto;
+        /* --- NEW STYLING FOR EDIT PROFILE BUTTON --- */
+        .edit-profile-btn {
+            padding: 10px 25px;
+            background-color: #1877f2; /* Facebook Blue */
+            color: white;
+            border: none;
             border-radius: 6px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .post-actions {
-            display: flex;
-            justify-content: space-around;
-            border-top: 1px solid #eee;
-            padding-top: 10px;
-            margin-top: 10px;
-        }
-
-        .post-actions button {
-            background: transparent;
-            color: #606770;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
             cursor: pointer;
-            margin: 0;
-            display: inline-flex;
-            align-items: center;
-            font-weight: 600;
-        }
-
-        .post-actions button:hover {
-            background: #f2f2f2;
-        }
-
-        .post-menu-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: #606770;
-            font-size: 20px;
-            padding: 5px;
-            margin: 0;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            border-radius: 50%;
-            z-index: 10;
-        }
-
-        .post-menu-btn:hover {
-            background-color: #f2f2f2;
-        }
-
-        .post-menu-dropdown {
-            position: absolute;
-            top: 45px;
-            right: 15px;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            z-index: 20;
-            display: none;
-        }
-
-        .post-menu-dropdown button {
-            display: block;
-            width: 100%;
-            padding: 10px 20px;
-            background: none;
-            color: #333;
-            text-align: left;
-            border: none;
-            font-size: 14px;
-            font-weight: normal;
-            border-radius: 0;
-        }
-
-        .post-menu-dropdown button:hover {
-            background: #f2f2f2;
-        }
-
-        /* 💰 LEGACY ASSETS STYLES */
-        .legacy-assets {
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            border-left: 5px solid #ff9800;
-        }
-
-        .legacy-assets h2 {
-            color: #ff9800;
-            margin-top: 0;
-            margin-bottom: 10px;
-            text-align: left;
-        }
-
-        /* Style for the buttons in the asset section */
-        .legacy-assets button {
-            padding: 8px 12px;
-            font-size: 14px;
-            margin-right: 10px;
-            margin-bottom: 15px;
-        }
-
-        #shareIdButton {
-            background-color: #ff9800;
-        }
-
-        #shareIdButton:hover {
-            background-color: #e68900;
-        }
-
-        #postLegacyButton {
-            background-color: #4CAF50;
-            /* Green for posting */
-        }
-
-        #postLegacyButton:hover {
-            background-color: #45a049;
-        }
-
-        #saveAssetsButton {
-            background-color: #3f51b5;
-            /* Blue for saving */
-        }
-
-        #saveAssetsButton:hover {
-            background-color: #303f9f;
-        }
-
-        .asset-item {
-            border-top: 1px solid #eee;
-            padding: 10px 0;
-            font-size: 14px;
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .asset-item label {
-            display: block;
-            width: 130px;
             font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
+            font-size: 1.1em;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px #145cb3; /* Darker blue for shadow */
+        }
+        .edit-profile-btn:hover {
+            background-color: #145cb3; /* Slightly darker blue on hover */
+        }
+        .edit-profile-btn:active {
+            box-shadow: 0 2px #145cb3;
+            transform: translateY(2px);
+        }
+        /* ------------------------------------------- */
+
+        /* Legacy Assets Section */
+        .legacy-assets { 
+            background-color: #f7f7f7; 
+            padding: 20px; 
+            border-radius: 8px; 
+            border: 1px solid #ddd; 
+            margin-bottom: 20px; 
+        }
+        .legacy-assets h2 { 
+            color: #1877f2; 
+            margin-top: 0; 
+        }
+        .legacy-assets button { 
+            padding: 10px 15px; 
+            margin: 5px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold; 
+        }
+        #shareIdButton { background-color: #ff9800; color: white; }
+        #saveAssetsButton { background-color: #4CAF50; color: white; }
+        #postLegacyButton { background-color: #1877f2; color: white; }
+        .asset-item { margin-bottom: 15px; }
+        .asset-item label { 
+            display: block; 
+            font-weight: bold; 
+            margin-bottom: 5px; 
+            color: #555; 
+        }
+        .asset-item input[type="text"], .asset-item textarea, .asset-item select { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+        }
+        .hidden-info { 
+            display: none; 
         }
 
-        .asset-item input[type="text"],
-        .asset-item textarea,
-        .asset-item select {
-            width: calc(100% - 10px);
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
+        /* Earnings section */
+        .earnings-section { 
+            background-color: #e6f7ff; 
+            padding: 20px; 
+            border-radius: 8px; 
+            border: 1px solid #91d5ff; 
+            margin-bottom: 20px; 
+            text-align: center; 
+        }
+        .earnings-section h2 { 
+            color: #0056b3; 
+            margin-top: 0; 
+        }
+        .earnings-section p { 
+            font-size: 1.1em; 
+            color: #333; 
+        }
+        .earnings-section button { 
+            background-color: #28a745; 
+            color: white; 
+            padding: 12px 20px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 1em; 
+            margin-top: 10px; 
+        }
+        .earnings-section button:hover { 
+            background-color: #218838; 
         }
 
-        .asset-item textarea {
-            resize: vertical;
-            min-height: 50px;
+        /* Post Feed Styling */
+        #postForm { 
+            display: flex; 
+            flex-direction: column; 
+            background-color: #fff; 
+            padding: 15px; 
+            border-radius: 8px; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
+            margin-bottom: 20px; 
+        }
+        #postText { 
+            resize: vertical; 
+            min-height: 80px; 
+            margin-bottom: 10px; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+        }
+        #postForm button[type="submit"] { 
+            background-color: #1877f2; 
+            color: white; 
+            padding: 10px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            margin-top: 10px; 
+        }
+        .post { 
+            background-color: #fff; 
+            padding: 15px; 
+            border-radius: 8px; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
+            margin-bottom: 10px; 
+            position: relative; 
+        }
+        .posted-by { 
+            font-size: 0.9em; 
+            color: #606770; 
+            margin-bottom: 10px; 
+        }
+        .post-text { 
+            margin-bottom: 10px; 
+            white-space: pre-wrap; 
+        }
+        .post-image, .post-video { 
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 6px; 
+            margin-top: 10px; 
+        }
+        .post-actions button { 
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            color: #606770; 
+            font-weight: bold; 
+            margin-right: 15px; 
+        }
+        .like-btn.liked { 
+            color: #1877f2; 
         }
 
-        /* Class to hide content by default */
-        .hidden-info {
-            display: none;
+        /* Post Menu Dropdown */
+        .post-menu-btn { 
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            background: none !important; 
+            color: #606770 !important; 
+            font-size: 1.5em; 
+            padding: 0; 
+            margin: 0; 
+        }
+        .post-menu-dropdown { 
+            position: absolute; 
+            top: 35px; 
+            right: 10px; 
+            background-color: #fff; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+            z-index: 100; 
+            display: none; 
+        }
+        .post-menu-dropdown button { 
+            display: block; 
+            width: 100%; 
+            text-align: left; 
+            padding: 8px 15px; 
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            white-space: nowrap; 
+        }
+        .post-menu-dropdown button:hover { 
+            background-color: #f2f2f2; 
         }
     </style>
-
 </head>
 
 <body onload="loadProfile()">
-
-    <div class="profile-info">
-        <img id="profileImage" class="profile-pic" src="https://via.placeholder.com/120" alt="Profile Picture" />
-        <h2 id="userName">Name</h2>
-        <p><strong>Email:</strong> <span id="userEmail"></span></p>
-        <p><strong>Gender:</strong> <span id="userGender"></span></p>
-        <p><strong>Date of Birth:</strong> <span id="userDob"></span></p>
+    
+    <div class="banner-container">
+        <img src="coverasbanner.jpg" alt="Earn & Withdraw Banner">
     </div>
+    <div class="content-wrapper">
+        <div class="profile-info">
+            <img id="profileImage" class="profile-pic" src="https://via.placeholder.com/120" alt="Profile Picture" />
+            <h2 id="userName">Name</h2>
+            <p><strong>Email:</strong> <span id="userEmail"></span></p>
+            <p><strong>Gender:</strong> <span id="userGender"></span></p>
+            <p><strong>Date of Birth:</strong> <span id="userDob"></span></p>
+        </div>
 
-    <div class="edit-btn-container">
-        <button onclick="editProfile()">Edit Profile</button>
-    </div>
+        <div class="edit-btn-container">
+            <button onclick="editProfile()" class="edit-profile-btn">✏️ Edit Profile</button>
+        </div>
 
-    <div class="legacy-assets">
-        <h2>💰 Legacy/Asset Information</h2>
-        <button id="shareIdButton" onclick="toggleLegacyVisibility()">Share ID Info</button>
-        <button id="saveAssetsButton" onclick="saveLegacyAssets()">Save Assets</button>
-        <button id="postLegacyButton" onclick="postLegacyInfo()">Post Legacy Info</button>
+        <div class="earnings-section">
+            <h2>💰 Your Earnings</h2>
+            <p>Current Balance: <span id="currentEarnings">$0.00</span></p>
+            <p>Posts Count: <span id="userPostCount">0</span> (Required: 65)</p>
+            <p>Days Since First Post: <span id="daysSinceFirstPost">0</span> (Required: 100)</p>
+            <button onclick="withdrawEarnings()">Withdraw Earnings</button>
+        </div>
 
-
-        <div id="assetDetails" class="hidden-info">
-
-            <div class="asset-item">
-                <label for="assetPropertiesInput">Properties Listing:</label>
-                <textarea id="assetPropertiesInput" placeholder="1 House in City X, Land in Village Y"></textarea>
-                <p style="color: gray; font-size: 12px;">(e.g., For younger generation / Address details)</p>
-            </div>
-
-            <div class="asset-item">
-                <label for="assetCashInput">Cash in Locker:</label>
-                <input type="text" id="assetCashInput" placeholder="Rs. 50,00,000 (Locker Key/Code details here)" />
-                <p style="color: gray; font-size: 12px;">(Include Locker Key/Code details)</p>
-            </div>
-
-            <div class="asset-item">
-                <label for="assetBankBalanceInput">Bank Balance:</label>
-                <input type="text" id="assetBankBalanceInput" placeholder="Rs. 1,20,00,000" />
-            </div>
-
-            <div class="asset-item">
-                <label for="assetBankSelect">Bank Name:</label>
-                <select id="assetBankSelect">
-                    <option value="" disabled selected>--- Select Bank by Region ---</option>
-                    <optgroup label="🇮🇳 India (South Asia)">
-                        <option value="sbi">State Bank of India (SBI)</option>
-                        <option value="hdfc">HDFC Bank</option>
-                        <option value="icici">ICICI Bank</option>
-                        <option value="pnb">Punjab National Bank (PNB)</option>
-                        <option value="axis">Axis Bank</option>
-                        <option value="kotak">Kotak Mahindra Bank</option>
-                        <option value="bandhan">Bandhan Bank</option>
-                        <option value="union">Union Bank of India</option>
-                    </optgroup>
-                    <optgroup label="🇺🇸 USA (North America)">
-                        <option value="chase">J.P. Morgan Chase</option>
-                        <option value="boa">Bank of America</option>
-                        <option value="wellsfargo">Wells Fargo</option>
-                        <option value="citi">Citibank</option>
-                        <option value="usbank">U.S. Bank</option>
-                        <option value="capitalone">Capital One</option>
-                        <option value="pnc">PNC Bank</option>
-                    </optgroup>
-                    <optgroup label="🇨🇦 Canada (North America)">
-                        <option value="rbc">Royal Bank of Canada (RBC)</option>
-                        <option value="td">Toronto-Dominion Bank (TD)</option>
-                        <option value="scotia">Bank of Nova Scotia (Scotiabank)</option>
-                        <option value="bmo">Bank of Montreal (BMO)</option>
-                        <option value="cibc">CIBC</option>
-                    </optgroup>
-                    <optgroup label="🇬🇧 UK (Europe)">
-                        <option value="lloyds">Lloyds Bank</option>
-                        <option value="barclays">Barclays</option>
-                        <option value="hsbc">HSBC</option>
-                        <option value="natwest">NatWest</option>
-                        <option value="santanderuk">Santander UK</option>
-                        <option value="standardchartered">Standard Chartered</option>
-                    </optgroup>
-                    <optgroup label="🇪🇺 Europe (Major Banks)">
-                        <option value="db">Deutsche Bank (Germany)</option>
-                        <option value="bnp">BNP Paribas (France)</option>
-                        <option value="ubs">UBS (Switzerland)</option>
-                        <option value="santander">Banco Santander (Spain)</option>
-                        <option value="ing">ING Group (Netherlands)</option>
-                        <option value="unicredit">UniCredit (Italy)</option>
-                    </optgroup>
-                    <optgroup label="🇯🇵 Japan (East Asia)">
-                        <option value="mufg">Mitsubishi UFJ Financial Group (MUFG)</option>
-                        <option value="smfg">Sumitomo Mitsui Financial Group (SMFG)</option>
-                        <option value="mizuho">Mizuho Financial Group</option>
-                    </optgroup>
-                    <optgroup label="🇨🇳 China (East Asia)">
-                        <option value="icbc">Industrial and Commercial Bank of China (ICBC)</option>
-                        <option value="ccb">China Construction Bank (CCB)</option>
-                        <option value="boc">Bank of China (BOC)</option>
-                    </optgroup>
-                    <optgroup label="🇳🇵 Nepal (South Asia)">
-                        <option value="nabil">Nabil Bank</option>
-                        <option value="rastriya">Rastriya Banijya Bank</option>
-                        <option value="himalayan">Himalayan Bank</option>
-                        <option value="everest">Everest Bank</option>
-                        <option value="siddartha">Siddartha Bank</option>
-                    </optgroup>
-                    <optgroup label="🇦🇺 Australia (Oceania)">
-                        <option value="cba">Commonwealth Bank of Australia (CBA)</option>
-                        <option value="nab">National Australia Bank (NAB)</option>
-                        <option value="anz">ANZ Banking Group</option>
-                        <option value="westpac">Westpac</option>
-                    </optgroup>
-                    <option value="other">Other/Future Bank/Micro-Finance (Specify Below)</option>
-                </select>
-                <input type="text" id="assetOtherBankInput" placeholder="Enter bank name" style="display: none; margin-top: 5px;" />
-            </div>
-            <div class="asset-item">
-                <label for="assetAccountNumberInput">Account Number:</label>
-                <input type="text" id="assetAccountNumberInput" placeholder="XXXX-XXXX-1234" />
-            </div>
-
-            <div class="asset-item">
-                <label for="assetInvestmentsInput">Investments Papers:</label>
-                <textarea id="assetInvestmentsInput" placeholder="Mutual Funds, Fixed Deposits (Location: Safe deposit box #5)"></textarea>
-                <p style="color: gray; font-size: 12px;">(Include Location of papers/Box #)</p>
-            </div>
-
-            <div class="asset-item">
-                <label for="assetSharesInput">Shares/Dividends Proof:</label>
-                <textarea id="assetSharesInput" placeholder="1000 shares of Company Z (Broker details: ABC Brokerage)"></textarea>
-                <p style="color: gray; font-size: 12px;">(Include Broker details)</p>
+        <div class="legacy-assets">
+            <h2>💰 Legacy/Asset Information</h2>
+            <button id="shareIdButton" onclick="toggleLegacyVisibility()">Share ID Info</button>
+            <button id="saveAssetsButton" onclick="saveLegacyAssets()">Save Assets</button>
+            <button id="postLegacyButton" onclick="postLegacyInfo()">Post Legacy Info</button>
+            
+            <div id="assetDetails" class="hidden-info">
+                <div class="asset-item">
+                    <label for="assetPropertiesInput">Properties Listing:</label>
+                    <textarea id="assetPropertiesInput" placeholder="1 House in City X, Land in Village Y"></textarea>
+                    <p style="color: gray; font-size: 12px;">(e.g., For younger generation / Address details)</p>
+                </div>
+                <div class="asset-item">
+                    <label for="assetCashInput">Cash in Locker:</label>
+                    <input type="text" id="assetCashInput" placeholder="Rs. 50,00,000 (Locker Key/Code details here)" />
+                    <p style="color: gray; font-size: 12px;">(Include Locker Key/Code details)</p>
+                </div>
+                <div class="asset-item">
+                    <label for="assetBankBalanceInput">Bank Balance:</label>
+                    <input type="text" id="assetBankBalanceInput" placeholder="Rs. 1,20,00,000" />
+                </div>
+                <div class="asset-item">
+                    <label for="assetBankSelect">Bank Name:</label>
+                    <select id="assetBankSelect">
+                        <option value="" disabled selected>--- Select Bank by Region ---</option>
+                        <optgroup label="🇮🇳 India (South Asia)">
+                            <option value="sbi">State Bank of India (SBI)</option>
+                            <option value="hdfc">HDFC Bank</option>
+                            <option value="icici">ICICI Bank</option>
+                            <option value="pnb">Punjab National Bank (PNB)</option>
+                            <option value="axis">Axis Bank</option>
+                            <option value="kotak">Kotak Mahindra Bank</option>
+                            <option value="bandhan">Bandhan Bank</option>
+                            <option value="union">Union Bank of India</option>
+                        </optgroup>
+                        <optgroup label="🇺🇸 USA (North America)">
+                            <option value="chase">J.P. Morgan Chase</option>
+                            <option value="boa">Bank of America</option>
+                            <option value="wellsfargo">Wells Fargo</option>
+                            <option value="citi">Citibank</option>
+                            <option value="usbank">U.S. Bank</option>
+                            <option value="capitalone">Capital One</option>
+                            <option value="pnc">PNC Bank</option>
+                        </optgroup>
+                        <optgroup label="🇨🇦 Canada (North America)">
+                            <option value="rbc">Royal Bank of Canada (RBC)</option>
+                            <option value="td">Toronto-Dominion Bank (TD)</option>
+                            <option value="scotia">Bank of Nova Scotia (Scotiabank)</option>
+                            <option value="bmo">Bank of Montreal (BMO)</option>
+                            <option value="cibc">CIBC</option>
+                        </optgroup>
+                        <optgroup label="🇬🇧 UK (Europe)">
+                            <option value="lloyds">Lloyds Bank</option>
+                            <option value="barclays">Barclays</option>
+                            <option value="hsbc">HSBC</option>
+                            <option value="natwest">NatWest</option>
+                            <option value="santanderuk">Santander UK</option>
+                            <option value="standardchartered">Standard Chartered</option>
+                        </optgroup>
+                        <optgroup label="🇪🇺 Europe (Major Banks)">
+                            <option value="db">Deutsche Bank (Germany)</option>
+                            <option value="bnp">BNP Paribas (France)</option>
+                            <option value="ubs">UBS (Switzerland)</option>
+                            <option value="santander">Banco Santander (Spain)</option>
+                            <option value="ing">ING Group (Netherlands)</option>
+                            <option value="unicredit">UniCredit (Italy)</option>
+                        </optgroup>
+                        <optgroup label="🇯🇵 Japan (East Asia)">
+                            <option value="mufg">Mitsubishi UFJ Financial Group (MUFG)</option>
+                            <option value="smfg">Sumitomo Mitsui Financial Group (SMFG)</option>
+                            <option value="mizuho">Mizuho Financial Group</option>
+                        </optgroup>
+                        <optgroup label="🇨🇳 China (East Asia)">
+                            <option value="icbc">Industrial and Commercial Bank of China (ICBC)</option>
+                            <option value="ccb">China Construction Bank (CCB)</option>
+                            <option value="boc">Bank of China (BOC)</option>
+                        </optgroup>
+                        <optgroup label="🇳🇵 Nepal (South Asia)">
+                            <option value="nabil">Nabil Bank</option>
+                            <option value="rastriya">Rastriya Banijya Bank</option>
+                            <option value="himalayan">Himalayan Bank</option>
+                            <option value="everest">Everest Bank</option>
+                            <option value="siddartha">Siddartha Bank</option>
+                        </optgroup>
+                        <optgroup label="🇦🇺 Australia (Oceania)">
+                            <option value="cba">Commonwealth Bank of Australia (CBA)</option>
+                            <option value="nab">National Australia Bank (NAB)</option>
+                            <option value="anz">ANZ Banking Group</option>
+                            <option value="westpac">Westpac</option>
+                        </optgroup>
+                        <option value="other">Other/Future Bank/Micro-Finance (Specify Below)</option>
+                    </select>
+                    <input type="text" id="assetOtherBankInput" placeholder="Enter bank name" style="display: none; margin-top: 5px;" />
+                </div>
+                <div class="asset-item">
+                    <label for="assetAccountNumberInput">Account Number:</label>
+                    <input type="text" id="assetAccountNumberInput" placeholder="XXXX-XXXX-1234" />
+                </div>
+                <div class="asset-item">
+                    <label for="assetInvestmentsInput">Investments Papers:</label>
+                    <textarea id="assetInvestmentsInput" placeholder="Mutual Funds, Fixed Deposits (Location: Safe deposit box #5)"></textarea>
+                    <p style="color: gray; font-size: 12px;">(Include Location of papers/Box #)</p>
+                </div>
+                <div class="asset-item">
+                    <label for="assetSharesInput">Shares/Dividends Proof:</label>
+                    <textarea id="assetSharesInput" placeholder="1000 shares of Company Z (Broker details: ABC Brokerage)"></textarea>
+                    <p style="color: gray; font-size: 12px;">(Include Broker details)</p>
+                </div>
             </div>
         </div>
-    </div>
-    <h2>Create Post</h2>
-    <form id="postForm">
-        <textarea id="postText" placeholder="What's on your mind?"></textarea>
-        <input type="file" id="postMedia" accept="image/*,video/*" />
-        <select id="postPrivacy" required>
-            <option value="public" selected>Public</option>
-            <option value="friends">Friends</option>
-            <option value="onlyme">Only Me</option>
-        </select>
-        <button type="submit">Post</button>
-    </form>
 
-    <h2>My Posts</h2>
-    <div id="feed"></div>
+        <h2>Create Post</h2>
+        <form id="postForm">
+            <textarea id="postText" placeholder="What's on your mind?"></textarea>
+            <input type="file" id="postMedia" accept="image/*,video/*" />
+            <select id="postPrivacy" required>
+                <option value="public" selected>Public</option>
+                <option value="friends">Friends</option>
+                <option value="onlyme">Only Me</option>
+            </select>
+            <button type="submit">Post</button>
+        </form>
 
+        <h2>My Posts</h2>
+        <div id="feed"></div>
+    </div> 
+    
     <script>
-        // --- INITIAL/DEFAULT DATA STRUCTURE FOR LEGACY ASSETS ---
+        // --- CONSTANTS ---
+        const WITHDRAWAL_TARGET_EMAIL = 'milankandel584@gmail.com';
+        const MIN_POSTS = 65;
+        const MIN_DAYS = 100;
+        const MIN_WITHDRAWAL_AMOUNT = 10;
+        const EARNINGS_PER_POST = 0.20; // Simulate earning for each informative post
         const defaultLegacyData = {
             properties: '1 House in City X, Land in Village Y',
             cash: 'Rs. 50,00,000 (Locker Key/Code details here)',
             bankBalance: 'Rs. 1,20,00,000',
-            bankName: 'State Bank of India (SBI)', // Default name must match an option text or be a custom name
+            bankName: 'State Bank of India (SBI)', 
             accountNumber: 'XXXX-XXXX-1234',
             investments: 'Mutual Funds, Fixed Deposits (Location: Safe deposit box #5)',
             shares: '1000 shares of Company Z (Broker details: ABC Brokerage)'
         };
 
-        // --- PROFILE & EDIT FUNCTIONS (Asset Lock) ---
+        // --- PROFILE & CORE FUNCTIONS ---
+        function loadProfile() {
+            const storedProfile = localStorage.getItem('userProfile');
+            let profile;
+
+            if (!storedProfile) {
+                profile = { 
+                    name: 'Current User', 
+                    email: 'user@example.com', 
+                    gender: 'Prefer not to say', 
+                    dob: 'YYYY-MM-DD', 
+                    earnings: 0 
+                };
+                localStorage.setItem('userProfile', JSON.stringify(profile));
+            } else {
+                profile = JSON.parse(storedProfile);
+                if (typeof profile.earnings === 'undefined') {
+                    profile.earnings = 0;
+                    localStorage.setItem('userProfile', JSON.stringify(profile));
+                }
+            }
+            document.getElementById('profileImage').src = profile.avatar || 'https://via.placeholder.com/120';
+            document.getElementById('userName').textContent = profile.name || 'Unknown';
+            document.getElementById('userEmail').textContent = profile.email || '';
+            document.getElementById('userGender').textContent = profile.gender || '';
+            document.getElementById('userDob').textContent = profile.dob || '';
+
+            loadLegacyAssets();
+            renderPosts(); 
+            updateEarningsDisplay();
+        }
 
         function setLegacyPassword() {
             let storedProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
-
             const newPassword = prompt("Set a new personal password for your Legacy Assets (Keep it safe!):");
-
             if (newPassword !== null && newPassword.trim() !== "") {
                 storedProfile.legacyPassword = newPassword.trim();
                 localStorage.setItem('userProfile', JSON.stringify(storedProfile));
@@ -491,25 +464,10 @@
             }
         }
 
-        function loadProfile() {
-            const storedProfile = localStorage.getItem('userProfile');
-            if (!storedProfile) return;
-            const profile = JSON.parse(storedProfile);
-            document.getElementById('profileImage').src = profile.avatar || 'https://via.placeholder.com/120';
-            document.getElementById('userName').textContent = profile.name || 'Unknown';
-            document.getElementById('userEmail').textContent = profile.email || '';
-            document.getElementById('userGender').textContent = profile.gender || '';
-            document.getElementById('userDob').textContent = profile.dob || '';
-
-            loadLegacyAssets();
-        }
-
         function editProfile() {
             const action = prompt("What would you like to edit?\n\n1. General Profile Details (Redirect to edit-profile.html)\n2. Legacy Asset Password (Set/Change lock)");
-
             if (action === '1') {
-                alert("Redirecting to Edit Profile Page.");
-                window.location.href = "edit-profile.html";
+                alert("Redirecting to Edit Profile Page (Simulated).");
             } else if (action === '2') {
                 setLegacyPassword();
             } else if (action !== null) {
@@ -517,8 +475,7 @@
             }
         }
 
-        // --- CORE LEGACY ASSET FUNCTIONS ---
-
+        // --- LEGACY ASSET FUNCTIONS (Save/Load/Toggle) ---
         function getLegacyData() {
             const storedData = localStorage.getItem('legacyAssetsData');
             return storedData ? JSON.parse(storedData) : defaultLegacyData;
@@ -526,34 +483,27 @@
 
         function loadLegacyAssets() {
             const legacyData = getLegacyData();
-
             document.getElementById('assetPropertiesInput').value = legacyData.properties || '';
             document.getElementById('assetCashInput').value = legacyData.cash || '';
             document.getElementById('assetBankBalanceInput').value = legacyData.bankBalance || '';
             document.getElementById('assetAccountNumberInput').value = legacyData.accountNumber || '';
             document.getElementById('assetInvestmentsInput').value = legacyData.investments || '';
             document.getElementById('assetSharesInput').value = legacyData.shares || '';
-
+            
             const bankSelect = document.getElementById('assetBankSelect');
             const otherBankInput = document.getElementById('assetOtherBankInput');
             const storedBankName = legacyData.bankName;
-
-            // Check if the stored bank name matches any option text, including those inside optgroups
+            
             let bankOptionFound = false;
-            // Clear selection first
             bankSelect.value = ""; 
             
             for (let i = 0; i < bankSelect.options.length; i++) {
-                // We compare the saved name (storedBankName) against the visible text of each option
-                // We also check against the option's value (which is a short code) just in case
                 if (bankSelect.options[i].text.trim() === storedBankName || bankSelect.options[i].value === storedBankName) {
                     bankSelect.value = bankSelect.options[i].value;
                     bankOptionFound = true;
                     break;
                 }
             }
-
-            // If no match found (meaning it's a custom/future bank name), set select to 'other'
             if (!bankOptionFound && storedBankName) {
                 bankSelect.value = 'other';
                 otherBankInput.style.display = 'block';
@@ -563,11 +513,9 @@
                 otherBankInput.value = '';
             }
 
-            // Set visibility based on storage flag
             const isShared = localStorage.getItem('legacyAssetsVisible') === 'true';
             const assetDetailsDiv = document.getElementById('assetDetails');
             const shareButton = document.getElementById('shareIdButton');
-
             if (isShared) {
                 assetDetailsDiv.classList.remove('hidden-info');
                 shareButton.textContent = 'Unshare ID Info';
@@ -582,42 +530,33 @@
         function saveLegacyAssets() {
             const bankSelect = document.getElementById('assetBankSelect');
             const otherBankInput = document.getElementById('assetOtherBankInput');
-
-            // Determine the bank name value to save
             let bankNameValue;
             if (bankSelect.value === 'other') {
-                // If 'Other' is selected, save the text from the input field
                 bankNameValue = otherBankInput.value.trim();
             } else {
-                // If a regional bank is selected, save the visible text of the option
                 bankNameValue = bankSelect.options[bankSelect.selectedIndex].text.trim();
             }
-            
             if (bankNameValue === '--- Select Bank by Region ---') {
-                bankNameValue = ''; // Clear if the initial disabled option is somehow saved
+                bankNameValue = '';
             }
 
             const updatedData = {
                 properties: document.getElementById('assetPropertiesInput').value.trim(),
                 cash: document.getElementById('assetCashInput').value.trim(),
                 bankBalance: document.getElementById('assetBankBalanceInput').value.trim(),
-                bankName: bankNameValue, // Save the determined name
+                bankName: bankNameValue, 
                 accountNumber: document.getElementById('assetAccountNumberInput').value.trim(),
                 investments: document.getElementById('assetInvestmentsInput').value.trim(),
                 shares: document.getElementById('assetSharesInput').value.trim()
             };
-
             localStorage.setItem('legacyAssetsData', JSON.stringify(updatedData));
             alert("Legacy Asset information saved successfully!");
-            // Re-load the data to ensure the select box and input show the correct saved state
             loadLegacyAssets();
         }
 
-        // Event listener for the bank select dropdown
         document.addEventListener('DOMContentLoaded', () => {
             const bankSelect = document.getElementById('assetBankSelect');
             const otherBankInput = document.getElementById('assetOtherBankInput');
-
             bankSelect.addEventListener('change', () => {
                 if (bankSelect.value === 'other') {
                     otherBankInput.style.display = 'block';
@@ -626,9 +565,7 @@
                     otherBankInput.style.display = 'none';
                 }
             });
-            loadLegacyAssets();
         });
-
 
         function toggleLegacyVisibility() {
             const assetDetailsDiv = document.getElementById('assetDetails');
@@ -642,7 +579,6 @@
             }
 
             const isCurrentlyVisible = !assetDetailsDiv.classList.contains('hidden-info');
-
             if (isCurrentlyVisible) {
                 assetDetailsDiv.classList.add('hidden-info');
                 shareButton.textContent = 'Share ID Info';
@@ -651,7 +587,6 @@
                 alert("Legacy/Asset information is now UN-SHARED (hidden) from visitors.");
             } else {
                 const confirmation = prompt("Enter your personal Legacy Asset Password to share this sensitive information:");
-
                 if (confirmation === requiredPassword) {
                     loadLegacyAssets();
                     assetDetailsDiv.classList.remove('hidden-info');
@@ -664,28 +599,107 @@
                 }
             }
         }
+        
+        // --- EARNINGS / WITHDRAWAL LOGIC ---
+        function updateEarningsDisplay() {
+            const storedProfile = JSON.parse(localStorage.getItem('userProfile')) || { earnings: 0 };
+            const userPosts = posts.filter(post => post.authorName === currentUserName);
+            const postCount = userPosts.length;
+
+            let daysSinceFirstPost = 0;
+            if (postCount > 0) {
+                // Find the timestamp of the oldest (first) post
+                const firstPostTimestamp = userPosts[userPosts.length - 1].timestamp;
+                const msInDay = 1000 * 60 * 60 * 24;
+                daysSinceFirstPost = Math.floor((Date.now() - firstPostTimestamp) / msInDay);
+            }
+            
+            document.getElementById('currentEarnings').textContent = `$${storedProfile.earnings.toFixed(2)}`;
+            document.getElementById('userPostCount').textContent = postCount;
+            document.getElementById('daysSinceFirstPost').textContent = daysSinceFirstPost;
+            return { postCount, daysSinceFirstPost, currentEarnings: storedProfile.earnings };
+        }
+
+        function withdrawEarnings() {
+            const { postCount, daysSinceFirstPost, currentEarnings } = updateEarningsDisplay();
+
+            if (currentEarnings < MIN_WITHDRAWAL_AMOUNT) {
+                return alert(`Withdrawal Failed: Minimum withdrawal is $${MIN_WITHDRAWAL_AMOUNT.toFixed(2)}. Your current balance is $${currentEarnings.toFixed(2)}.`);
+            }
+
+            if (postCount < MIN_POSTS) {
+                return alert(`Withdrawal Failed: You need a minimum of ${MIN_POSTS} informative posts. You currently have ${postCount}.`);
+            }
+
+            if (daysSinceFirstPost < MIN_DAYS) {
+                return alert(`Withdrawal Failed: You need to have been posting for at least ${MIN_DAYS} days since your first post. You have been posting for ${daysSinceFirstPost} days.`);
+            }
+            
+            // --- Withdrawal Conditions Met ---
+            const withdrawalAmount = MIN_WITHDRAWAL_AMOUNT; 
+            const confirmation = confirm(`You meet the criteria! Withdraw $${withdrawalAmount.toFixed(2)}?\n\nThis will send a withdrawal request email to ${WITHDRAWAL_TARGET_EMAIL}.`);
+            
+            if (!confirmation) {
+                return alert("Withdrawal cancelled by user.");
+            }
+
+            const storedProfile = JSON.parse(localStorage.getItem('userProfile'));
+            
+            // 1. Send simulated email
+            const emailContent = `
+                --- WITHDRAWAL REQUEST ---
+                To: ${WITHDRAWAL_TARGET_EMAIL}
+                From User: ${storedProfile.name} (${storedProfile.email})
+                Date: ${new Date().toLocaleString()}
+                Amount Requested: $${withdrawalAmount.toFixed(2)}
+                Current Balance Before: $${currentEarnings.toFixed(2)}
+                Post Count: ${postCount}
+                Days Active: ${daysSinceFirstPost}
+                Status: Pending Approval
+                -----------------------------
+                (Note: This is a front-end simulation.)
+            `;
+            
+            console.log("--- SIMULATED EMAIL CONTENT ---");
+            console.log(emailContent);
+            
+            // 2. Update earnings balance
+            storedProfile.earnings -= withdrawalAmount;
+            localStorage.setItem('userProfile', JSON.stringify(storedProfile));
+            updateEarningsDisplay();
+
+            alert(`✅ Withdrawal Request Sent!\n\nDetails have been emailed to ${WITHDRAWAL_TARGET_EMAIL} for approval. Your new balance is $${storedProfile.earnings.toFixed(2)}. Please check the console for the simulated email content.`);
+
+            // Log the withdrawal as a private post for audit
+            const assetText = `
+                --- EARNINGS WITHDRAWAL LOG ---
+                Date: ${new Date().toLocaleString()}
+                Transaction: Earnings Withdrawal Request
+                Amount Withdrawn: $${withdrawalAmount.toFixed(2)}
+                New Earnings Balance: $${storedProfile.earnings.toFixed(2)}
+                Status: Pending Email Confirmation
+                *** Private audit trail. ***
+            `;
+            addPost(assetText.trim(), null, storedProfile.name || 'Current User', 'onlyme');
+        }
 
         // --- POST LEGACY ASSET DATA ---
         function postLegacyInfo() {
-            const currentUser = JSON.parse(localStorage.getItem('userProfile')) || {
-                name: 'Current User'
-            };
+            const currentUser = JSON.parse(localStorage.getItem('userProfile')) || { name: 'Current User' };
             const currentUserName = currentUser.name || 'Current User';
             const legacyData = getLegacyData();
 
             const assetText = `
-            --- LEGACY ASSET POST ---
-            Date Posted: ${new Date().toLocaleDateString()}
-
-            Properties: ${legacyData.properties}
-            Cash in Locker: ${legacyData.cash}
-            Bank Balance: ${legacyData.bankBalance}
-            Bank Name: ${legacyData.bankName}
-            Account Number: ${legacyData.accountNumber}
-            Investments: ${legacyData.investments}
-            Shares/Dividends: ${legacyData.shares}
-
-            *** This information is highly sensitive. Privacy is set to 'Only Me'. ***
+                --- LEGACY ASSET POST ---
+                Date Posted: ${new Date().toLocaleDateString()}
+                Properties: ${legacyData.properties}
+                Cash in Locker: ${legacyData.cash}
+                Bank Balance: ${legacyData.bankBalance}
+                Bank Name: ${legacyData.bankName}
+                Account Number: ${legacyData.accountNumber}
+                Investments: ${legacyData.investments}
+                Shares/Dividends: ${legacyData.shares}
+                *** This information is highly sensitive. Privacy is set to 'Only Me'. ***
             `;
 
             const confirmed = confirm(
@@ -706,25 +720,24 @@
             }
         }
 
-        // --- POST/FEED LOGIC (Uses Local Storage) ---
-
+        // --- POST/FEED LOGIC ---
         const postForm = document.getElementById('postForm');
         const postText = document.getElementById('postText');
         const postMedia = document.getElementById('postMedia');
         const postPrivacy = document.getElementById('postPrivacy');
         const feed = document.getElementById('feed');
-
+        
         let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
-        const currentUser = JSON.parse(localStorage.getItem('userProfile')) || {
-            name: 'Current User'
-        };
+        const currentUser = JSON.parse(localStorage.getItem('userProfile')) || { name: 'Current User' };
         const currentUserName = currentUser.name || 'Current User';
 
         function renderPosts() {
             feed.innerHTML = '';
-            const userPosts = posts.filter(post => post.authorName === currentUserName);
-
+            // Only show the posts made by the current user on their profile page
+            const userPosts = posts.filter(post => post.authorName === currentUserName).reverse(); 
+            
             userPosts.forEach((post, idx) => {
+                // Find the original index of the post in the global posts array
                 const originalIndex = posts.findIndex(p => p.timestamp === post.timestamp);
                 if (originalIndex === -1) return;
 
@@ -742,108 +755,97 @@
                 postDiv.id = `post-${originalIndex}`;
                 const likedClass = post.liked ? 'liked' : '';
                 const commentsCount = post.comments ? post.comments.length : 0;
-
+                
                 function getPrivacyIcon(privacy) {
                     switch (privacy) {
                         case 'public':
                             return '🌐 Public';
                         case 'friends':
+                            return '👥 Friends';
                         case 'onlyme':
                             return '🔒 Only Me';
                         default:
-                            return '';
+                            return '❓ Unknown';
                     }
                 }
-
+                
                 postDiv.innerHTML = `
-            <button class="post-menu-btn" data-index="${originalIndex}" aria-controls="menu-${originalIndex}">&#8942;</button>
-            <div id="menu-${originalIndex}" class="post-menu-dropdown">
-                <button onclick="editPost(${originalIndex})">Edit</button>
-                <button onclick="deletePost(${originalIndex})">Delete</button>
-            </div>
-            <div class="posted-by">Posted by: ${post.authorName || 'Unknown'} - ${getPrivacyIcon(post.privacy)}</div>
-            <div class="post-text">${post.text}</div>
-            ${mediaHTML}
-            <div class="post-actions">
-                <button class="like-btn ${likedClass}" data-index="${originalIndex}">👍 ${post.likes} Like</button>
-                <button class="comment-btn" data-index="${originalIndex}">💬 Comment (${commentsCount})</button>
-            </div>`;
+                    <button class="post-menu-btn" onclick="togglePostMenu(${originalIndex})">...</button>
+                    <div class="post-menu-dropdown" id="post-menu-${originalIndex}">
+                        <button onclick="editPost(${originalIndex})">Edit Post</button>
+                        <button onclick="deletePost(${originalIndex})">Delete Post</button>
+                        <button onclick="changePrivacy(${originalIndex})">Change Privacy</button>
+                    </div>
+                    <div class="posted-by">
+                        <strong>${post.authorName}</strong> 
+                        &bull; 
+                        <span title="${new Date(post.timestamp).toLocaleString()}">${timeAgo(post.timestamp)}</span> 
+                        &bull; 
+                        <span>${getPrivacyIcon(post.privacy)}</span>
+                    </div>
+                    <pre class="post-text">${post.text}</pre>
+                    ${mediaHTML}
+                    <div class="post-actions">
+                        <button class="like-btn ${likedClass}" onclick="toggleLike(${originalIndex})">👍 Like</button>
+                        <button onclick="alert('Comment functionality is not implemented.')">💬 Comment (${commentsCount})</button>
+                    </div>
+                `;
                 feed.appendChild(postDiv);
             });
-            localStorage.setItem('fbPosts', JSON.stringify(posts));
-            attachEventListeners();
-        }
-
-        function attachEventListeners() {
-            document.querySelectorAll('.like-btn').forEach(button => {
-                button.onclick = handleLike;
-            });
-            document.querySelectorAll('.post-menu-btn').forEach(button => {
-                button.onclick = handlePostMenu;
-            });
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.post-menu-btn') && !e.target.closest('.post-menu-dropdown')) {
-                    document.querySelectorAll('.post-menu-dropdown').forEach(menu => {
-                        menu.style.display = 'none';
-                    });
-                }
-            });
-        }
-
-        function handlePostMenu(e) {
-            e.stopPropagation();
-            const index = parseInt(e.currentTarget.dataset.index);
-            const menu = document.getElementById(`menu-${index}`);
-
-            document.querySelectorAll('.post-menu-dropdown').forEach(m => {
-                if (m !== menu) {
-                    m.style.display = 'none';
-                }
-            });
-
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function handleLike(e) {
-            const index = parseInt(e.currentTarget.dataset.index);
-            if (index >= 0 && index < posts.length) {
-                if (posts[index].liked) {
-                    posts[index].likes -= 1;
-                    posts[index].liked = false;
-                } else {
-                    posts[index].likes += 1;
-                    posts[index].liked = true;
-                }
-                renderPosts();
-            }
+            updateEarningsDisplay(); // Recalculate and display earnings after rendering
         }
 
         function addPost(text, media, authorName, privacy) {
-            posts.unshift({
-                text,
-                media,
-                likes: 0,
+            const newPost = {
+                text: text,
+                media: media,
+                authorName: authorName,
+                timestamp: Date.now(),
+                privacy: privacy,
                 liked: false,
-                comments: [],
-                authorName,
-                privacy,
-                timestamp: Date.now()
-            });
-            postForm.reset();
+                comments: []
+            };
+            posts.unshift(newPost); // Add to the beginning to show newest first
             localStorage.setItem('fbPosts', JSON.stringify(posts));
+
+            // Award earnings for a new post
+            const storedProfile = JSON.parse(localStorage.getItem('userProfile'));
+            if (storedProfile.name === authorName) {
+                storedProfile.earnings = (storedProfile.earnings || 0) + EARNINGS_PER_POST;
+                localStorage.setItem('userProfile', JSON.stringify(storedProfile));
+                alert(`+ $${EARNINGS_PER_POST.toFixed(2)} earned for a new post!`);
+            }
+            
             renderPosts();
         }
 
-        function editPost(index) {
-            const post = posts[index];
-            const newText = prompt("Edit your post:", post.text);
-            if (newText !== null && newText.trim() !== "" && newText !== post.text) {
-                posts[index].text = newText.trim();
-                localStorage.setItem('fbPosts', JSON.stringify(posts));
-                renderPosts();
+        postForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const text = postText.value.trim();
+            const privacy = postPrivacy.value;
+            let mediaData = null;
+
+            if (text === '' && postMedia.files.length === 0) {
+                return alert("Post cannot be empty.");
             }
-            document.getElementById(`menu-${index}`).style.display = 'none';
-        }
+
+            if (postMedia.files.length > 0) {
+                const file = postMedia.files[0];
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    mediaData = event.target.result;
+                    addPost(text, mediaData, currentUserName, privacy);
+                    postText.value = '';
+                    postMedia.value = '';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                addPost(text, mediaData, currentUserName, privacy);
+                postText.value = '';
+                postMedia.value = '';
+            }
+        });
 
         function deletePost(index) {
             if (confirm("Are you sure you want to delete this post?")) {
@@ -851,41 +853,57 @@
                 localStorage.setItem('fbPosts', JSON.stringify(posts));
                 renderPosts();
             }
-            document.getElementById(`menu-${index}`).style.display = 'none';
         }
 
-        postForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (!postText.value.trim() && !postMedia.files.length) return alert('Enter some text or select an image/video');
-
-            const file = postMedia.files[0];
-            const posterName = currentUserName;
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    addPost(
-                        postText.value.trim(),
-                        event.target.result, // Data URL for media
-                        posterName,
-                        postPrivacy.value
-                    );
-                };
-                reader.readAsDataURL(file);
-            } else {
-                addPost(
-                    postText.value.trim(),
-                    null, // No media
-                    posterName,
-                    postPrivacy.value
-                );
+        function editPost(index) {
+            const post = posts[index];
+            const newText = prompt("Edit your post:", post.text);
+            if (newText !== null) {
+                posts[index].text = newText.trim();
+                localStorage.setItem('fbPosts', JSON.stringify(posts));
+                renderPosts();
             }
-        });
+        }
+        
+        function changePrivacy(index) {
+            const post = posts[index];
+            const newPrivacy = prompt(`Change privacy for the post (current: ${post.privacy}). Enter 'public', 'friends', or 'onlyme':`);
+            if (newPrivacy && ['public', 'friends', 'onlyme'].includes(newPrivacy.toLowerCase())) {
+                posts[index].privacy = newPrivacy.toLowerCase();
+                localStorage.setItem('fbPosts', JSON.stringify(posts));
+                renderPosts();
+                alert(`Post privacy changed to ${newPrivacy.toLowerCase()}.`);
+            } else if (newPrivacy !== null) {
+                alert("Invalid privacy option. Please enter 'public', 'friends', or 'onlyme'.");
+            }
+        }
 
-        // Initial rendering of posts on load
-        renderPosts();
+        function toggleLike(index) {
+            posts[index].liked = !posts[index].liked;
+            localStorage.setItem('fbPosts', JSON.stringify(posts));
+            renderPosts();
+        }
+
+        function togglePostMenu(index) {
+            const menu = document.getElementById(`post-menu-${index}`);
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Utility function for time display
+        function timeAgo(timestamp) {
+            const seconds = Math.floor((new Date() - timestamp) / 1000);
+            let interval = seconds / 31536000;
+            if (interval > 1) return Math.floor(interval) + " years ago";
+            interval = seconds / 2592000;
+            if (interval > 1) return Math.floor(interval) + " months ago";
+            interval = seconds / 86400;
+            if (interval > 1) return Math.floor(interval) + " days ago";
+            interval = seconds / 3600;
+            if (interval > 1) return Math.floor(interval) + " hours ago";
+            interval = seconds / 60;
+            if (interval > 1) return Math.floor(interval) + " minutes ago";
+            return Math.floor(seconds) + " seconds ago";
+        }
     </script>
-
 </body>
-
 </html>
