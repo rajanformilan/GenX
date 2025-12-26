@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GenX — News Feed</title>
+    <title>GenX — Global News Feed</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         /* --- General Layout --- */
-        body { margin: 0; font-family: "Poppins", sans-serif; background: #f0f2f5; color: #1c1e21; }
+        body { margin: 0; font-family: "Poppins", sans-serif; background: #f0f2f5; color: #1c1e21; overflow-x: hidden; }
         
-        /* --- Professional Navbar --- */
+        /* --- High-Density Navbar --- */
         .navbar { 
             background-color: #1877f2; 
             color: white; 
@@ -17,73 +17,85 @@
             justify-content: space-between; 
             align-items: center; 
             padding: 0 20px; 
-            height: 60px;
+            height: 65px;
             position: sticky; 
             top: 0; 
-            z-index: 100; 
+            z-index: 1000; 
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); 
         }
-        .logo { font-size: 26px; font-weight: 800; letter-spacing: -1px; cursor: pointer; }
+        .logo { font-size: 26px; font-weight: 800; letter-spacing: -1px; cursor: pointer; flex-shrink: 0; }
         
-        .search-bar { flex: 1; margin: 0 20px; max-width: 400px; position: relative; }
+        .search-bar { flex: 1; margin: 0 15px; max-width: 300px; position: relative; }
         .search-bar input { 
             width: 100%; 
-            padding: 10px 15px; 
+            padding: 8px 15px; 
             border-radius: 50px; 
             border: none; 
             outline: none; 
             background: rgba(255, 255, 255, 0.2);
             color: white;
-            font-size: 14px;
-            transition: 0.3s;
+            font-size: 13px;
         }
-        .search-bar input::placeholder { color: #e0e0e0; }
         .search-bar input:focus { background: white; color: #333; }
 
-        .menu-toggle { font-size: 28px; cursor: pointer; display: none; }
-
+        /* Navigation Links Desktop */
         .nav-links { list-style: none; display: flex; align-items: center; margin: 0; padding: 0; }
-        .nav-links li { margin-left: 20px; }
+        .nav-links li { margin-left: 12px; }
         .nav-links a { 
             color: white; 
             text-decoration: none; 
-            font-weight: 600; 
-            font-size: 15px;
+            font-weight: 500; 
+            font-size: 13px;
+            padding: 6px 10px;
+            border-radius: 6px;
             transition: 0.2s;
+            white-space: nowrap;
         }
+        .nav-links a:hover { background: rgba(255,255,255,0.15); }
 
-        @media (max-width: 850px) {
+        .menu-toggle { font-size: 28px; cursor: pointer; display: none; }
+
+        /* --- Mobile Responsive Navigation --- */
+        @media (max-width: 1100px) {
+            .nav-links { display: none; }
             .menu-toggle { display: block; }
-            .nav-links { 
-                display: none; 
+            .nav-links.active { 
+                display: flex; 
                 flex-direction: column; 
                 position: absolute; 
-                top: 60px; right: 0; width: 200px; 
-                background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-                border-radius: 0 0 0 10px;
+                top: 65px; right: 0; width: 250px; 
+                background: white; 
+                box-shadow: -5px 5px 15px rgba(0,0,0,0.2);
+                padding: 10px 0;
             }
-            .nav-links.active { display: flex; }
-            .nav-links li { margin: 15px 0; width: 100%; text-align: center; }
-            .nav-links a { color: #333; display: block; width: 100%; }
+            .nav-links.active a { color: #333; width: 100%; display: block; padding: 12px 20px; border-radius: 0; }
+            .nav-links.active a:hover { background: #f0f2f5; }
         }
 
-        /* --- Feed --- */
+        /* --- Feed Styling --- */
         .feed { max-width: 600px; margin: 20px auto; padding: 0 10px; }
-        .post { background: white; margin-bottom: 20px; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .post { background: white; margin-bottom: 20px; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         
+        /* Category Badge for Poetry/Tech/News */
+        .badge { 
+            display: inline-block; padding: 3px 10px; border-radius: 4px; 
+            font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px;
+        }
+        .badge-poetry { background: #fce4ec; color: #c2185b; }
+        .badge-tech { background: #e8f5e9; color: #2e7d32; }
+        .badge-travel { background: #fff3e0; color: #ef6c00; }
+        .badge-social { background: #e3f2fd; color: #1565c0; }
+
         .post-header { display: flex; justify-content: space-between; align-items: center; }
-        .author-name { font-weight: 700; color: #1877f2; }
+        .author-name { font-weight: 700; color: #1877f2; font-size: 15px; }
         .post-time { color: #65676b; font-size: 11px; }
-        .post-text { margin: 12px 0; font-size: 15px; }
-        .post img { width: 100%; border-radius: 8px; margin-top: 5px; }
+        .post-text { margin: 12px 0; font-size: 14px; line-height: 1.6; white-space: pre-wrap; }
+        .post img { width: 100%; border-radius: 8px; margin-top: 5px; max-height: 400px; object-fit: cover; }
 
         .actions { display: flex; border-top: 1px solid #eee; margin-top: 10px; padding-top: 5px; }
-        .actions button { flex: 1; background: none; border: none; color: #65676b; cursor: pointer; font-weight: 600; padding: 8px; }
+        .actions button { flex: 1; background: none; border: none; color: #65676b; cursor: pointer; font-weight: 600; padding: 10px; font-size: 13px; }
         .actions button.liked { color: #1877f2; }
-
-        .comments-section { background: #f7f8fa; padding: 10px; border-radius: 8px; margin-top: 10px; }
-        .comment-item { background: white; border-radius: 15px; padding: 6px 12px; margin-bottom: 5px; font-size: 13px; }
+        .comments-section { background: #f7f8fa; padding: 10px; border-radius: 8px; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
@@ -92,7 +104,7 @@
         <div class="logo">GenX</div>
         
         <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search people or posts...">
+            <input type="text" id="searchInput" placeholder="Search stories, tech, people...">
         </div>
 
         <div class="menu-toggle" id="menu-toggle">☰</div>
@@ -124,50 +136,52 @@
 
             menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
 
-            // --- 1. Generator ---
-            function generateBulkPosts(count = 200) {
-                const authors = ["Aarav Shrestha", "Sita Rai", "Milan Kandel", "Tech Nepal", "GenX Official"];
-                const texts = ["Exploring the mountains!", "Love the new GenX update.", "Coding is life.", "Who is ready for the weekend?", "Just had the best tea!"];
+            // --- 1. Special Content Generator ---
+            function generateSpecialPosts(count = 100) {
+                const types = [
+                    { cat: "Poetry", badge: "badge-poetry", authors: ["The Silent Poet", "Rumi Echoes"], content: ["The stars lean down to kiss the sea,\nA whisper of eternity.", "In the garden of my soul,\nYou are the bloom that makes me whole."] },
+                    { cat: "Tech", badge: "badge-tech", authors: ["Elon's Update", "Neural Linker"], content: ["AI just reached a new milestone: generating full 3D environments from a single text prompt.", "LinkedIn is pivoting to short-form video. The 'TikTok-ification' of professional networking continues."] },
+                    { cat: "Travel", badge: "badge-travel", authors: ["Global Wanderer", "Nepal Trails"], content: ["Woke up at 4 AM to see the Annapurna range. Words cannot describe this peace.", "Hidden spots in Bali you didn't know about. Check my latest blog link!"] },
+                    { cat: "Social Media", badge: "badge-social", authors: ["Trend Tracker", "Insta News"], content: ["WhatsApp is officially launching 'GenX' integration for easier sharing!", "Twitter (X) is testing a new subscriber-only poetry tier. Is it worth it?"] }
+                ];
+
                 const arr = [];
                 for (let i = 0; i < count; i++) {
+                    const type = types[i % types.length];
                     arr.push({
                         id: Date.now() - i,
-                        authorName: authors[i % 5],
-                        text: texts[i % 5] + " " + (i + 1),
-                        image: i % 3 === 0 ? `https://picsum.photos/seed/${i}/600/400` : '',
-                        likes: Math.floor(Math.random() * 100),
+                        category: type.cat,
+                        badgeClass: type.badge,
+                        authorName: type.authors[Math.floor(Math.random() * type.authors.length)],
+                        text: type.content[Math.floor(Math.random() * type.content.length)],
+                        image: i % 2 === 0 ? `https://picsum.photos/seed/${i+100}/600/400` : '',
+                        likes: Math.floor(Math.random() * 1000),
                         liked: false,
-                        comments: [`<strong>User${i}</strong>: Nice post!`],
+                        comments: [`<strong>User:</strong> Amazing read!`],
                         time: new Date(Date.now() - (i * 3600000)).toISOString()
                     });
                 }
                 return arr;
             }
 
-            // --- 2. Data ---
-            let posts = JSON.parse(localStorage.getItem('fbPosts')) || generateBulkPosts(200);
-            const currentUser = { name: "Rajan Kandel" };
+            // --- 2. Data Initialization ---
+            let posts = generateSpecialPosts(100);
 
-            // --- 3. Render Engine with Filter Support ---
             function renderFeed(filterText = "") {
                 postsList.innerHTML = "";
                 const term = filterText.toLowerCase();
 
-                // Filter Logic: Check author name OR post text
-                const filtered = posts.filter(post => 
-                    post.authorName.toLowerCase().includes(term) || 
-                    post.text.toLowerCase().includes(term)
+                const filtered = posts.filter(p => 
+                    p.authorName.toLowerCase().includes(term) || 
+                    p.text.toLowerCase().includes(term) ||
+                    p.category.toLowerCase().includes(term)
                 );
 
-                if (filtered.length === 0) {
-                    postsList.innerHTML = `<div style="text-align:center; padding:20px;">No results found for "${filterText}"</div>`;
-                    return;
-                }
-
-                filtered.sort((a,b) => new Date(b.time) - new Date(a.time)).forEach((post, index) => {
+                filtered.forEach((post, index) => {
                     const postDiv = document.createElement('div');
                     postDiv.className = 'post';
                     postDiv.innerHTML = `
+                        <span class="badge ${post.badgeClass}">${post.category}</span>
                         <div class="post-header">
                             <span class="author-name">${post.authorName}</span>
                             <span class="post-time">${new Date(post.time).toLocaleTimeString()}</span>
@@ -175,44 +189,38 @@
                         <div class="post-text">${post.text}</div>
                         ${post.image ? `<img src="${post.image}">` : ''}
                         <div class="actions">
-                            <button class="${post.liked ? 'liked' : ''}" onclick="toggleLike(${index})">👍 ${post.likes}</button>
+                            <button onclick="toggleLike(${index})">${post.liked ? '❤️' : '👍'} ${post.likes}</button>
                             <button onclick="toggleComments(${index})">💬 ${post.comments.length}</button>
                             <button onclick="sharePost(${index})">🔗 Share</button>
                         </div>
-                        <div class="comments-section" id="sec-${index}" style="display:none">
-                            <div id="list-${index}">${post.comments.map(c => `<div class="comment-item">${c}</div>`).join('')}</div>
+                        <div class="comments-section" id="sec-${index}">
+                            ${post.comments.map(c => `<div class="comment-item">${c}</div>`).join('')}
                         </div>
                     `;
                     postsList.appendChild(postDiv);
                 });
             }
 
-            // --- 4. Search Event Listener ---
-            searchInput.addEventListener('input', (e) => {
-                renderFeed(e.target.value);
-            });
+            // --- 3. Interaction Logic ---
+            searchInput.addEventListener('input', (e) => renderFeed(e.target.value));
 
-            // --- Globals for buttons ---
             window.toggleLike = (i) => {
                 posts[i].liked = !posts[i].liked;
                 posts[i].likes += posts[i].liked ? 1 : -1;
-                save();
+                renderFeed(searchInput.value);
             };
+
             window.toggleComments = (i) => {
                 const el = document.getElementById(`sec-${i}`);
-                el.style.display = el.style.display === 'none' ? 'block' : 'none';
+                el.style.display = el.style.display === 'block' ? 'none' : 'block';
             };
+
             window.sharePost = (i) => {
-                navigator.clipboard.writeText(posts[i].text);
-                alert("Text copied!");
+                navigator.clipboard.writeText(`GenX ${posts[i].category}: ${posts[i].text}`);
+                alert("Shared to Clipboard! Go paste it on WhatsApp or Twitter.");
             };
 
-            function save() {
-                localStorage.setItem('fbPosts', JSON.stringify(posts));
-                renderFeed(searchInput.value); // Re-render with current search term
-            }
-
-            renderFeed(); // Initial load
+            renderFeed();
         });
     </script>
 </body>
