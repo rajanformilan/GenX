@@ -4,135 +4,99 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GenX — News Feed</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* --- General Layout & Navigation Styles --- */
-        body {
-            margin: 0;
-            font-family: "Poppins", Arial, sans-serif;
-            background: #f0f2f5;
+        /* --- General Layout --- */
+        body { margin: 0; font-family: "Poppins", sans-serif; background: #f0f2f5; color: #1c1e21; }
+        
+        /* --- Professional Navbar --- */
+        .navbar { 
+            background-color: #1877f2; 
+            color: white; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 0 20px; 
+            height: 60px;
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); 
         }
-        .navbar {
-            background-color: #1877f2;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 15px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-        .logo { font-size: 22px; font-weight: 700; }
-        .menu-toggle { font-size: 28px; cursor: pointer; color: white; margin-left: 10px; }
-        .nav-links {
-            list-style: none;
-            display: none;
-            flex-direction: column;
-            position: absolute;
-            top: 60px;
-            right: 0;
-            width: 100%;
-            background: white;
-            border-top: 1px solid #ddd;
-            padding: 10px 0;
-            text-align: center;
-            z-index: 999;
-        }
-        .nav-links li { margin: 10px 0; }
-        .nav-links a { color: #333; text-decoration: none; font-weight: 600; }
-        .nav-links a:hover { color: #1877f2; }
-        .nav-links.active { display: flex; }
-        @media (min-width: 768px) {
-            .menu-toggle { display: none; }
-            .nav-links {
-                display: flex !important;
-                flex-direction: row;
-                position: static;
-                background: none;
-                border: none;
-            }
-            .nav-links li { margin: 0 10px; }
-            .nav-links a { color: white; }
-            .nav-links a:hover { text-decoration: underline; }
-        }
-        /* Search Bar */
-        .search-bar { flex: 1; display: flex; justify-content: center; align-items: center; margin: 0 15px; position: relative; }
-        .search-bar input {
-            width: 100%; max-width: 320px;
-            padding: 8px 36px 8px 14px;
-            border-radius: 25px;
-            border: none;
-            outline: none;
-            font-size: 14px;
-            background: white;
-            color: #333;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .search-bar::after { content: "🔍"; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 15px; color: #666; }
-        .search-results {
-            position: absolute; top: 42px; width: 100%; max-width: 320px; background: white; border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15); overflow: hidden; z-index: 1000; display: none;
-        }
-        .search-results.active { display: block; }
-        .search-results div { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 14px; }
-        .search-results div:hover { background: #f0f2f5; }
-        .category { background: #f7f7f7; font-weight: bold; color: #1877f2; text-transform: uppercase; font-size: 12px; }
-        /* --- Feed & Post Styles --- */
-        .feed { max-width: 600px; margin: 20px auto; }
-        .post { background: white; margin-bottom: 15px; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .post-header { font-weight: bold; color: #1877f2; display: flex; justify-content: space-between; align-items: center; }
-        .post-time { color: gray; font-size: 12px; }
-        .post-text { margin: 10px 0; white-space: pre-wrap; font-size: 15px; }
-        .post img { 
+        .logo { font-size: 26px; font-weight: 800; letter-spacing: -1px; cursor: pointer; }
+        
+        .search-bar { flex: 1; margin: 0 20px; max-width: 400px; position: relative; }
+        .search-bar input { 
             width: 100%; 
-            height: auto; 
-            max-height: 400px; 
-            object-fit: cover; 
-            margin-top: 10px; 
-            border-radius: 10px; 
-            background-color: #eee;
+            padding: 10px 15px; 
+            border-radius: 50px; 
+            border: none; 
+            outline: none; 
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 14px;
+            transition: 0.3s;
         }
-        .actions { margin-top: 10px; display: flex; gap: 10px; border-top: 1px solid #eee; padding-top: 10px; }
-        .actions button { 
-            background: none; border: none; color: #555; 
-            cursor: pointer; font-weight: 600; padding: 8px 12px;
-            border-radius: 5px; transition: background-color 0.2s;
-            display: flex; align-items: center; gap: 5px;
+        .search-bar input::placeholder { color: #e0e0e0; }
+        .search-bar input:focus { background: white; color: #333; }
+
+        .menu-toggle { font-size: 28px; cursor: pointer; display: none; }
+
+        .nav-links { list-style: none; display: flex; align-items: center; margin: 0; padding: 0; }
+        .nav-links li { margin-left: 20px; }
+        .nav-links a { 
+            color: white; 
+            text-decoration: none; 
+            font-weight: 600; 
+            font-size: 15px;
+            transition: 0.2s;
         }
-        .actions button:hover { background: #f0f2f5; }
-        .actions button.liked { color: #1877f2; font-weight: bold; }
-        .no-posts { text-align: center; color: #888; padding: 30px; }
-        /* --- Comment Section Styles --- */
-        .comments-section { margin-top: 10px; border-top: 1px solid #ddd; padding-top: 10px; }
-        .comments-list { max-height: 150px; overflow-y: auto; margin-bottom: 10px; }
-        .comment-item {
-            background: #f0f2f5; border-radius: 10px; padding: 6px 10px;
-            margin-bottom: 6px; font-size: 14px; color: #050505;
-            word-wrap: break-word; white-space: normal;
+
+        @media (max-width: 850px) {
+            .menu-toggle { display: block; }
+            .nav-links { 
+                display: none; 
+                flex-direction: column; 
+                position: absolute; 
+                top: 60px; right: 0; width: 200px; 
+                background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                border-radius: 0 0 0 10px;
+            }
+            .nav-links.active { display: flex; }
+            .nav-links li { margin: 15px 0; width: 100%; text-align: center; }
+            .nav-links a { color: #333; display: block; width: 100%; }
         }
-        .comment-input { display: flex; gap: 6px; }
-        .comment-input input[type="text"] {
-            flex-grow: 1; padding: 6px 12px; border-radius: 20px;
-            border: 1px solid #ccc; font-size: 14px;
-        }
-        .comment-input button {
-            background-color: #1877f2; border: none; color: white;
-            border-radius: 20px; padding: 6px 16px; cursor: pointer;
-            font-weight: bold; font-size: 14px; width: auto;
-        }
-        .comment-input button:hover { background-color: #155db2; }
+
+        /* --- Feed --- */
+        .feed { max-width: 600px; margin: 20px auto; padding: 0 10px; }
+        .post { background: white; margin-bottom: 20px; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .post-header { display: flex; justify-content: space-between; align-items: center; }
+        .author-name { font-weight: 700; color: #1877f2; }
+        .post-time { color: #65676b; font-size: 11px; }
+        .post-text { margin: 12px 0; font-size: 15px; }
+        .post img { width: 100%; border-radius: 8px; margin-top: 5px; }
+
+        .actions { display: flex; border-top: 1px solid #eee; margin-top: 10px; padding-top: 5px; }
+        .actions button { flex: 1; background: none; border: none; color: #65676b; cursor: pointer; font-weight: 600; padding: 8px; }
+        .actions button.liked { color: #1877f2; }
+
+        .comments-section { background: #f7f8fa; padding: 10px; border-radius: 8px; margin-top: 10px; }
+        .comment-item { background: white; border-radius: 15px; padding: 6px 12px; margin-bottom: 5px; font-size: 13px; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="logo">GenX</div>
+        
         <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search profiles, posts, pages..." />
-            <div class="search-results" id="searchResults"></div>
+            <input type="text" id="searchInput" placeholder="Search people or posts...">
         </div>
+
         <div class="menu-toggle" id="menu-toggle">☰</div>
+
         <ul class="nav-links" id="nav-links">
             <li><a href="index.html">Home</a></li>
             <li><a href="authentication.html">Signup/Login</a></li>
@@ -146,289 +110,109 @@
             <li><a href="settings.html">Settings</a></li>
         </ul>
     </nav>
+
     <div class="feed" id="feedContainer">
-        <div class="no-posts">Loading posts...</div>
+        <div id="postsList"></div>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- 1. Navigation and Search Logic (Unchanged) ---
             const menuToggle = document.getElementById('menu-toggle');
             const navLinks = document.getElementById('nav-links');
-            menuToggle.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
-            });
-            const data = {
-                users: ["Milan Kandel", "Sita Rai", "John Smith", "Aarav Shrestha"],
-                pages: ["Digital Nepal", "GenX Official", "Smart Investments", "Real Estate Hub"],
-                groups: ["Nepal Tech Group", "Bara Entrepreneurs", "Students Network"],
-                posts: ["How to grow your business online","New real estate projects in Nepal","GenX live streaming feature","Tips for investment success"]
-            };
             const searchInput = document.getElementById('searchInput');
-            const searchResults = document.getElementById('searchResults');
-            searchInput.addEventListener('input', () => {
-                const query = searchInput.value.toLowerCase();
-                searchResults.innerHTML = "";
-                if (!query.trim()) return searchResults.classList.remove('active');
-                let resultsHTML = "";
-                for (const category in data) {
-                    const filtered = data[category].filter(item => item.toLowerCase().includes(query));
-                    if (filtered.length) {
-                        resultsHTML += `<div class="category">${category}</div>`;
-                        filtered.forEach(item => resultsHTML += `<div>${item}</div>`);
-                    }
-                }
-                searchResults.innerHTML = resultsHTML || `<div>No results found</div>`;
-                searchResults.classList.add('active');
-            });
-            document.addEventListener('click', e => { if (!e.target.closest('.search-bar')) searchResults.classList.remove('active'); });
+            const postsList = document.getElementById('postsList');
 
-            // --- 2. Dynamic Post Generator Function (Unchanged) ---
-            function generateMockPosts(count = 50) {
-                const names = ["Alex J.", "Zara K.", "Omar S.", "Priya N.", "David G.", "Emi H.", "GenX Team"];
-                const texts = [
-                    "Just finished building my first custom PC! So much faster now. 💻",
-                    "A beautiful sunset over the mountains today. Feeling grateful for this view. 🌄 #NatureLover",
-                    "What's the best way to learn a new language quickly? Asking for a friend! 😉",
-                    "I highly recommend this book. It completely changed my perspective on investment strategy. 📚",
-                    "Learning JavaScript promises vs callbacks. It's a journey! #CodingLife",
-                    "Throwback to last summer's road trip. Can't wait for the next one! 🚗",
-                    "Is anyone else finding it hard to focus this week? Need coffee. ☕",
-                    "New recipe success! Homemade sourdough bread finally turned out perfectly.",
-                    "GenX is rolling out new chat features next week! Stay tuned for updates. 💬",
-                    "Thinking about adopting a rescue dog. Any advice from pet owners?"
-                ];
-                const imageIds = [237, 10, 20, 30, 42, 53, 64, 88, 102, 119, 122, 141, 155, 163, 171, 180, 201, 219, 239, 245, 251, 260, 271, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440];
-                const privacies = ['public', 'public', 'friends'];
-                const newPosts = [];
+            menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
+
+            // --- 1. Generator ---
+            function generateBulkPosts(count = 200) {
+                const authors = ["Aarav Shrestha", "Sita Rai", "Milan Kandel", "Tech Nepal", "GenX Official"];
+                const texts = ["Exploring the mountains!", "Love the new GenX update.", "Coding is life.", "Who is ready for the weekend?", "Just had the best tea!"];
+                const arr = [];
                 for (let i = 0; i < count; i++) {
-                    const randomName = names[Math.floor(Math.random() * names.length)];
-                    const randomText = texts[Math.floor(Math.random() * texts.length)];
-                    const shouldHaveImage = Math.random() > 0.4;
-                    let randomImage = '';
-                    if (shouldHaveImage) {
-                        const imageIdIndex = i % imageIds.length;
-                        const randomId = imageIds[imageIdIndex];
-                        randomImage = `https://picsum.photos/id/${randomId}/600/400`;
-                    }
-                    const daysAgo = i + 1;
-                    const timeDifferenceMs = daysAgo * 86400000; 
-                    newPosts.push({
-                        id: Date.now() + i, 
-                        authorName: randomName, 
-                        text: randomText,
-                        image: randomImage, 
-                        privacy: privacies[Math.floor(Math.random() * privacies.length)], 
-                        likes: Math.floor(Math.random() * 150) + 5,
-                        liked: Math.random() < 0.3, 
-                        comments: [], 
-                        time: new Date(Date.now() - timeDifferenceMs).toISOString() 
+                    arr.push({
+                        id: Date.now() - i,
+                        authorName: authors[i % 5],
+                        text: texts[i % 5] + " " + (i + 1),
+                        image: i % 3 === 0 ? `https://picsum.photos/seed/${i}/600/400` : '',
+                        likes: Math.floor(Math.random() * 100),
+                        liked: false,
+                        comments: [`<strong>User${i}</strong>: Nice post!`],
+                        time: new Date(Date.now() - (i * 3600000)).toISOString()
                     });
                 }
-                return newPosts;
+                return arr;
             }
 
-            // --- 3. Post Data Initialization (CRITICAL FOR FEED INTEGRATION) ---
-            const feedContainer = document.getElementById('feedContainer');
-            let posts = JSON.parse(localStorage.getItem('fbPosts')) || [];
-            const mockPostsGenerated = localStorage.getItem('mockPostsGenerated');
+            // --- 2. Data ---
+            let posts = JSON.parse(localStorage.getItem('fbPosts')) || generateBulkPosts(200);
+            const currentUser = { name: "Rajan Kandel" };
 
-            if (!mockPostsGenerated) {
-                // Generate and prepend mock posts only on the first visit
-                console.log("First visit: Generating stable mock posts.");
-                const mockPosts = generateMockPosts(50);
-                posts = [...mockPosts, ...posts]; 
-                localStorage.setItem('mockPostsGenerated', 'true');
-                localStorage.setItem('fbPosts', JSON.stringify(posts));
-            } else {
-                console.log("Mock posts and user posts loaded from localStorage.");
-            }
-            
-            // Get current user name for filtering 'onlyme' posts and commenting
-            const currentUserProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
-            // Use the name set in profile.html, default to 'Rajan Kandel' if not found
-            const currentUserName = currentUserProfile.name || "Rajan Kandel"; 
+            // --- 3. Render Engine with Filter Support ---
+            function renderFeed(filterText = "") {
+                postsList.innerHTML = "";
+                const term = filterText.toLowerCase();
 
-            function saveAndRender() {
-                localStorage.setItem('fbPosts', JSON.stringify(posts));
-                renderPosts();
-            }
+                // Filter Logic: Check author name OR post text
+                const filtered = posts.filter(post => 
+                    post.authorName.toLowerCase().includes(term) || 
+                    post.text.toLowerCase().includes(term)
+                );
 
-            // --- 4. Rendering and Event Listener Logic (UPDATED FILTERING) ---
-            
-            function timeSince(dateString) {
-                const date = new Date(dateString);
-                const seconds = Math.floor((new Date() - date) / 1000);
-                let interval = seconds / 31536000;
-                if (interval > 1) return Math.floor(interval) + " years ago";
-                interval = seconds / 2592000;
-                if (interval > 1) return Math.floor(interval) + " months ago";
-                interval = seconds / 86400;
-                if (interval > 1) return Math.floor(interval) + " days ago";
-                interval = seconds / 3600;
-                if (interval > 1) return Math.floor(interval) + " hours ago";
-                interval = seconds / 60;
-                if (interval > 1) return Math.floor(interval) + " minutes ago";
-                return Math.floor(seconds) + " seconds ago";
-            }
-
-            function renderComments(postIndex, container) {
-                container.innerHTML = '';
-                const comments = posts[postIndex].comments || [];
-                const commentsList = document.createElement('div');
-                commentsList.className = 'comments-list';
-
-                if (comments.length === 0) {
-                    commentsList.innerHTML = '<em>No comments yet</em>';
-                    container.appendChild(commentsList);
+                if (filtered.length === 0) {
+                    postsList.innerHTML = `<div style="text-align:center; padding:20px;">No results found for "${filterText}"</div>`;
                     return;
                 }
 
-                comments.forEach(comment => {
-                    const div = document.createElement('div');
-                    div.className = 'comment-item';
-                    div.textContent = comment;
-                    commentsList.appendChild(div);
-                });
-                container.appendChild(commentsList);
-                // Ensure scroll to bottom for new comments
-                commentsList.scrollTop = commentsList.scrollHeight;
-            }
-
-            function renderPosts() {
-                feedContainer.innerHTML = "";
-                let hasVisiblePosts = false;
-                
-                // Sort by time (newest first)
-                const sortedPosts = [...posts].sort((a, b) => new Date(b.time) - new Date(a.time)); 
-                
-                // **CRITICAL FILTERING LOGIC:**
-                sortedPosts.forEach((post) => {
-                    // Check if the post is private AND NOT by the current logged-in user
-                    if (post.privacy === 'onlyme' && post.authorName !== currentUserName) {
-                        return; // Skip this post
-                    }
-                    // FUTURE IMPROVEMENT: Add logic here to filter 'friends' posts if the user is not a 'friend'.
-
-                    hasVisiblePosts = true;
-
-                    // Find the index in the original 'posts' array for data manipulation (like/comment)
-                    const originalIndex = posts.findIndex(p => p.id === post.id);
-                    if (originalIndex === -1) return; 
-
+                filtered.sort((a,b) => new Date(b.time) - new Date(a.time)).forEach((post, index) => {
                     const postDiv = document.createElement('div');
-                    postDiv.classList.add('post');
-
-                    const likedClass = post.liked ? 'liked' : '';
-                    const likeIcon = post.liked ? '❤️' : '👍';
-                    const commentsCount = post.comments ? post.comments.length : 0;
-                    const postTimeAgo = timeSince(post.time || Date.now()); 
-                    
+                    postDiv.className = 'post';
                     postDiv.innerHTML = `
                         <div class="post-header">
-                            <span>${post.authorName || 'Unknown'}</span>
-                            <span style="font-size:12px;color:gray;">${post.privacy || 'public'}</span>
+                            <span class="author-name">${post.authorName}</span>
+                            <span class="post-time">${new Date(post.time).toLocaleTimeString()}</span>
                         </div>
-                        <div class="post-time">Posted ${postTimeAgo}</div>
-                        <p class="post-text">${post.text || ''}</p>
-                        ${post.image ? `<img src="${post.image}" alt="Post Image">` : ''}
-                        
+                        <div class="post-text">${post.text}</div>
+                        ${post.image ? `<img src="${post.image}">` : ''}
                         <div class="actions">
-                            <button class="like-btn ${likedClass}" data-index="${originalIndex}">
-                                ${likeIcon} <span class="like-count">${post.likes}</span> Like
-                            </button>
-                            <button class="comment-toggle-btn" data-index="${originalIndex}">
-                                💬 Comment (${commentsCount})
-                            </button>
-                            <button class="share-btn" data-index="${originalIndex}">🔗 Share</button>
+                            <button class="${post.liked ? 'liked' : ''}" onclick="toggleLike(${index})">👍 ${post.likes}</button>
+                            <button onclick="toggleComments(${index})">💬 ${post.comments.length}</button>
+                            <button onclick="sharePost(${index})">🔗 Share</button>
                         </div>
-
-                        <div class="comments-section" style="display:none;" data-index="${originalIndex}">
-                            <div class="comments-list"></div>
-                            <div class="comment-input">
-                                <input type="text" placeholder="Write a comment..." />
-                                <button class="send-comment-btn" data-index="${originalIndex}">Send</button>
-                            </div>
+                        <div class="comments-section" id="sec-${index}" style="display:none">
+                            <div id="list-${index}">${post.comments.map(c => `<div class="comment-item">${c}</div>`).join('')}</div>
                         </div>
                     `;
-
-                    feedContainer.appendChild(postDiv);
-                });
-
-                if (!hasVisiblePosts) {
-                    feedContainer.innerHTML = '<div class="no-posts">No public or friends posts found. Start by creating one on your profile!</div>';
-                }
-
-                attachEventListeners();
-            }
-
-            function attachEventListeners() {
-                document.querySelectorAll('.like-btn').forEach(btn => {
-                    btn.onclick = function() {
-                        const idx = parseInt(this.getAttribute('data-index'));
-                        // Check if the post object exists before modifying
-                        if (posts[idx]) {
-                            posts[idx].liked = !posts[idx].liked;
-                            posts[idx].likes += posts[idx].liked ? 1 : -1;
-                            saveAndRender();
-                        }
-                    };
-                });
-
-                document.querySelectorAll('.comment-toggle-btn').forEach(btn => {
-                    btn.onclick = function() {
-                        const idx = parseInt(this.getAttribute('data-index'));
-                        const commentsSection = this.closest('.post').querySelector(`.comments-section`);
-                        if (!commentsSection) return;
-
-                        const isVisible = commentsSection.style.display === 'block';
-                        
-                        // Close all other comment sections
-                        document.querySelectorAll('.comments-section').forEach(section => {
-                            section.style.display = 'none';
-                        });
-
-                        // Toggle the current one
-                        if (!isVisible) {
-                            commentsSection.style.display = 'block';
-                            renderComments(idx, commentsSection);
-                        }
-                    };
-                });
-
-                document.querySelectorAll('.send-comment-btn').forEach(btn => {
-                    btn.onclick = function() {
-                        const idx = parseInt(this.getAttribute('data-index'));
-                        const section = this.closest('.comments-section');
-                        const input = section.querySelector('input[type="text"]');
-                        
-                        if (!input.value.trim()) return;
-
-                        const fullComment = `<strong>${currentUserName}:</strong> ${input.value.trim()}`;
-                        if (!posts[idx].comments) posts[idx].comments = [];
-                        
-                        posts[idx].comments.push(fullComment);
-                        input.value = '';
-                        saveAndRender(); // Save state and re-render the post to update count
-
-                        // Re-render comments list specifically
-                        const commentsSection = document.querySelector(`.post:has([data-index="${idx}"]) .comments-section`);
-                        if (commentsSection) {
-                            renderComments(idx, commentsSection);
-                        }
-                    };
-                });
-
-                document.querySelectorAll('.share-btn').forEach(btn => {
-                    btn.onclick = function() {
-                        const idx = parseInt(this.getAttribute('data-index'));
-                        const shareText = `Check out this post by ${posts[idx].authorName}: "${posts[idx].text}"`;
-                        navigator.clipboard.writeText(shareText).then(() => alert("Post copied to clipboard!"));
-                    };
+                    postsList.appendChild(postDiv);
                 });
             }
 
-            // --- 5. Initialization ---
-            renderPosts();
+            // --- 4. Search Event Listener ---
+            searchInput.addEventListener('input', (e) => {
+                renderFeed(e.target.value);
+            });
+
+            // --- Globals for buttons ---
+            window.toggleLike = (i) => {
+                posts[i].liked = !posts[i].liked;
+                posts[i].likes += posts[i].liked ? 1 : -1;
+                save();
+            };
+            window.toggleComments = (i) => {
+                const el = document.getElementById(`sec-${i}`);
+                el.style.display = el.style.display === 'none' ? 'block' : 'none';
+            };
+            window.sharePost = (i) => {
+                navigator.clipboard.writeText(posts[i].text);
+                alert("Text copied!");
+            };
+
+            function save() {
+                localStorage.setItem('fbPosts', JSON.stringify(posts));
+                renderFeed(searchInput.value); // Re-render with current search term
+            }
+
+            renderFeed(); // Initial load
         });
     </script>
 </body>
