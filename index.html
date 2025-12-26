@@ -9,78 +9,37 @@
         /* --- General Layout --- */
         body { margin: 0; font-family: "Poppins", sans-serif; background: #f0f2f5; color: #1c1e21; overflow-x: hidden; }
         
-        /* --- High-Density Navbar --- */
+        /* --- Navbar --- */
         .navbar { 
-            background-color: #1877f2; 
-            color: white; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 0 20px; 
-            height: 65px;
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); 
+            background-color: #1877f2; color: white; display: flex; 
+            justify-content: space-between; align-items: center; 
+            padding: 0 20px; height: 65px; position: sticky; 
+            top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); 
         }
         .logo { font-size: 26px; font-weight: 800; letter-spacing: -1px; cursor: pointer; flex-shrink: 0; }
-        
-        .search-bar { flex: 1; margin: 0 15px; max-width: 300px; position: relative; }
+        .search-bar { flex: 1; margin: 0 15px; max-width: 300px; }
         .search-bar input { 
-            width: 100%; 
-            padding: 8px 15px; 
-            border-radius: 50px; 
-            border: none; 
-            outline: none; 
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            font-size: 13px;
+            width: 100%; padding: 8px 15px; border-radius: 50px; border: none; 
+            outline: none; background: rgba(255, 255, 255, 0.2); color: white; font-size: 13px;
         }
         .search-bar input:focus { background: white; color: #333; }
-
-        /* Navigation Links Desktop */
         .nav-links { list-style: none; display: flex; align-items: center; margin: 0; padding: 0; }
         .nav-links li { margin-left: 12px; }
-        .nav-links a { 
-            color: white; 
-            text-decoration: none; 
-            font-weight: 500; 
-            font-size: 13px;
-            padding: 6px 10px;
-            border-radius: 6px;
-            transition: 0.2s;
-            white-space: nowrap;
-        }
-        .nav-links a:hover { background: rgba(255,255,255,0.15); }
-
+        .nav-links a { color: white; text-decoration: none; font-weight: 500; font-size: 13px; }
         .menu-toggle { font-size: 28px; cursor: pointer; display: none; }
 
-        /* --- Mobile Responsive Navigation --- */
         @media (max-width: 1100px) {
             .nav-links { display: none; }
             .menu-toggle { display: block; }
-            .nav-links.active { 
-                display: flex; 
-                flex-direction: column; 
-                position: absolute; 
-                top: 65px; right: 0; width: 250px; 
-                background: white; 
-                box-shadow: -5px 5px 15px rgba(0,0,0,0.2);
-                padding: 10px 0;
-            }
-            .nav-links.active a { color: #333; width: 100%; display: block; padding: 12px 20px; border-radius: 0; }
-            .nav-links.active a:hover { background: #f0f2f5; }
+            .nav-links.active { display: flex; flex-direction: column; position: absolute; top: 65px; right: 0; width: 250px; background: white; box-shadow: -5px 5px 15px rgba(0,0,0,0.2); }
+            .nav-links.active a { color: #333; display: block; padding: 12px 20px; }
         }
 
         /* --- Feed Styling --- */
         .feed { max-width: 600px; margin: 20px auto; padding: 0 10px; }
         .post { background: white; margin-bottom: 20px; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         
-        /* Category Badge for Poetry/Tech/News */
-        .badge { 
-            display: inline-block; padding: 3px 10px; border-radius: 4px; 
-            font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px;
-        }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; }
         .badge-poetry { background: #fce4ec; color: #c2185b; }
         .badge-tech { background: #e8f5e9; color: #2e7d32; }
         .badge-travel { background: #fff3e0; color: #ef6c00; }
@@ -94,31 +53,38 @@
 
         .actions { display: flex; border-top: 1px solid #eee; margin-top: 10px; padding-top: 5px; }
         .actions button { flex: 1; background: none; border: none; color: #65676b; cursor: pointer; font-weight: 600; padding: 10px; font-size: 13px; }
-        .actions button.liked { color: #1877f2; }
-        .comments-section { background: #f7f8fa; padding: 10px; border-radius: 8px; margin-top: 10px; display: none; }
+
+        /* --- Updated Comment Section --- */
+        .comments-section { 
+            background: #f7f8fa; padding: 12px; border-radius: 8px; 
+            margin-top: 10px; display: none; border-top: 1px solid #eee;
+        }
+        .comment-box { 
+            display: flex; gap: 8px; margin-bottom: 15px; 
+        }
+        .comment-box input { 
+            flex: 1; padding: 8px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; font-size: 13px;
+        }
+        .comment-box button { 
+            background: #1877f2; color: white; border: none; padding: 0 15px; border-radius: 20px; cursor: pointer; font-weight: 600;
+        }
+        .comment-list { max-height: 300px; overflow-y: auto; }
+        .comment-item { 
+            background: white; padding: 8px 12px; border-radius: 12px; 
+            margin-bottom: 8px; font-size: 13px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .comment-item strong { color: #1877f2; margin-right: 5px; }
     </style>
 </head>
 <body>
-
     <nav class="navbar">
         <div class="logo">GenX</div>
-        
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search stories, tech, people...">
-        </div>
-
+        <div class="search-bar"><input type="text" id="searchInput" placeholder="Search stories, tech, people..."></div>
         <div class="menu-toggle" id="menu-toggle">☰</div>
-
         <ul class="nav-links" id="nav-links">
             <li><a href="index.html">Home</a></li>
-            <li><a href="authentication.html">Signup/Login</a></li>
             <li><a href="profile.html">Profile</a></li>
-            <li><a href="groups.html">Groups</a></li>
-            <li><a href="friends.html">Friendship</a></li>
             <li><a href="chat.html">Chats</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="services.html">Services</a></li>
-            <li><a href="contact.html">Contact</a></li>
             <li><a href="settings.html">Settings</a></li>
         </ul>
     </nav>
@@ -136,48 +102,55 @@
 
             menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
 
-            // --- 1. Special Content Generator ---
-            function generateSpecialPosts(count = 100) {
+            // --- 1. Enhanced Content & Comment Generator ---
+            function generateSpecialPosts(count = 50) {
                 const types = [
-                    { cat: "Poetry", badge: "badge-poetry", authors: ["The Silent Poet", "Rumi Echoes"], content: ["The stars lean down to kiss the sea,\nA whisper of eternity.", "In the garden of my soul,\nYou are the bloom that makes me whole."] },
-                    { cat: "Tech", badge: "badge-tech", authors: ["Elon's Update", "Neural Linker"], content: ["AI just reached a new milestone: generating full 3D environments from a single text prompt.", "LinkedIn is pivoting to short-form video. The 'TikTok-ification' of professional networking continues."] },
-                    { cat: "Travel", badge: "badge-travel", authors: ["Global Wanderer", "Nepal Trails"], content: ["Woke up at 4 AM to see the Annapurna range. Words cannot describe this peace.", "Hidden spots in Bali you didn't know about. Check my latest blog link!"] },
-                    { cat: "Social Media", badge: "badge-social", authors: ["Trend Tracker", "Insta News"], content: ["WhatsApp is officially launching 'GenX' integration for easier sharing!", "Twitter (X) is testing a new subscriber-only poetry tier. Is it worth it?"] }
+                    { cat: "Poetry", badge: "badge-poetry", authors: ["The Silent Poet", "Kabir Echoes"], content: ["The stars lean down to kiss the sea,\nA whisper of eternity.", "Silence is the language of the soul,\nLet the world fade to make you whole."] },
+                    { cat: "Tech", badge: "badge-tech", authors: ["GenX AI", "Neural Link"], content: ["NVIDIA's new AI chip can simulate entire worlds in seconds.", "WhatsApp is testing a 'Ghost Mode' for ultimate privacy."] },
+                    { cat: "Travel", badge: "badge-travel", authors: ["Nomad Rajan", "Pokhara Trails"], content: ["Sunrise at Sarangkot is worth the 4 AM hike. Magic!", "Hidden waterfalls in Baglung you must visit this year."] },
+                    { cat: "Viral", badge: "badge-social", authors: ["TikTok Trends", "X-Global"], content: ["LinkedIn's new video feed is actually getting high engagement.", "Is TikTok the new Google for Gen Z? Stats say yes."] }
                 ];
+
+                const randomUsers = ["Anjali", "Bikash", "Sita", "Suman", "David", "Priya", "Rahul", "Jessica", "Milan", "Aarav"];
+                const randomTexts = ["Wow, so true!", "This is the best tech news today.", "Following you for more.", "GenX is amazing!", "I need to visit this place.", "Beautiful lines.", "Deep thoughts.", "Is this real?", "Incredible share.", "Love from Nepal!"];
 
                 const arr = [];
                 for (let i = 0; i < count; i++) {
                     const type = types[i % types.length];
+                    
+                    // Generate 10-15 random comments per post
+                    const comments = [];
+                    for(let j=0; j < 12; j++) {
+                        comments.push({
+                            user: randomUsers[Math.floor(Math.random() * randomUsers.length)],
+                            text: randomTexts[Math.floor(Math.random() * randomTexts.length)]
+                        });
+                    }
+
                     arr.push({
-                        id: Date.now() - i,
+                        id: i,
                         category: type.cat,
                         badgeClass: type.badge,
                         authorName: type.authors[Math.floor(Math.random() * type.authors.length)],
                         text: type.content[Math.floor(Math.random() * type.content.length)],
-                        image: i % 2 === 0 ? `https://picsum.photos/seed/${i+100}/600/400` : '',
-                        likes: Math.floor(Math.random() * 1000),
+                        image: `https://picsum.photos/seed/${i+100}/600/400`,
+                        likes: Math.floor(Math.random() * 2000),
                         liked: false,
-                        comments: [`<strong>User:</strong> Amazing read!`],
+                        comments: comments,
                         time: new Date(Date.now() - (i * 3600000)).toISOString()
                     });
                 }
                 return arr;
             }
 
-            // --- 2. Data Initialization ---
-            let posts = generateSpecialPosts(100);
+            let posts = JSON.parse(localStorage.getItem('genx_feed')) || generateSpecialPosts(50);
 
             function renderFeed(filterText = "") {
                 postsList.innerHTML = "";
                 const term = filterText.toLowerCase();
 
-                const filtered = posts.filter(p => 
-                    p.authorName.toLowerCase().includes(term) || 
-                    p.text.toLowerCase().includes(term) ||
-                    p.category.toLowerCase().includes(term)
-                );
-
-                filtered.forEach((post, index) => {
+                posts.filter(p => p.authorName.toLowerCase().includes(term) || p.text.toLowerCase().includes(term) || p.category.toLowerCase().includes(term))
+                .forEach((post, index) => {
                     const postDiv = document.createElement('div');
                     postDiv.className = 'post';
                     postDiv.innerHTML = `
@@ -187,39 +160,52 @@
                             <span class="post-time">${new Date(post.time).toLocaleTimeString()}</span>
                         </div>
                         <div class="post-text">${post.text}</div>
-                        ${post.image ? `<img src="${post.image}">` : ''}
+                        <img src="${post.image}" loading="lazy">
                         <div class="actions">
                             <button onclick="toggleLike(${index})">${post.liked ? '❤️' : '👍'} ${post.likes}</button>
                             <button onclick="toggleComments(${index})">💬 ${post.comments.length}</button>
-                            <button onclick="sharePost(${index})">🔗 Share</button>
+                            <button onclick="alert('Copied to WhatsApp!')">🔗 Share</button>
                         </div>
                         <div class="comments-section" id="sec-${index}">
-                            ${post.comments.map(c => `<div class="comment-item">${c}</div>`).join('')}
+                            <div class="comment-box">
+                                <input type="text" id="input-${index}" placeholder="Write a comment...">
+                                <button onclick="addMyComment(${index})">Post</button>
+                            </div>
+                            <div class="comment-list" id="list-${index}">
+                                ${post.comments.map(c => `<div class="comment-item"><strong>${c.user}:</strong> ${c.text}</div>`).join('')}
+                            </div>
                         </div>
                     `;
                     postsList.appendChild(postDiv);
                 });
             }
 
-            // --- 3. Interaction Logic ---
-            searchInput.addEventListener('input', (e) => renderFeed(e.target.value));
+            window.addMyComment = (i) => {
+                const input = document.getElementById(`input-${i}`);
+                if (!input.value.trim()) return;
+                
+                posts[i].comments.unshift({ user: "You", text: input.value });
+                input.value = "";
+                saveAndRender();
+            };
 
             window.toggleLike = (i) => {
                 posts[i].liked = !posts[i].liked;
                 posts[i].likes += posts[i].liked ? 1 : -1;
-                renderFeed(searchInput.value);
+                saveAndRender();
             };
 
             window.toggleComments = (i) => {
-                const el = document.getElementById(`sec-${i}`);
+                const el = document.getElementById(`sec-${index = i}`);
                 el.style.display = el.style.display === 'block' ? 'none' : 'block';
             };
 
-            window.sharePost = (i) => {
-                navigator.clipboard.writeText(`GenX ${posts[i].category}: ${posts[i].text}`);
-                alert("Shared to Clipboard! Go paste it on WhatsApp or Twitter.");
-            };
+            function saveAndRender() {
+                localStorage.setItem('genx_feed', JSON.stringify(posts));
+                renderFeed(searchInput.value);
+            }
 
+            searchInput.addEventListener('input', (e) => renderFeed(e.target.value));
             renderFeed();
         });
     </script>
