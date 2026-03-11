@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Samaya GTA-FF Mobile Edition</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #1a1a1a; font-family: 'Courier New', Courier, monospace; color: #fff; touch-action: none; }
+        #gameCanvas { display: block; background: radial-gradient(circle, #222, #000); }
+        #ui { position: absolute; top: 10px; left: 10px; width: 95%; pointer-events: none; display: flex; justify-content: space-between; }
+        .box { background: rgba(0,255,255,0.2); padding: 5px 15px; border: 1px solid #00f2ff; border-radius: 5px; box-shadow: 0 0 10px #00f2ff; }
+        #fire-btn { position: absolute; bottom: 30px; right: 30px; width: 80px; height: 80px; background: rgba(255,0,0,0.5); border: 3px solid #ff0000; border-radius: 50%; pointer-events: auto; display: flex; justify-content: center; align-items: center; font-weight: bold; color: white; box-shadow: 0 0 20px #ff0000; }
+        #hp-bar { position: absolute; bottom: 20px; left: 20px; width: 150px; height: 15px; background: #333; border: 1px solid #fff; }
+        #hp-fill { width: 100%; height: 100%; background: #ff3e3e; transition: 0.3s; }
+        #game-over { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); padding: 40px; border: 2px solid #00f2ff; border-radius: 15px; text-align: center; display: none; z-index: 100; }
+    </style>
+</head>
+<body>
+
+<div id="ui">
+    <div class="box">EP: <span id="scoreVal">0</span></div>
+    <div class="box" style="border-color:#ffcc00; color:#ffcc00;">REWARD: $<span id="walletVal">0.0000</span></div>
+</div>
+<div id="hp-bar"><div id="hp-fill"></div></div>
+<div id="fire-btn" onclick="shoot()">FIRE</div>
+
+<div id="game-over">
+    <h1 style="color:#ff3e3e;">MISSION ENDED</h1>
+    <p>Last Session Loot: <span id="finalScore">0</span></p>
+    <p>Total Accumulated Cash: $<span id="finalWallet">0.0000</span></p>
+    <button onclick="location.reload()" style="padding:10px 20px; background:#00f2ff; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">RESTART MISSION</button>
+    <button onclick="clearProgress()" style="padding:10px 20px; background:#ff3e3e; border:none; border-radius:5px; font-weight:bold; color:white; cursor:pointer; margin-top:10px;">RESET PROGRESS</button>
+</div>
+
+<canvas id="gameCanvas"></canvas>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Load persistent data
+    let score = parseInt(localStorage.getItem('savedScore')) || 0;
+    let wallet = parseFloat(localStorage.getItem('savedWallet')) || 0;
+
+    let hp = 100;
+    let gameActive = true;
+    let player = { x: canvas.width/2, y: canvas.height - 150, r: 25 };
+    let bullets = [];
+    let enemies = [];
+    let loot = [];
+
+    // Initialize UI with saved data
+    function updateUI() {
+        document.getElementById('scoreVal').innerText = score;
+        document.getElementById('walletVal').innerText = wallet.toFixed(4);
+        
+        // Auto-save to LocalStorage
+        localStorage.setItem('savedScore', score);
+        localStorage.setItem('savedWallet', wallet);
+    }
+
+    function clearProgress() {
+        localStorage.clear();
+        location.reload();
+    }
+
+    function drawEntity(x, y, r, color) {
+        ctx.save();
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = color;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(x - 5, y - r - 10, 10, 15);
+        ctx.restore();
+    }
+
+    function spawn() {
+        if(Math.random() < 0.03) enemies.push({ x: Math.random()*canvas.width, y: -50, r: 20, speed: 3 + Math.random()*3 });
+        if(Math.random() < 0.01) loot.push({ x: Math.random()*canvas.width, y: -50, w: 30, h: 30 });
+    }
+
+    function shoot() {
+        if(!gameActive) return;
+        bullets.push({ x: player.x, y: player.y - 30, speed: 10 });
+    }
+
+    function update() {
+        if(!gameActive) return;
+        spawn();
+
+        bullets.forEach((b, bi) => {
+            b.y -= b.speed;
+            if(b.y < 0) bullets.splice(bi, 1);
+            enemies.forEach((e, ei) => {
+                if(Math.hypot(b.x - e.x, b.y - e.y) < e.r + 5) {
+                    enemies.splice(ei, 1);
+                    bullets.splice(bi, 1);
+                    score += 100;
+                    wallet += 0.0010;
+                    updateUI();
+                }
+            });
+        });
+
+        enemies.forEach((e, i) => {
+            e.y += e.speed;
+            if(e.y > canvas.height) enemies.splice(i, 1);
+            if(Math.hypot(player.x - e.x, player.y - e.y) < player.r + e.r) {
+                hp -= 10;
+                enemies.splice(i, 1);
+                document.getElementById('hp-fill').style.width = hp + "%";
+                if(hp <= 0) die();
+            }
+        });
+
+        loot.forEach((l, i) => {
+            l.y += 4;
+            if(Math.hypot(player.x - l.x, player.y - l.y) < player.r + 20) {
+                wallet += 0.0050;
+                loot.splice(i, 1);
+                updateUI();
+            }
+        });
+    }
+
+    function die() {
+        gameActive = false;
+        document.getElementById('game-over').style.display = 'block';
+        document.getElementById('finalScore').innerText = score;
+        document.getElementById('finalWallet').innerText = wallet.toFixed(4);
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Background Grid
+        ctx.strokeStyle = "#222";
+        for(let i=0; i<canvas.width; i+=50) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
+        for(let j=0; j<canvas.height; j+=50) { ctx.beginPath(); ctx.moveTo(0,j); ctx.lineTo(canvas.width,j); ctx.stroke(); }
+        
+        drawEntity(player.x, player.y, player.r, "#00f2ff");
+        enemies.forEach(e => drawEntity(e.x, e.y, e.r, "#ff3e3e"));
+        ctx.fillStyle = "#ffcc00";
+        loot.forEach(l => ctx.fillRect(l.x, l.y, l.w, l.h));
+        ctx.fillStyle = "yellow";
+        bullets.forEach(b => ctx.fillRect(b.x-2, b.y, 4, 15));
+        
+        requestAnimationFrame(() => { update(); draw(); });
+    }
+
+    canvas.addEventListener('touchmove', (e) => {
+        player.x = e.touches[0].clientX;
+    });
+
+    updateUI(); // Run once on startup
+    draw();
+</script>
+</body>
+</html>
