@@ -3,162 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Samaya GTA-FF Mobile Edition</title>
+    <title>Samaya Game Hub</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #1a1a1a; font-family: 'Courier New', Courier, monospace; color: #fff; touch-action: none; }
-        #gameCanvas { display: block; background: radial-gradient(circle, #222, #000); }
-        #ui { position: absolute; top: 10px; left: 10px; width: 95%; pointer-events: none; display: flex; justify-content: space-between; }
-        .box { background: rgba(0,255,255,0.2); padding: 5px 15px; border: 1px solid #00f2ff; border-radius: 5px; box-shadow: 0 0 10px #00f2ff; }
-        #fire-btn { position: absolute; bottom: 30px; right: 30px; width: 80px; height: 80px; background: rgba(255,0,0,0.5); border: 3px solid #ff0000; border-radius: 50%; pointer-events: auto; display: flex; justify-content: center; align-items: center; font-weight: bold; color: white; box-shadow: 0 0 20px #ff0000; }
-        #hp-bar { position: absolute; bottom: 20px; left: 20px; width: 150px; height: 15px; background: #333; border: 1px solid #fff; }
-        #hp-fill { width: 100%; height: 100%; background: #ff3e3e; transition: 0.3s; }
-        #game-over { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); padding: 40px; border: 2px solid #00f2ff; border-radius: 15px; text-align: center; display: none; z-index: 100; }
+        body { 
+            margin: 0; 
+            background: #0a0a0a; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            color: #fff; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh;
+        }
+
+        /* Top Bar */
+        #top-bar {
+            width: 100%;
+            padding: 20px;
+            background: #111;
+            border-bottom: 2px solid #00ffcc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .balance-box {
+            background: rgba(0, 255, 204, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #00ffcc;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+
+        h1 { margin: 40px 0 10px 0; font-size: 28px; letter-spacing: 2px; text-transform: uppercase; }
+        p { color: #888; margin-bottom: 40px; }
+
+        /* Game Grid */
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .game-card {
+            background: #1a1a1a;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #333;
+            transition: 0.3s;
+            position: relative;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .game-card:active { transform: scale(0.95); border-color: #00ffcc; }
+
+        .banner {
+            height: 120px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 15px;
+            background-blend-mode: overlay;
+        }
+
+        .gta-bg { background: linear-gradient(to top, #000, transparent), #444; }
+        .slots-bg { background: linear-gradient(to top, #000, transparent), #8a0000; }
+
+        .card-info { padding: 15px; }
+        .card-title { font-size: 20px; font-weight: bold; margin-bottom: 5px; color: #fff; }
+        .card-desc { font-size: 13px; color: #aaa; }
+
+        .tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .tag-action { background: #ff3e3e; }
+        .tag-lucky { background: #ffcc00; color: #000; }
+
+        /* Footer */
+        footer { margin-top: auto; padding: 30px; color: #444; font-size: 12px; }
     </style>
 </head>
 <body>
 
-<div id="ui">
-    <div class="box">EP: <span id="scoreVal">0</span></div>
-    <div class="box" style="border-color:#ffcc00; color:#ffcc00;">REWARD: $<span id="walletVal">0.0000</span></div>
-</div>
-<div id="hp-bar"><div id="hp-fill"></div></div>
-<div id="fire-btn" onclick="shoot()">FIRE</div>
-
-<div id="game-over">
-    <h1 style="color:#ff3e3e;">MISSION ENDED</h1>
-    <p>Last Session Loot: <span id="finalScore">0</span></p>
-    <p>Total Accumulated Cash: $<span id="finalWallet">0.0000</span></p>
-    <button onclick="location.reload()" style="padding:10px 20px; background:#00f2ff; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">RESTART MISSION</button>
-    <button onclick="clearProgress()" style="padding:10px 20px; background:#ff3e3e; border:none; border-radius:5px; font-weight:bold; color:white; cursor:pointer; margin-top:10px;">RESET PROGRESS</button>
+<div id="top-bar">
+    <div style="font-weight: bold; font-size: 18px; color: #00ffcc;">SAMAYA <span style="color:#fff">OS</span></div>
+    <div class="balance-box">© <span id="totalCoins">0</span></div>
 </div>
 
-<canvas id="gameCanvas"></canvas>
+<h1>Select Mission</h1>
+<p>Choose your way to earn coins</p>
+
+<div class="game-grid">
+    <a href="venicegamevast.html" class="game-card">
+        <span class="tag tag-action">Combat</span>
+        <div class="banner gta-bg">
+            <div class="card-title">GTA-FF Mobile</div>
+        </div>
+        <div class="card-info">
+            <div class="card-desc">Free roam simulation. Eliminate targets and survive the wanted level.</div>
+        </div>
+    </a>
+
+    <a href="slots.html" class="game-card">
+        <span class="tag tag-lucky">Casino</span>
+        <div class="banner slots-bg">
+            <div class="card-title">Lucky Slots</div>
+        </div>
+        <div class="card-info">
+            <div class="card-desc">High-stakes reward system. Spin to win up to 12,000x multipliers.</div>
+        </div>
+    </a>
+</div>
+
+<footer>Powered by Samaya Human AI</footer>
 
 <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // Pull shared balance from local storage
+    const coins = localStorage.getItem('lucky_coins') || localStorage.getItem('sim_cash') || 0;
+    document.getElementById('totalCoins').innerText = parseInt(coins).toLocaleString();
 
-    // Load persistent data
-    let score = parseInt(localStorage.getItem('savedScore')) || 0;
-    let wallet = parseFloat(localStorage.getItem('savedWallet')) || 0;
-
-    let hp = 100;
-    let gameActive = true;
-    let player = { x: canvas.width/2, y: canvas.height - 150, r: 25 };
-    let bullets = [];
-    let enemies = [];
-    let loot = [];
-
-    // Initialize UI with saved data
-    function updateUI() {
-        document.getElementById('scoreVal').innerText = score;
-        document.getElementById('walletVal').innerText = wallet.toFixed(4);
-        
-        // Auto-save to LocalStorage
-        localStorage.setItem('savedScore', score);
-        localStorage.setItem('savedWallet', wallet);
-    }
-
-    function clearProgress() {
-        localStorage.clear();
-        location.reload();
-    }
-
-    function drawEntity(x, y, r, color) {
-        ctx.save();
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = color;
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = "#fff";
-        ctx.fillRect(x - 5, y - r - 10, 10, 15);
-        ctx.restore();
-    }
-
-    function spawn() {
-        if(Math.random() < 0.03) enemies.push({ x: Math.random()*canvas.width, y: -50, r: 20, speed: 3 + Math.random()*3 });
-        if(Math.random() < 0.01) loot.push({ x: Math.random()*canvas.width, y: -50, w: 30, h: 30 });
-    }
-
-    function shoot() {
-        if(!gameActive) return;
-        bullets.push({ x: player.x, y: player.y - 30, speed: 10 });
-    }
-
-    function update() {
-        if(!gameActive) return;
-        spawn();
-
-        bullets.forEach((b, bi) => {
-            b.y -= b.speed;
-            if(b.y < 0) bullets.splice(bi, 1);
-            enemies.forEach((e, ei) => {
-                if(Math.hypot(b.x - e.x, b.y - e.y) < e.r + 5) {
-                    enemies.splice(ei, 1);
-                    bullets.splice(bi, 1);
-                    score += 100;
-                    wallet += 0.0010;
-                    updateUI();
-                }
-            });
+    // Subtle vibration on card tap
+    document.querySelectorAll('.game-card').forEach(card => {
+        card.addEventListener('click', () => {
+            if(navigator.vibrate) navigator.vibrate(40);
         });
-
-        enemies.forEach((e, i) => {
-            e.y += e.speed;
-            if(e.y > canvas.height) enemies.splice(i, 1);
-            if(Math.hypot(player.x - e.x, player.y - e.y) < player.r + e.r) {
-                hp -= 10;
-                enemies.splice(i, 1);
-                document.getElementById('hp-fill').style.width = hp + "%";
-                if(hp <= 0) die();
-            }
-        });
-
-        loot.forEach((l, i) => {
-            l.y += 4;
-            if(Math.hypot(player.x - l.x, player.y - l.y) < player.r + 20) {
-                wallet += 0.0050;
-                loot.splice(i, 1);
-                updateUI();
-            }
-        });
-    }
-
-    function die() {
-        gameActive = false;
-        document.getElementById('game-over').style.display = 'block';
-        document.getElementById('finalScore').innerText = score;
-        document.getElementById('finalWallet').innerText = wallet.toFixed(4);
-    }
-
-    function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Background Grid
-        ctx.strokeStyle = "#222";
-        for(let i=0; i<canvas.width; i+=50) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
-        for(let j=0; j<canvas.height; j+=50) { ctx.beginPath(); ctx.moveTo(0,j); ctx.lineTo(canvas.width,j); ctx.stroke(); }
-        
-        drawEntity(player.x, player.y, player.r, "#00f2ff");
-        enemies.forEach(e => drawEntity(e.x, e.y, e.r, "#ff3e3e"));
-        ctx.fillStyle = "#ffcc00";
-        loot.forEach(l => ctx.fillRect(l.x, l.y, l.w, l.h));
-        ctx.fillStyle = "yellow";
-        bullets.forEach(b => ctx.fillRect(b.x-2, b.y, 4, 15));
-        
-        requestAnimationFrame(() => { update(); draw(); });
-    }
-
-    canvas.addEventListener('touchmove', (e) => {
-        player.x = e.touches[0].clientX;
     });
-
-    updateUI(); // Run once on startup
-    draw();
 </script>
+
 </body>
 </html>
