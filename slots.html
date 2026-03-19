@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Samaya High-Stakes Coins</title>
+    <style>
+        body { margin: 0; background: #050505; font-family: 'Segoe UI', sans-serif; color: #fff; overflow: hidden; text-align: center; }
+        
+        /* Header */
+        #header { padding: 15px; background: #111; border-bottom: 3px solid #00ffcc; box-shadow: 0 5px 15px rgba(0,255,204,0.2); }
+        .coin-display { font-size: 32px; color: #ffcc00; font-weight: bold; }
+
+        /* Slot Machine */
+        #machine { 
+            margin: 20px auto; width: 320px; background: #1a1a1a; padding: 20px; 
+            border: 8px solid #333; border-radius: 20px; box-shadow: 0 0 40px #000;
+        }
+        .reels-container { display: flex; justify-content: space-around; background: #000; padding: 15px; border-radius: 15px; border: 2px solid #444; }
+        .reel { 
+            width: 80px; height: 110px; background: #fff; border-radius: 8px; 
+            font-size: 55px; display: flex; align-items: center; justify-content: center; color: #000;
+        }
+        
+        .spinning { animation: reelBlur 0.1s infinite linear; }
+        @keyframes reelBlur { 0% { transform: translateY(-8px); filter: blur(3px); } 100% { transform: translateY(8px); filter: blur(3px); } }
+
+        /* Bet Controls */
+        .controls-area { margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .bet-selector { display: flex; gap: 10px; background: #222; padding: 5px; border-radius: 30px; border: 1px solid #444; }
+        .bet-opt { 
+            padding: 8px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; font-size: 14px; 
+            color: #888; transition: 0.3s; 
+        }
+        .bet-opt.active { background: #00ffcc; color: #000; box-shadow: 0 0 15px #00ffcc; }
+
+        #info-text { height: 24px; font-weight: bold; color: #ff3e3e; text-transform: uppercase; }
+        
+        #spin-btn { 
+            width: 130px; height: 130px; background: radial-gradient(#00ffcc, #008a6e); 
+            border: 6px solid #fff; border-radius: 50%; color: #000; font-size: 26px; 
+            font-weight: bold; cursor: pointer; box-shadow: 0 8px 0 #004d3d; transition: 0.1s;
+        }
+        #spin-btn:active { transform: translateY(6px); box-shadow: 0 2px 0 #004d3d; }
+        #spin-btn:disabled { background: #333; box-shadow: none; color: #666; transform: translateY(6px); border-color: #555; }
+    </style>
+</head>
+<body>
+
+<div id="header">
+    <div class="coin-display">© <span id="coinCount">0</span></div>
+    <div style="font-size: 10px; color: #00ffcc; letter-spacing: 3px;">VIP SLOTS to Bet</div>
+</div>
+
+<div id="machine">
+    <div id="info-text">SELECT YOUR BET</div>
+    <div class="reels-container">
+        <div id="r1" class="reel">⭐</div>
+        <div id="r2" class="reel">⭐</div>
+        <div id="r3" class="reel">⭐</div>
+    </div>
+
+    <div class="controls-area">
+        <div class="bet-selector">
+            <div class="bet-opt active" onclick="setBet(100, this)">100</div>
+            <div class="bet-opt" onclick="setBet(500, this)">500</div>
+            <div class="bet-opt" onclick="setBet(1000, this)">1000</div>
+        </div>
+        <button id="spin-btn" onclick="playSpin()">SPIN</button>
+    </div>
+</div>
+
+<script>
+    // Reward Scale: 120, 240, 600, 1200, 3000, 6000, 12000
+    const rewardsBase = [120, 240, 600, 1200, 3000, 6000, 12000];
+    const symbols = ['💎', '🍒', '🔔', '💰', '⭐', '7'];
+    
+    let coins = parseInt(localStorage.getItem('lucky_coins')) || 5000;
+    let currentBet = 100;
+    const btn = document.getElementById('spin-btn');
+    const info = document.getElementById('info-text');
+
+    function setBet(amt, el) {
+        if(btn.disabled) return;
+        currentBet = amt;
+        document.querySelectorAll('.bet-opt').forEach(opt => opt.classList.remove('active'));
+        el.classList.add('active');
+        info.innerText = "BET SET TO " + amt;
+        info.style.color = "#00ffcc";
+        if(navigator.vibrate) navigator.vibrate(10);
+    }
+
+    function updateUI() {
+        document.getElementById('coinCount').innerText = coins.toLocaleString();
+        localStorage.setItem('lucky_coins', coins);
+    }
+
+    async function playSpin() {
+        if (coins < currentBet) {
+            info.innerText = "INSUFFICIENT COINS!";
+            info.style.color = "#ff3e3e";
+            return;
+        }
+
+        coins -= currentBet;
+        updateUI();
+        btn.disabled = true;
+        info.innerText = "GOOD LUCK...";
+        info.style.color = "#fff";
+
+        const r1 = document.getElementById('r1');
+        const r2 = document.getElementById('r2');
+        const r3 = document.getElementById('r3');
+
+        r1.classList.add('spinning');
+        r2.classList.add('spinning');
+        r3.classList.add('spinning');
+
+        setTimeout(() => stopReel(r1, 0), 700);
+        setTimeout(() => stopReel(r2, 1), 1400);
+        setTimeout(() => {
+            stopReel(r3, 2);
+            calculateResults();
+        }, 2100);
+    }
+
+    let results = [];
+    function stopReel(reel, i) {
+        reel.classList.remove('spinning');
+        const sym = symbols[Math.floor(Math.random() * symbols.length)];
+        reel.innerText = sym;
+        results[i] = sym;
+        if(navigator.vibrate) navigator.vibrate(25);
+    }
+
+    function calculateResults() {
+        btn.disabled = false;
+        // Multiplier based on bet: 100=1x, 500=5x, 1000=10x
+        const multiplier = currentBet / 100;
+
+        if (results[0] === results[1] && results[1] === results[2]) {
+            // Jackpot (Pick from high-tier base rewards)
+            const baseWin = rewardsBase[Math.floor(Math.random() * 3) + 4]; // 3000, 6000, or 12000
+            const totalWin = baseWin * multiplier;
+            coins += totalWin;
+            info.innerText = "JACKPOT! +" + totalWin.toLocaleString();
+            info.style.color = "#ffcc00";
+            if(navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100]);
+        } 
+        else if (results[0] === results[1] || results[1] === results[2] || results[0] === results[2]) {
+            // Match (Pick from low-tier base rewards)
+            const baseWin = rewardsBase[Math.floor(Math.random() * 3)]; // 120, 240, or 600
+            const totalWin = baseWin * multiplier;
+            coins += totalWin;
+            info.innerText = "MATCH! +" + totalWin.toLocaleString();
+            info.style.color = "#00ffcc";
+        } 
+        else {
+            info.innerText = "NO LUCK THIS TIME";
+            info.style.color = "#888";
+        }
+        updateUI();
+    }
+
+    updateUI();
+</script>
+</body>
+</html>
