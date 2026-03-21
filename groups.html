@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Groups</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .create-btn {
+            background: #057642;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        .group-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .group-card:active { transform: scale(0.98); }
+        .group-icon {
+            width: 50px; height: 50px;
+            background: var(--primary-color);
+            color: white; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .group-info { flex-grow: 1; }
+        .group-name { font-weight: 600; margin: 0; }
+        .group-meta { font-size: 0.85rem; color: #6b7280; }
+        .view-btn {
+            background: var(--primary-color);
+            color: white; border: none;
+            padding: 8px 16px; border-radius: 6px;
+            font-weight: 500; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>Explore Groups</h2>
+        <button class="create-btn" onclick="createNewGroup()">+ New Group</button>
+    </div>
+
+    <input type="text" class="search-box" placeholder="Search for groups...">
+
+    <div id="group-list-container">
+        
+        <div class="group-card" onclick="goToGroup('jobs', 'Global Jobs Network')">
+            <div class="group-icon" style="background: #0073b1;">JN</div>
+            <div class="group-info">
+                <p class="group-name">Global Jobs Network</p>
+                <span class="group-meta">3,400 Members • Opportunities</span>
+            </div>
+            <button class="view-btn">View</button>
+        </div>
+
+        <div class="group-card" onclick="goToGroup('health', 'Daily Health Tips')">
+            <div class="group-icon" style="background: #e63946;">HT</div>
+            <div class="group-info">
+                <p class="group-name">Daily Health Tips</p>
+                <span class="group-meta">1,200 Members • Active Now</span>
+            </div>
+            <button class="view-btn">View</button>
+        </div>
+
+<div class="group-card" onclick="goToGroup('dev_talk', 'DevTalk Community')">
+    <div class="group-icon" style="background: #2d3436;">DT</div>
+    <div class="group-info">
+        <p class="group-name">DevTalk Community</p>
+        <span class="group-meta">12.5k Members • 42 New Posts</span>
+    </div>
+    <button class="view-btn">View</button>
+</div>
+
+<div class="group-card" onclick="goToGroup('freelance', 'Freelance Gigs & Tips')">
+    <div class="group-icon" style="background: #6c5ce7;">FG</div>
+    <div class="group-info">
+        <p class="group-name">Freelance Gigs & Tips</p>
+        <span class="group-meta">8.2k Members • Opportunities</span>
+    </div>
+    <button class="view-btn">View</button>
+</div>
+
+        <div class="group-card" onclick="goToGroup('edu', 'Education Hub')">
+            <div class="group-icon" style="background: #1d3557; color: #f1faee;">ED</div>
+            <div class="group-info">
+                <p class="group-name">Education Hub</p>
+                <span class="group-meta">850 Members • 5 New Posts</span>
+            </div>
+            <button class="view-btn">View</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // 1. Function to handle navigation
+    function goToGroup(id, name) {
+        window.location.href = `group-details.html?id=${id}&name=${encodeURIComponent(name)}`;
+    }
+
+    // 2. Logic to create and save a new group
+    function createNewGroup() {
+        const name = prompt("Enter Group Name:");
+        if (!name) return;
+
+        const color = prompt("Enter a background color (e.g., #ff5733 or 'green'):", "#2563eb");
+        
+        const newGroup = {
+            id: 'custom-' + Date.now(), // Unique ID using timestamp
+            name: name,
+            color: color || "#2563eb",
+            initials: name.substring(0, 2).toUpperCase()
+        };
+
+        // Save to LocalStorage
+        const existingGroups = JSON.parse(localStorage.getItem('my_custom_groups')) || [];
+        existingGroups.push(newGroup);
+        localStorage.setItem('my_custom_groups', JSON.stringify(existingGroups));
+
+        // Refresh the list
+        renderCustomGroups();
+    }
+
+    // 3. Display groups from storage
+    function renderCustomGroups() {
+        const container = document.getElementById('group-list-container');
+        if (!container) return;
+
+        const customGroups = JSON.parse(localStorage.getItem('my_custom_groups')) || [];
+        
+        customGroups.forEach(group => {
+            // Check if element already exists to avoid duplicates
+            if(!document.getElementById(group.id)) {
+                const card = document.createElement('div');
+                card.className = 'group-card';
+                card.id = group.id;
+                card.onclick = () => goToGroup(group.id, group.name);
+                
+                card.innerHTML = `
+                    <div class="group-icon" style="background: ${group.color};">${group.initials}</div>
+                    <div class="group-info">
+                        <p class="group-name">${group.name}</p>
+                        <span class="group-meta">1 Member • New Group</span>
+                    </div>
+                    <button class="view-btn">View</button>
+                `;
+                container.appendChild(card);
+            }
+        });
+    }
+
+    // 4. Search functionality
+    const searchInput = document.querySelector('.search-box');
+    searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.group-card');
+        
+        cards.forEach(card => {
+            const name = card.querySelector('.group-name').textContent.toLowerCase();
+            card.style.display = name.includes(term) ? 'flex' : 'none';
+        });
+    });
+
+    // Run on page load
+    window.onload = renderCustomGroups;
+    
+    
+    
+    
+    // Function to seed initial content if the app is empty
+function seedGroupContent() {
+    const existingPosts = localStorage.getItem('app_posts');
+    
+    // Only seed if there are no posts yet
+    if (!existingPosts || JSON.parse(existingPosts).length === 0) {
+        const initialData = [
+            // DevTalk Community
+            { groupId: 'dev_talk', text: "Has anyone tried the new Gemini API features? The speed is incredible.", time: Date.now() - 3600000 },
+            { groupId: 'dev_talk', text: "Pro tip: Use 'clamp()' in CSS for truly responsive typography without media queries!", time: Date.now() - 7200000 },
+            
+            // Freelance Gigs
+            { groupId: 'freelance', text: "Looking for a UI Designer for a 3-month fintech project. DM portfolios!", time: Date.now() - 1000000 },
+            { groupId: 'freelance', text: "How do you guys handle scope creep with difficult clients?", time: Date.now() - 5000000 },
+
+            // Education Hub
+            { groupId: 'edu', text: "The midterm study guide for Data Structures is now available in the shared folder.", time: Date.now() - 4000000 },
+            { groupId: 'edu', text: "Does anyone want to form a study group for the AWS Certification exam?", time: Date.now() - 9000000 },
+
+            // Mindful Movement (Fitness)
+            { groupId: 'fitness', text: "Day 15 of the 30-day Yoga challenge! Who is still with me? 🧘‍♀️", time: Date.now() - 2000000 },
+            { groupId: 'fitness', text: "Recovery is just as important as the workout. Don't skip your stretch days!", time: Date.now() - 6000000 },
+
+            // Crypto & Finance
+            { groupId: 'finance', text: "Market is looking volatile today. Make sure to set your stop-losses!", time: Date.now() - 800000 },
+            { groupId: 'finance', text: "Is it too late to get into index funds? Asking for a friend.", time: Date.now() - 3000000 },
+
+            // Gourmet Creators (Food)
+            { groupId: 'food', text: "Finally perfected my 72-hour pizza dough. The crust is everything.", time: Date.now() - 1200000 },
+            { groupId: 'food', text: "What's the best substitute for heavy cream in a pasta carbonara?", time: Date.now() - 4500000 },
+
+            // Shutter Masters (Photography)
+            { groupId: 'photo', text: "Golden hour at the beach today was magical. Checking my SD card now!", time: Date.now() - 2500000 },
+            
+            // Nomad Adventures (Travel)
+            { groupId: 'travel', text: "Current view from my 'office' in Bali. Internet is surprisingly fast!", time: Date.now() - 1500000 }
+        ];
+
+        localStorage.setItem('app_posts', JSON.stringify(initialData));
+    }
+}
+
+// Call this inside window.onload or at the bottom of the script
+seedGroupContent();
+
+function loadPosts() {
+    const allPosts = JSON.parse(localStorage.getItem('app_posts')) || [];
+    const filtered = allPosts.filter(p => p.groupId === groupId);
+    
+    const list = document.getElementById('post-list');
+    
+    if (filtered.length === 0) {
+        list.innerHTML = '<p style="text-align:center; color:gray;">No posts here yet.</p>';
+        return;
+    }
+
+    list.innerHTML = filtered.map(p => {
+        // Calculate "Time Ago"
+        const seconds = Math.floor((Date.now() - p.time) / 1000);
+        let timeAgo = "Just now";
+        if (seconds > 60) timeAgo = Math.floor(seconds / 60) + "m ago";
+        if (seconds > 3600) timeAgo = Math.floor(seconds / 3600) + "h ago";
+        if (seconds > 86400) timeAgo = Math.floor(seconds / 86400) + "d ago";
+
+        return `
+            <div class="post">
+                <div style="display: flex; justify-content: space-between;">
+                    <b>Community Member</b>
+                    <small style="color: gray;">${timeAgo}</small>
+                </div>
+                <p style="margin: 8px 0 0 0;">${p.text}</p>
+            </div>
+        `;
+    }).join('');
+}     
+</script>
+
+</body>
+</html>
