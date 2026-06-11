@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenX Ventures | Asset Store & Analytics Hub</title>
+    <!-- Tailwind CSS v4 -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- MIXPANEL ENGINE (Direct Traffic Event Tracker) -->
+    <script type="text/javascript">
+        (function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+        for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof mixpanel_custom_lib_url?mixpanel_custom_lib_url:"file:"===f.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
+        
+        // Tapai ko Mixpanel token code yahan thapnuhos setup gari sake paxi
+        mixpanel.init("YOUR_MIXPANEL_PROJECT_TOKEN", {batch_requests:true});
+        mixpanel.track_pageview({"page": "GenX Storefront"});
+    </script>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col justify-between font-sans antialiased">
+
+    <!-- TOP CONTROL NAVIGATION -->
+    <header class="w-full max-w-6xl mx-auto px-6 pt-6 pb-4 flex flex-col sm:flex-row justify-between items-center border-b border-gray-900 gap-4">
+        <div class="flex items-center gap-3">
+            <div class="bg-gradient-to-br from-indigo-600 to-purple-600 p-2.5 rounded-xl shadow-lg shadow-indigo-500/20">
+                <i class="fa-solid fa-layer-group text-lg text-white"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-black tracking-wider text-white">GENX VENTURES</h1>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">App Portfolio & Commercial Management</p>
+            </div>
+        </div>
+        
+        <!-- Live Traffic Simulator / Impression Badge for Renters -->
+        <div class="flex items-center gap-3 bg-gray-900/80 border border-gray-800 px-4 py-2 rounded-xl text-xs">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span class="text-gray-400 font-medium" id="traffic-monitor">Analyzing Server Request...</span>
+        </div>
+    </header>
+
+    <!-- MAIN BODY PORTFOLIO -->
+    <main class="w-full max-w-6xl mx-auto px-6 py-12 flex-grow">
+        
+        <!-- Headline Section -->
+        <div class="max-w-2xl mx-auto text-center mb-16">
+            <span class="bg-indigo-500/10 text-indigo-400 text-[11px] font-bold tracking-widest px-3 py-1 rounded-full border border-indigo-500/20 uppercase">System Lease Architecture</span>
+            <h2 class="text-3xl font-black text-white mt-4 sm:text-4xl tracking-tight">Active APK Asset Deployment</h2>
+            <p class="text-sm text-gray-400 mt-2">Verified monetization structures. Data clicks and download actions are logged in real-time to build audited metrics for rental evaluation contracts.</p>
+        </div>
+
+        <!-- 4-APP CARDS GRID (Sourced directly from your MediaFire directory) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 max-w-4xl mx-auto">
+
+            <!-- Card 1: Core GenX Module -->
+            <div class="bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-800/80 p-6 flex flex-col justify-between shadow-xl transition hover:border-indigo-500/40">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-indigo-950/60 text-indigo-400 p-2.5 rounded-xl border border-indigo-900/50">
+                            <i class="fa-solid fa-server text-lg"></i>
+                        </div>
+                        <span class="bg-indigo-500/10 text-indigo-400 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">690+ Downloads</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">_GenX_18807163(2).apk</h3>
+                    <p class="text-xs text-gray-400 mt-1.5 leading-relaxed">Core automation dashboard logic designed for systematic reward distributions and scale operations.</p>
+                </div>
+                <div class="mt-6 border-t border-gray-800/60 pt-4">
+                    <div class="flex justify-between text-[11px] text-gray-500 mb-3">
+                        <span>File Size: 31.72 MB</span>
+                        <span>Rent Status: <span class="text-indigo-400 font-bold">Available</span></span>
+                    </div>
+                    <a href="https://www.mediafire.com/file/7k7lhff35qdnedx/_GenX_18807163%25282%2529.apk/file" target="_blank" onclick="logMetric('_GenX_Core')" class="w-full block text-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md transition">
+                        <i class="fa-solid fa-download mr-1"></i> Access Application APK
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card 2: LuiseBank Module -->
+            <div class="bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-800/80 p-6 flex flex-col justify-between shadow-xl transition hover:border-amber-500/40">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-amber-950/60 text-amber-400 p-2.5 rounded-xl border border-amber-900/50">
+                            <i class="fa-solid fa-building-columns text-lg"></i>
+                        </div>
+                        <span class="bg-amber-500/10 text-amber-400 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">60 Downloads</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">23190_LuiseBank.apk</h3>
+                    <p class="text-xs text-gray-400 mt-1.5 leading-relaxed">Simulated banking UI flow control module built for digital task balance accounting procedures.</p>
+                </div>
+                <div class="mt-6 border-t border-gray-800/60 pt-4">
+                    <div class="flex justify-between text-[11px] text-gray-500 mb-3">
+                        <span>File Size: 29.88 MB</span>
+                        <span>Yield Audit: <span class="text-amber-400 font-bold">Premium Tier</span></span>
+                    </div>
+                    <a href="https://www.mediafire.com/file/zxaaedx7w5v4g0c/23190_LuiseBank.apk/file" target="_blank" onclick="logMetric('LuiseBank_App')" class="w-full block text-center bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md transition">
+                        <i class="fa-solid fa-download mr-1"></i> Access Application APK
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card 3: GoogleTaskAdsReview -->
+            <div class="bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-800/80 p-6 flex flex-col justify-between shadow-xl transition hover:border-purple-500/40">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-purple-950/60 text-purple-400 p-2.5 rounded-xl border border-purple-900/50">
+                            <i class="fa-solid fa-rectangle-ad text-lg"></i>
+                        </div>
+                        <span class="bg-purple-500/10 text-purple-400 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">42 Downloads</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">1641_GoogleTaskAdsReview.apk</h3>
+                    <p class="text-xs text-gray-400 mt-1.5 leading-relaxed">Integrated advertising engine validator optimized for monitoring passive ad system channels.</p>
+                </div>
+                <div class="mt-6 border-t border-gray-800/60 pt-4">
+                    <div class="flex justify-between text-[11px] text-gray-500 mb-3">
+                        <span>File Size: 60.26 MB</span>
+                        <span>Traffic Stability: <span class="text-purple-400 font-bold">High</span></span>
+                    </div>
+                    <a href="https://www.mediafire.com/file/4555a3ddjxkn3xa/1641_GoogleTaskAdsReview.apk/file" target="_blank" onclick="logMetric('AdsReview_App')" class="w-full block text-center bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md transition">
+                        <i class="fa-solid fa-download mr-1"></i> Access Application APK
+                    </a>
+                </div>
+            </div>
+
+<!-- Card 4: GenX Venture Module -->
+            <div class="bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-800/80 p-6 flex flex-col justify-between shadow-xl transition hover:border-indigo-500/50">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-indigo-950/60 text-indigo-400 p-2.5 rounded-xl border border-indigo-900/50">
+                            <i class="fa-solid fa-rocket text-lg"></i>
+                        </div>
+                        <span class="bg-indigo-500/10 text-indigo-400 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">30 Downloads</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">23199_GenXventures.apk</h3>
+                    <p class="text-xs text-gray-400 mt-1.5 leading-relaxed">Simulated banking UI flow control module built for digital task balance accounting procedures.</p>
+                </div>
+                <div class="mt-6 border-t border-gray-800/60 pt-4">
+                    <div class="flex justify-between text-[11px] text-gray-500 mb-3">
+                        <span>File Size: 29.84 MB</span>
+                        <span>Yield Audit: <span class="text-indigo-400 font-bold">Premium Tier</span></span>
+                    </div>
+                    <a href="https://www.mediafire.com/file/as2n4xvoch6u91b/20991_GenXVentures.apk/file" target="_blank" onclick="logMetric('GenXventures_App')" class="w-full block text-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md transition">
+                        <i class="fa-solid fa-download mr-1"></i> Access Application APK
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card 5: NexaLive Core -->
+            <div class="bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-800/80 p-6 flex flex-col justify-between shadow-xl transition hover:border-emerald-500/40">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-emerald-950/60 text-emerald-400 p-2.5 rounded-xl border border-emerald-900/50">
+                            <i class="fa-solid fa-tower-broadcast text-lg"></i>
+                        </div>
+                        <span class="bg-emerald-500/10 text-emerald-400 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">30 Downloads</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">22121_NexaLive.apk</h3>
+                    <p class="text-xs text-gray-400 mt-1.5 leading-relaxed">Streaming agency network gateway designed for active task rewards and room hosting log audits.</p>
+                </div>
+                <div class="mt-6 border-t border-gray-800/60 pt-4">
+                    <div class="flex justify-between text-[11px] text-gray-500 mb-3">
+                        <span>File Size: 29.86 MB</span>
+                        <span>Network Link: <span class="text-emerald-400 font-bold">Online</span></span>
+                    </div>
+                    <a href="https://www.mediafire.com/file/a32orsu3sil4y2q/22121_NexaLive.apk/file" target="_blank" onclick="logMetric('NexaLive_App')" class="w-full block text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md transition">
+                        <i class="fa-solid fa-download mr-1"></i> Access Application APK
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER TRACKING CODE -->
+    <script>
+        // Mixpanel Metric push trigger
+        function logMetric(assetName) {
+            mixpanel.track("Asset Download Initialized", {
+                "Target Asset": assetName,
+                "Device Timestamp": new Date().toISOString()
+            });
+        }
+
+        // Live conversion layout display logic for buyer impressions
+        const currentActive = Math.floor(Math.random() * (35 - 15) + 15);
+        document.getElementById('traffic-monitor').innerText = currentActive + " Active Lease Audits Online";
+    </script>
+
+    <footer class="w-full border-t border-gray-900 py-6 text-center text-xs text-gray-600">
+        <p>&copy; 2026 GenX Ventures Enterprise. Secured MediaFire Data Overlays Applied.</p>
+    </footer>
+
+</body>
+</html>
