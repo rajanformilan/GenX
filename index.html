@@ -191,7 +191,7 @@
                 return arr;
             }
 
-            let posts = JSON.parse(localStorage.getItem('genx_family_feed')) || generateSpecialPosts(40);
+            let posts = JSON.parse(localStorage.getItem('genx_family_feed')) || generateSpecialPosts(500);
 
             function renderFeed(filterText = "") {
                 postsList.innerHTML = "";
