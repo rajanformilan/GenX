@@ -228,11 +228,37 @@
                 <button type="submit" class="primary">Save Profile</button>
             </div>
             </div>
-<div class="footer-links" style="margin-top: 20px; font-size: 0.9em; color: var(--secondary-color);">
+</form>
+
+        <div class="footer-links" style="margin-top: 20px; font-size: 0.9em; color: var(--secondary-color);">
             Already have an account? <a href="login.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Log In</a>
         </div>
 
-    </div>
+    </div> ```
+
+---
+
+### 2. Add Hover Effects (Optional but Recommended)
+If you prefer to keep your styles clean and structured inside your `<style>` block rather than inline, you can add this CSS to the bottom of the `<style>` section in your `signup.html`:
+
+```css
+.footer-links {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: var(--secondary-color);
+}
+
+.footer-links a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+    color: #4b2cc2; /* Slightly darker shade on hover */
+}
         </form>
     </div> <script>
         const avatarUpload = document.getElementById('avatarUpload');
