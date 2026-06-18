@@ -126,6 +126,17 @@
             color: #4b2cc2;
             text-decoration: underline;
         }
+        /* Integrated Alert styling to match your signup layout */
+        .alert-message {
+            background-color: #ffe0b2;
+            color: #e65100;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            font-weight: 500;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -134,13 +145,15 @@
         <div class="brand-tagline">Your digital identity on VisitBook</div>
         <h2 class="form-header">Sign In</h2>
 
-        <form id="loginForm">
+        <div class="alert-message" id="form-alert"></div>
+
+        <form id="loginForm" novalidate>
             <label for="login-email">Email Address</label>
             <input type="email" id="login-email" placeholder="Enter your email" required />
 
             <label for="login-password">Password</label>
             <input type="password" id="login-password" placeholder="Enter your password" required />
-            
+
             <button type="submit" class="primary">Sign In</button>
         </form>
 
@@ -151,22 +164,87 @@
             <a href="forgot.html">Forgot Password?</a>
         </div>
     </div>
-    <script>
-        // Simple client-side validation for login form
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value.trim();
 
-            if (email === '' || password === '') {
-                alert('Please enter both email and password.');
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const formAlert = document.getElementById('form-alert');
+        const emailInput = document.getElementById('login-email');
+        const passwordInput = document.getElementById('login-password');
+
+        // Helper function for custom status messages
+        function showAlert(message, isSuccess = false) {
+            formAlert.textContent = message;
+            formAlert.style.display = 'block';
+            if (isSuccess) {
+                formAlert.style.backgroundColor = '#d4edda'; /* Green tint */
+                formAlert.style.color = '#155724';
             } else {
-                // In a real application, you would send this data to your server.
-                console.log('Attempting to log in with:', { email, password });
-                alert('Login attempted. (In a real app, this redirects to the dashboard)');
-                // window.location.href = 'dashboard.html'; // Example redirect
+                formAlert.style.backgroundColor = '#ffe0b2'; /* Orange tint */
+                formAlert.style.color = '#e65100';
+            }
+        }
+
+        function hideAlert() {
+            formAlert.style.display = 'none';
+            emailInput.style.borderColor = 'var(--border-color)';
+            passwordInput.style.borderColor = 'var(--border-color)';
+        }
+
+        // Authentication logic connecting to your signup storage system
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            hideAlert();
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            let isValid = true;
+
+            // Simple interface feedback for blank text areas
+            if (email === '') {
+                emailInput.style.borderColor = 'red';
+                isValid = false;
+            }
+            if (password === '') {
+                passwordInput.style.borderColor = 'red';
+                isValid = false;
+            }
+
+            if (!isValid) {
+                showAlert('Please enter both email and password.');
+                return;
+            }
+
+            // Read existing registered user object from signup page matching standard
+            const savedProfile = localStorage.getItem('userProfile');
+
+            if (!savedProfile) {
+                showAlert('No registered account detected. Please complete sign up.');
+                return;
+            }
+
+            const user = JSON.parse(savedProfile);
+
+            // Match current submission directly with local variables stored
+            if (user.email === email && user.password === password) {
+                showAlert('Login successful! Redirecting...', true);
+                
+                // Set a temporary token indicating access granted 
+                localStorage.setItem('isLoggedIn', 'true');
+
+                setTimeout(() => {
+                    window.location.href = 'profile.html'; // Directs user into dashboard space
+                }, 1500);
+            } else {
+                showAlert('Invalid email address or password configuration.');
+                emailInput.style.borderColor = 'red';
+                passwordInput.style.borderColor = 'red';
             }
         });
+
+        // Hide red error status indicators once user restarts active typing updates
+        emailInput.addEventListener('input', hideAlert);
+        passwordInput.addEventListener('input', hideAlert);
     </script>
 </body>
 </html>
