@@ -149,6 +149,22 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
+        /* Alternative Action Link */
+        .alt-action {
+            margin-top: 25px;
+            font-size: 0.95em;
+            color: var(--secondary-color);
+        }
+        .alt-action a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .alt-action a:hover {
+            color: #4b2cc2;
+            text-decoration: underline;
+        }
         /* Avatar Preview */
         img#preview {
             width: 150px;
@@ -183,7 +199,6 @@
             font-weight: 500;
             display: none;
         }
-
     </style>
 </head>
 <body>
@@ -191,13 +206,17 @@
         <div class="brand-logo">GenX</div>
         <div class="brand-tagline">Your digital identity on VisitBook</div>
         <h2 class="step-header">Create Your Profile</h2>
+        
         <div class="steps-indicator">
             <span class="step-dot active" id="dot-1" onclick="jumpToStep(1)"></span>
             <span class="step-dot" id="dot-2" onclick="jumpToStep(2)"></span>
             <span class="step-dot" id="dot-3" onclick="jumpToStep(3)"></span>
         </div>
+
         <div class="alert-message" id="form-alert"></div>
+
         <form id="authForm" novalidate>
+            <!-- Step 1: Credentials -->
             <div id="step-1" class="step-container active">
                 <h3>Step 1: Your Credentials</h3>
                 <input type="text" id="name" placeholder="Full Name" required />
@@ -207,6 +226,7 @@
                 <button type="button" class="primary" onclick="nextStep(2)">Next</button>
             </div>
 
+            <!-- Step 2: Personal Details -->
             <div id="step-2" class="step-container">
                 <h3>Step 2: Personal Details</h3>
                 <select id="gender" required>
@@ -219,6 +239,8 @@
                 <button type="button" class="secondary" onclick="prevStep(1)">Back</button>
                 <button type="button" class="primary" onclick="nextStep(3)">Next</button>
             </div>
+
+            <!-- Step 3: Profile Picture -->
             <div id="step-3" class="step-container">
                 <h3>Step 3: Profile Picture</h3>
                 <label for="avatarUpload">Upload Avatar Image:</label>
@@ -227,45 +249,21 @@
                 <button type="button" class="secondary" onclick="prevStep(2)">Back</button>
                 <button type="submit" class="primary">Save Profile</button>
             </div>
-            </div>
-</form>
-
-        <div class="footer-links" style="margin-top: 20px; font-size: 0.9em; color: var(--secondary-color);">
-            Already have an account? <a href="login.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Log In</a>
-        </div>
-
-    </div> ```
-
----
-
-### 2. Add Hover Effects (Optional but Recommended)
-If you prefer to keep your styles clean and structured inside your `<style>` block rather than inline, you can add this CSS to the bottom of the `<style>` section in your `signup.html`:
-
-```css
-.footer-links {
-    margin-top: 20px;
-    font-size: 0.9em;
-    color: var(--secondary-color);
-}
-
-.footer-links a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.2s ease;
-}
-
-.footer-links a:hover {
-    text-decoration: underline;
-    color: #4b2cc2; /* Slightly darker shade on hover */
-}
         </form>
-    </div> <script>
+
+        <!-- Dynamic redirect routing link placed contextually below form boundaries -->
+        <div class="alt-action">
+            I already have an account please <a href="login.html">Login</a>
+        </div>
+    </div>
+
+    <script>
         const avatarUpload = document.getElementById('avatarUpload');
         const preview = document.getElementById('preview');
         const formAlert = document.getElementById('form-alert');
         let avatarBase64 = '';
         let currentStep = 1;
+
         // --- Helper for displaying alerts ---
         function showAlert(message, isSuccess = false) {
             formAlert.textContent = message;
@@ -278,9 +276,11 @@ If you prefer to keep your styles clean and structured inside your `<style>` blo
                 formAlert.style.color = '#e65100'; /* Dark orange for error */
             }
         }
+
         function hideAlert() {
             formAlert.style.display = 'none';
         }
+
         // --- Image Preview Logic ---
         avatarUpload.addEventListener('change', function() {
             hideAlert();
@@ -294,6 +294,7 @@ If you prefer to keep your styles clean and structured inside your `<style>` blo
                 reader.readAsDataURL(file);
             }
         });
+
         // --- Step Navigation Functions ---
         function updateSteps(stepNumber) {
             hideAlert();
@@ -310,6 +311,7 @@ If you prefer to keep your styles clean and structured inside your `<style>` blo
             document.getElementById(`dot-${stepNumber}`).classList.add('active');
             currentStep = stepNumber;
         }
+
         function validateStep(stepNumber) {
             let isValid = true;
             let fieldsToValidate = [];
@@ -318,7 +320,7 @@ If you prefer to keep your styles clean and structured inside your `<style>` blo
                 fieldsToValidate = ['name', 'email', 'password', 'confirm-password'];
                 const password = document.getElementById('password').value;
                 const confirmPassword = document.getElementById('confirm-password').value;
-                
+
                 // Password Matching Check
                 if (password !== confirmPassword) {
                     isValid = false;
@@ -335,7 +337,6 @@ If you prefer to keep your styles clean and structured inside your `<style>` blo
                     document.getElementById('password').style.borderColor = 'var(--border-color)';
                     document.getElementById('confirm-password').style.borderColor = 'var(--border-color)';
                 }
-
             } else if (stepNumber === 2) {
                 fieldsToValidate = ['gender', 'dob'];
             } else if (stepNumber === 3) {
@@ -357,17 +358,19 @@ If you prefer to keep your styles clean and structured inside your `<style>` blo
             if (!isValid && currentStep === stepNumber) {
                  showAlert('Please fill in all required fields to continue.');
             }
-            
             return isValid;
         }
+
         function nextStep(stepNumber) {
             if (validateStep(currentStep)) {
                 updateSteps(stepNumber);
             }
         }
+
         function prevStep(stepNumber) {
             updateSteps(stepNumber);
         }
+
         function jumpToStep(stepNumber) {
             if (stepNumber < currentStep) {
                 updateSteps(stepNumber);
@@ -381,51 +384,49 @@ If you prefer to keep your styles clean and structured inside your `<style>` blo
                 }
             }
         }
+
         // --- Final Submission Logic ---
         document.getElementById('authForm').addEventListener('submit', function(e) {
             e.preventDefault();
             hideAlert();
-            
+
             // Final validation for all steps
             if (!validateStep(1)) {
                 updateSteps(1); 
                 return;
             }
-
             if (!validateStep(2)) {
                 updateSteps(2); 
                 return;
             }
-
             // Additional validation for avatar in the final step (Step 3)
             if (!avatarBase64) {
                 showAlert('Please upload an avatar image.');
                 updateSteps(3); // Go to step 3 to show the error
                 return;
             }
-            
+
             const userProfile = {
                 name: document.getElementById('name').value.trim(),
                 email: document.getElementById('email').value.trim(),
-                password: document.getElementById('password').value, // **NEW: Include password**
+                password: document.getElementById('password').value,
                 gender: document.getElementById('gender').value,
                 dob: document.getElementById('dob').value,
                 avatar: avatarBase64
             };
-            
-            // For a real app, you'd hash the password before sending/storing it!
-            
+
             // Save to localStorage
             localStorage.setItem('userProfile', JSON.stringify(userProfile));
-            
+
             // Show success message
             showAlert('Profile saved successfully! Redirecting...', true);
 
-            // Redirect after a short delay to allow user to see success message
+            // Redirect to login or profile after brief sequence block view window
             setTimeout(() => {
                 window.location.href = 'profile.html';
             }, 1500);
         });
+
         // Initialize to Step 1 on load
         updateSteps(1);
     </script>
