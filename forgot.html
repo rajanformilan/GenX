@@ -4,11 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>GenX (VisitBook) - Forgot Password</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght=400;700&display=swap" rel="stylesheet">
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            // INTEGRATED YOUR ACTUAL EMAILJS PUBLIC KEY HERE
+            emailjs.init("RF8eT_rtpOTmsGTIJ"); 
+        })();
+    </script>
     <style>
         :root {
-            /* Define brand colors */
             --primary-color: #5E3BEE;
             --secondary-color: #6C757D;
             --accent-color: #00BCD4;
@@ -68,7 +75,6 @@
             font-size: 0.95em;
             color: var(--secondary-color);
         }
-        /* Form Controls */
         input {
             width: calc(100% - 24px);
             margin: 12px 0;
@@ -93,7 +99,6 @@
             font-weight: 600;
             color: var(--text-dark);
         }
-        /* Buttons */
         button {
             width: 100%;
             margin: 25px 0 15px 0;
@@ -115,7 +120,12 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-        /* Link for sign in/signup */
+        button:disabled {
+            background-color: var(--secondary-color);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
         .alt-action {
             margin-top: 20px;
             font-size: 0.9em;
@@ -131,23 +141,24 @@
             color: #4b2cc2;
             text-decoration: underline;
         }
-        /* Alert styling from the original signup form */
         .alert-message {
-            background-color: #ffe0b2; /* Light orange */
-            color: #e65100; /* Darker orange */
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 15px;
             font-size: 0.9em;
             font-weight: 500;
-            display: none; /* Hidden by default */
+            display: none; 
+        }
+        .alert-error {
+            background-color: #ffe0b2; 
+            color: #e65100;
+            display: block;
         }
         .alert-success {
-             background-color: #d4edda; /* Light green for success */
-             color: #155724; /* Dark green for success */
-             display: block;
+            background-color: #d4edda; 
+            color: #155724; 
+            display: block;
         }
-
     </style>
 </head>
 <body>
@@ -155,42 +166,40 @@
         <div class="brand-logo">GenX</div>
         <div class="brand-tagline">VisitBook Password Recovery</div>
         <h2 class="form-header">Reset Your Password</h2>
-
         <p class="instruction">
             Enter the email address associated with your account and we'll send you a link to reset your password.
         </p>
         
         <div class="alert-message" id="form-alert"></div>
-
+        
         <form id="resetForm">
             <label for="reset-email">Email Address</label>
             <input type="email" id="reset-email" placeholder="e.g., your.email@domain.com" required />
-            
-            <button type="submit" class="primary">Send Reset Link</button>
+            <button type="submit" class="primary" id="submitBtn">Send Reset Link</button>
         </form>
-
+        
         <div class="alt-action">
             Remember your password? <a href="login.html">Sign In</a>
         </div>
     </div>
     <script>
         const formAlert = document.getElementById('form-alert');
-        
-        function showAlert(message, isSuccess = false) {
+        const submitBtn = document.getElementById('submitBtn');
+        const emailInput = document.getElementById('reset-email');
+
+        function showAlert(message, type = 'error') {
             formAlert.textContent = message;
-            formAlert.style.display = 'block';
-            if (isSuccess) {
+            if (type === 'success') {
                 formAlert.className = 'alert-message alert-success';
             } else {
-                formAlert.className = 'alert-message';
+                formAlert.className = 'alert-message alert-error';
             }
         }
-        
+
         document.getElementById('resetForm').addEventListener('submit', function(e) {
             e.preventDefault();
             formAlert.style.display = 'none';
-
-            const emailInput = document.getElementById('reset-email');
+            
             const email = emailInput.value.trim();
 
             if (email === '') {
@@ -198,25 +207,38 @@
                 emailInput.style.borderColor = 'red';
                 return;
             }
-            
-            // Basic email format validation
+
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 showAlert('Please enter a valid email address.');
                 emailInput.style.borderColor = 'red';
                 return;
             }
-            
+
             emailInput.style.borderColor = 'var(--border-color)';
             
-            // In a real application, you would send an AJAX request to your server here.
-            
-            // Simulate success
-            showAlert(`A password reset link has been sent to ${email}. Please check your inbox.`, true);
+            // Change button state to let user know it's working
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
 
-            // Optional: Disable button and clear input after submission
-            document.querySelector('button.primary').disabled = true;
-            emailInput.value = '';
+            // Prepare parameters matching your EmailJS Template
+            const templateParams = {
+                to_email: email,
+                reset_link: "https://yourwebsite.com/reset-password?email=" + encodeURIComponent(email) 
+            };
+
+            // Send actual email using EmailJS
+            emailjs.send("service_ial8v4m", "template_0c68uce", templateParams)
+                .then(function(response) {
+                    showAlert(`A password reset link has been sent to ${email}. Please check your inbox.`, 'success');
+                    emailInput.value = '';
+                    submitBtn.textContent = 'Link Sent!';
+                }, function(error) {
+                    console.error('EmailJS Error:', error);
+                    showAlert('Failed to send email. Please verify your EmailJS configurations.');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Reset Link';
+                });
         });
     </script>
 </body>
