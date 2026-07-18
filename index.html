@@ -195,22 +195,39 @@
             navbarLinks.classList.toggle('active');
         });
 
-        // --- SUPABASE CLIENT SETUP (FIXED IDENTIFIER CONFLICT) ---
+        // --- SUPABASE CLIENT SETUP ---
         const SUPABASE_URL = 'https://ihluezdiaehppibfddoz.supabase.co'; 
         const SUPABASE_ANON_KEY = 'sb_publishable_nTnzI-M8_Pd1oo1mmVQW0Q_b8EMjR9_'; 
-        
-        // Variable name changed from 'supabase' to 'supabaseClient' to fix SyntaxError
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let feedData = []; 
 
-        function loadMyProfileData() {
-            const savedAvatar = localStorage.getItem('genx_user_avatar');
-            if(savedAvatar) {
-                document.getElementById('myInputAvatar').src = savedAvatar;
+        // १. युजर लगइन छ कि छैन र उसको प्रोफाइल के छ भनेर Supabase Auth बाट तान्ने फङ्सन
+        async function loadMyProfileData() {
+            try {
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
+                
+                let myName = "Guest Family";
+                let myAvatar = "https://www.w3schools.com/howto/img_avatar.png";
+
+                if (user) {
+                    myName = user.user_metadata.full_name || user.user_metadata.name || user.email.split('@')[0];
+                    myAvatar = user.user_metadata.avatar_url || myAvatar;
+                    
+                    localStorage.setItem('genx_user_name', myName);
+                    localStorage.setItem('genx_user_avatar', myAvatar);
+                } else {
+                    myName = localStorage.getItem('genx_user_name') || myName;
+                    myAvatar = localStorage.getItem('genx_user_avatar') || myAvatar;
+                }
+
+                const avatarElement = document.getElementById('myInputAvatar');
+                if (avatarElement) avatarElement.src = myAvatar;
+                
+            } catch (err) {
+                console.error("Error loading auth profile:", err);
             }
         }
-        loadMyProfileData();
 
         function goToProfile() { window.location.href = 'profile.html'; }
 
@@ -220,7 +237,7 @@
             if(fileInput.files.length > 0) previewName.innerText = fileInput.files[0].name;
         }
 
-        // 1. FETCH ALL POSTS FROM SUPABASE
+        // २. FETCH ALL POSTS FROM SUPABASE
         async function fetchPostsFromCloud() {
             const { data, error } = await supabaseClient
                 .from('genx-table')
@@ -235,7 +252,7 @@
             }
         }
 
-        // 2. ADD NEW POST & UPLOAD MEDIA
+        // ३. ADD NEW POST & UPLOAD MEDIA USING AUTH PROFILE
         async function addNewPost() {
             const textInput = document.getElementById('postText');
             const fileInput = document.getElementById('postMedia');
@@ -246,8 +263,18 @@
             submitBtn.innerText = "Posting...";
             submitBtn.disabled = true;
 
-            const savedProfileName = localStorage.getItem('genx_user_name') || "You";
-            const savedAvatar = localStorage.getItem('genx_user_avatar') || "https://www.w3schools.com/howto/img_avatar.png";
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            
+            let savedProfileName = "Guest Family";
+            let savedAvatar = "https://www.w3schools.com/howto/img_avatar.png";
+
+            if (user) {
+                savedProfileName = user.user_metadata.full_name || user.user_metadata.name || user.email.split('@')[0];
+                savedAvatar = user.user_metadata.avatar_url || savedAvatar;
+            } else {
+                savedProfileName = localStorage.getItem('genx_user_name') || savedProfileName;
+                savedAvatar = localStorage.getItem('genx_user_avatar') || savedAvatar;
+            }
             
             let finalMediaUrl = "";
             let finalMediaType = "";
@@ -266,8 +293,6 @@
                         .from('user-media')
                         .getPublicUrl(uniqueFileName);
                     finalMediaUrl = publicUrlData.publicUrl;
-                } else {
-                    console.error("Storage upload error:", storageError);
                 }
             }
 
@@ -288,15 +313,13 @@
                 fileInput.value = "";
                 document.getElementById('file-preview-name').innerText = "";
                 await fetchPostsFromCloud(); 
-            } else {
-                console.error("Database insert error:", dbError);
             }
 
             submitBtn.innerText = "Post";
             submitBtn.disabled = false;
         }
 
-        // 3. RENDER FEED DATA (FIXED OPENLIKESMODAL BY POST ID)
+        // ४. RENDER FEED DATA
         function renderFeed() {
             const container = document.getElementById('postsList');
             const searchVal = document.getElementById('feedSearchInput').value.toLowerCase();
@@ -370,7 +393,7 @@
             });
         }
 
-        // 4. VIDEO VIEW TRACKING
+        // ५. VIDEO VIEW TRACKING
         window.trackVideoView = async (postId, idx) => {
             if(!feedData[idx].hasViewed) { 
                 const updatedViews = (feedData[idx].views || 0) + 1;
@@ -388,11 +411,18 @@
             }
         };
 
-        // 5. LIKE POST & UPDATE
+        // ६. LIKE POST USING AUTH NAME
         window.likePost = async (postId, idx) => {
-            const currentUserName = localStorage.getItem('genx_user_name') || "You";
-            if(!feedData[idx].likedBy) feedData[idx].likedBy = [];
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            let currentUserName = "Guest Family";
             
+            if (user) {
+                currentUserName = user.user_metadata.full_name || user.user_metadata.name || user.email.split('@')[0];
+            } else {
+                currentUserName = localStorage.getItem('genx_user_name') || currentUserName;
+            }
+
+            if(!feedData[idx].likedBy) feedData[idx].likedBy = [];
             let currentLikes = [...feedData[idx].likedBy];
             const userIndex = currentLikes.indexOf(currentUserName);
 
@@ -418,13 +448,22 @@
             box.style.display = box.style.display === 'block' ? 'none' : 'block';
         };
 
-        // 6. ADD COMMENT
+        // ७. ADD COMMENT USING AUTH PROFILE
         window.addComment = async (postId, idx) => {
             const input = document.getElementById(`commentInput-${idx}`);
             if(!input.value.trim()) return;
 
-            const currentUserName = localStorage.getItem('genx_user_name') || "You";
-            const currentUserAvatar = localStorage.getItem('genx_user_avatar') || "https://www.w3schools.com/howto/img_avatar.png";
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            let currentUserName = "Guest Family";
+            let currentUserAvatar = "https://www.w3schools.com/howto/img_avatar.png";
+
+            if (user) {
+                currentUserName = user.user_metadata.full_name || user.user_metadata.name || user.email.split('@')[0];
+                currentUserAvatar = user.user_metadata.avatar_url || currentUserAvatar;
+            } else {
+                currentUserName = localStorage.getItem('genx_user_name') || currentUserName;
+                currentUserAvatar = localStorage.getItem('genx_user_avatar') || currentUserAvatar;
+            }
             
             if(!feedData[idx].comments) feedData[idx].comments = [];
             let currentComments = [...feedData[idx].comments];
@@ -447,7 +486,7 @@
             }
         };
 
-        // 7. LIKES MODAL (FIXED BY ID LOOKUP)
+        // ८. LIKES MODAL BY POST ID
         window.openLikesModal = (postId) => {
             const modal = document.getElementById('likesModal');
             const listContainer = document.getElementById('likesModalList');
@@ -474,7 +513,8 @@
             document.getElementById('likesModal').style.display = "none";
         };
 
-        // Initial Data Fetch
+        // Initial Executions
+        loadMyProfileData();
         fetchPostsFromCloud();
     </script>
 </body>
