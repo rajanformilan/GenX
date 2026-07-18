@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GenX — Family Hub & Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; font-family: "Poppins", sans-serif; background: #f0f2f5; color: #1c1e21; padding-bottom: 50px; }
         
@@ -42,10 +42,11 @@
                 display: flex; flex-direction: column; position: absolute; top: 65px; right: -100%; 
                 width: 200px; background: white; box-shadow: -2px 4px 8px rgba(0,0,0,0.1); 
                 padding: 15px 0; transition: right 0.3s ease; align-items: flex-start; gap: 5px;
+                z-index: 2000;
             }
             .nav-links li { width: 100%; }
             .nav-links a { display: block; width: 100%; box-sizing: border-box; border-radius: 0; padding: 10px 20px; }
-            .nav-links.active { right: 0; }
+            .nav-links.active { right: 0; z-index: 9999; }
             
             /* Toggle Animation */
             .menu-toggle.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
@@ -89,10 +90,20 @@
         .likes-count { cursor: pointer; font-weight: 500; }
         .likes-count:hover { text-decoration: underline; color: #1877f2; }
         .video-views-count { font-weight: 500; color: #65676b; }
-
+        
         .actions { display: flex; margin-top: 4px; border-bottom: 1px solid #e4e6eb; padding-bottom: 4px; }
         .actions button { flex: 1; background: none; border: none; color: #65676b; cursor: pointer; font-weight: 600; padding: 10px; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; border-radius: 6px; }
         .actions button:hover { background: #f2f3f5; color: #1877f2; }
+
+        /* --- Modal Style --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 20px; border-radius: 16px; width: 320px; max-height: 400px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e4e6eb; padding-bottom: 10px; margin-bottom: 15px; }
+        .modal-header h4 { margin: 0; font-size: 16px; color: #050505; }
+        .close-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #65676b; font-weight: bold; }
+        .like-user-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .like-user-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+        .like-user-name { font-weight: 600; font-size: 14.5px; }
 
         /* --- Comment Section Style --- */
         .comment-section { display: none; margin-top: 12px; padding-top: 8px; }
@@ -105,30 +116,20 @@
         .comment-input-box { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
         .comment-input-box input { flex: 1; border: 1px solid #ddd; background: #f0f2f5; border-radius: 20px; padding: 8px 16px; font-size: 13.5px; outline: none; }
         .comment-btn { background: #1877f2; color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
-
-        /* --- Modal Style --- */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 20px; border-radius: 16px; width: 320px; max-height: 400px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e4e6eb; padding-bottom: 10px; margin-bottom: 15px; }
-        .modal-header h4 { margin: 0; font-size: 16px; color: #050505; }
-        .close-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #65676b; font-weight: bold; }
-        .like-user-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .like-user-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
-        .like-user-name { font-weight: 600; font-size: 14.5px; }
     </style>
+
+    <!-- Supabase Library CDN Link -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-
     <nav class="navbar">
         <a href="#" class="logo">GenX</a>
         
-        <!-- Search Bar Built In -->
         <div class="search-container">
             <span class="search-icon">🔍</span>
             <input type="text" id="feedSearchInput" placeholder="Search posts or family..." oninput="renderFeed()">
         </div>
 
-        <!-- Three Lines Menu Toggle Built In -->
         <div class="menu-toggle" id="menuToggleBtn">
             <span></span>
             <span></span>
@@ -167,7 +168,7 @@
                     </label>
                     <span id="file-preview-name"></span>
                 </div>
-                <button class="post-submit-btn" onclick="addNewPost()">Post</button>
+                <button id="submitPostBtn" class="post-submit-btn" onclick="addNewPost()">Post</button>
             </div>
         </div>
         
@@ -185,7 +186,7 @@
     </div>
 
     <script>
-        // Hamburger Menu Logic
+        // --- THREE LINES MENU JAVASCRIPT ---
         const menuToggleBtn = document.getElementById('menuToggleBtn');
         const navbarLinks = document.getElementById('navbarLinks');
 
@@ -194,40 +195,14 @@
             navbarLinks.classList.toggle('active');
         });
 
-        let defaultFeed = [
-            {
-                id: 1,
-                author: "Buba",
-                avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop",
-                text: "Reflecting on the weights men carry silently. Balancing corporate pressures, financial stability for the household.",
-                mediaType: "image",
-                mediaUrl: "https://picsum.photos/550/350",
-                likedBy: ["Suman Shrestha", "Rohan Das"],
-                comments: [
-                    { user: "Rohan Das", avatar: "https://www.w3schools.com/howto/img_avatar.png", text: "Very deep and true thoughts!" }
-                ],
-                views: 0,
-                time: "1m ago"
-            },
-            {
-                id: 2,
-                author: "Dai",
-                avatar: "https://www.w3schools.com/howto/img_avatar.png",
-                text: "Check out this beautiful family moments video clip!",
-                mediaType: "video",
-                mediaUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
-                likedBy: ["Suman Shrestha"],
-                comments: [],
-                views: 12,
-                time: "10m ago"
-            }
-        ];
-
-        if(!localStorage.getItem('genx_text_meta')) {
-            localStorage.setItem('genx_text_meta', JSON.stringify(defaultFeed));
-        }
+        // --- SUPABASE CLIENT SETUP (FIXED IDENTIFIER CONFLICT) ---
+        const SUPABASE_URL = 'https://ihluezdiaehppibfddoz.supabase.co'; 
+        const SUPABASE_ANON_KEY = 'sb_publishable_nTnzI-M8_Pd1oo1mmVQW0Q_b8EMjR9_'; 
         
-        let feedData = JSON.parse(localStorage.getItem('genx_text_meta'));
+        // Variable name changed from 'supabase' to 'supabaseClient' to fix SyntaxError
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let feedData = []; 
 
         function loadMyProfileData() {
             const savedAvatar = localStorage.getItem('genx_user_avatar');
@@ -245,65 +220,89 @@
             if(fileInput.files.length > 0) previewName.innerText = fileInput.files[0].name;
         }
 
-        function addNewPost() {
+        // 1. FETCH ALL POSTS FROM SUPABASE
+        async function fetchPostsFromCloud() {
+            const { data, error } = await supabaseClient
+                .from('genx-table')
+                .select('*')
+                .order('id', { ascending: false });
+
+            if (!error) {
+                feedData = data || [];
+                renderFeed();
+            } else {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        // 2. ADD NEW POST & UPLOAD MEDIA
+        async function addNewPost() {
             const textInput = document.getElementById('postText');
             const fileInput = document.getElementById('postMedia');
+            const submitBtn = document.getElementById('submitPostBtn');
             
             if(!textInput.value.trim() && fileInput.files.length === 0) return;
+
+            submitBtn.innerText = "Posting...";
+            submitBtn.disabled = true;
 
             const savedProfileName = localStorage.getItem('genx_user_name') || "You";
             const savedAvatar = localStorage.getItem('genx_user_avatar') || "https://www.w3schools.com/howto/img_avatar.png";
             
-            let mediaType = "";
-            let mediaUrl = "";
+            let finalMediaUrl = "";
+            let finalMediaType = "";
 
             if(fileInput.files.length > 0) {
                 const file = fileInput.files[0];
-                mediaType = file.type.startsWith('video/') ? 'video' : 'image';
-                mediaUrl = URL.createObjectURL(file);
+                finalMediaType = file.type.startsWith('video/') ? 'video' : 'image';
+                const uniqueFileName = `${Date.now()}_${file.name}`;
+
+                const { data: storageData, error: storageError } = await supabaseClient.storage
+                    .from('user-media')
+                    .upload(uniqueFileName, file);
+
+                if (!storageError) {
+                    const { data: publicUrlData } = supabaseClient.storage
+                        .from('user-media')
+                        .getPublicUrl(uniqueFileName);
+                    finalMediaUrl = publicUrlData.publicUrl;
+                } else {
+                    console.error("Storage upload error:", storageError);
+                }
             }
 
-            const newPost = {
-                id: Date.now(),
+            const { error: dbError } = await supabaseClient.from('genx-table').insert([{
                 author: savedProfileName,
                 avatar: savedAvatar,
                 text: textInput.value,
-                mediaType: mediaType,
-                mediaUrl: mediaUrl,
+                mediaUrl: finalMediaUrl || null,
+                mediaType: finalMediaType || null,
                 likedBy: [],
                 comments: [],
                 views: 0,
                 time: "Just now"
-            };
+            }]);
 
-            feedData.unshift(newPost);
-            saveToStorage();
-            renderFeed();
+            if (!dbError) {
+                textInput.value = "";
+                fileInput.value = "";
+                document.getElementById('file-preview-name').innerText = "";
+                await fetchPostsFromCloud(); 
+            } else {
+                console.error("Database insert error:", dbError);
+            }
 
-            textInput.value = "";
-            fileInput.value = "";
-            document.getElementById('file-preview-name').innerText = "";
+            submitBtn.innerText = "Post";
+            submitBtn.disabled = false;
         }
 
-        function saveToStorage() {
-            try {
-                let textOnlyMeta = feedData.map(p => ({
-                    id: p.id, author: p.author, avatar: p.avatar, text: p.text, time: p.time,
-                    mediaType: p.mediaType, mediaUrl: (p.mediaUrl && p.mediaUrl.startsWith('blob:')) ? "" : p.mediaUrl,
-                    likedBy: p.likedBy || [], comments: p.comments || [], views: p.views || 0
-                }));
-                localStorage.setItem('genx_text_meta', JSON.stringify(textOnlyMeta));
-            } catch(e){}
-        }
-
-        // Integrated Search & View Count inside Render Function
+        // 3. RENDER FEED DATA (FIXED OPENLIKESMODAL BY POST ID)
         function renderFeed() {
             const container = document.getElementById('postsList');
             const searchVal = document.getElementById('feedSearchInput').value.toLowerCase();
             container.innerHTML = "";
             
             feedData.forEach((post, index) => {
-                // Search filtering logic
                 if (searchVal && !post.author.toLowerCase().includes(searchVal) && !post.text.toLowerCase().includes(searchVal)) {
                     return; 
                 }
@@ -313,16 +312,15 @@
                 let postViews = post.views || 0;
                 let mediaHtml = "";
 
-                if(post.mediaType) {
-                    let currentSrc = post.mediaUrl || "https://picsum.photos/550/350";
+                if(post.mediaUrl) {
                     mediaHtml = post.mediaType === 'video' ? 
-                        `<div class="media-container"><video controls playsinline onplay="trackVideoView(${index})"><source src="${currentSrc}"></video></div>` :
-                        `<div class="media-container"><img src="${currentSrc}"></div>`;
+                        `<div class="media-container"><video controls playsinline onplay="trackVideoView('${post.id}', ${index})"><source src="${post.mediaUrl}"></video></div>` :
+                        `<div class="media-container"><img src="${post.mediaUrl}"></div>`;
                 }
 
                 let viewsHtml = post.mediaType === 'video' ? `<span class="video-views-count">👁️ ${postViews} views</span>` : '';
-
                 let commentsHtml = "";
+
                 currentComments.forEach(c => {
                     commentsHtml += `
                         <div class="comment-item">
@@ -349,14 +347,14 @@
                     ${mediaHtml}
                     
                     <div class="post-stats">
-                        <span class="likes-count" onclick="openLikesModal(${index})">👍 ${currentLikes.length} likes</span>
+                        <span class="likes-count" onclick="openLikesModal('${post.id}')">👍 ${currentLikes.length} likes</span>
                         <div>
-                            <span style="margin-right:10px;">${currentComments.length} comments</span>
+                            <span style="margin-right:10px; cursor:pointer;" onclick="toggleComments(${index})">${currentComments.length} comments</span>
                             ${viewsHtml}
                         </div>
                     </div>
                     <div class="actions">
-                        <button onclick="likePost(${index})">👍 Like</button>
+                        <button onclick="likePost('${post.id}', ${index})">👍 Like</button>
                         <button onclick="toggleComments(${index})">💬 Comment</button>
                         <button onclick="alert('Shared!')">🔄 Share</button>
                     </div>
@@ -364,7 +362,7 @@
                         <div class="comment-list" id="commentList-${index}">${commentsHtml}</div>
                         <div class="comment-input-box">
                             <input type="text" id="commentInput-${index}" placeholder="Write a family comment...">
-                            <button class="comment-btn" onclick="addComment(${index})">Send</button>
+                            <button class="comment-btn" onclick="addComment('${post.id}', ${index})">Send</button>
                         </div>
                     </div>
                 `;
@@ -372,28 +370,47 @@
             });
         }
 
-        // Function to Track & Increment Video Views
-        window.trackVideoView = (idx) => {
+        // 4. VIDEO VIEW TRACKING
+        window.trackVideoView = async (postId, idx) => {
             if(!feedData[idx].hasViewed) { 
-                feedData[idx].views = (feedData[idx].views || 0) + 1;
-                feedData[idx].hasViewed = true; // Prevents spamming views continuously on same session pause/play
-                saveToStorage();
-                renderFeed();
+                const updatedViews = (feedData[idx].views || 0) + 1;
+                
+                const { error } = await supabaseClient
+                    .from('genx-table')
+                    .update({ views: updatedViews })
+                    .eq('id', postId);
+
+                if(!error) {
+                    feedData[idx].views = updatedViews;
+                    feedData[idx].hasViewed = true; 
+                    renderFeed();
+                }
             }
         };
 
-        window.likePost = (idx) => {
+        // 5. LIKE POST & UPDATE
+        window.likePost = async (postId, idx) => {
             const currentUserName = localStorage.getItem('genx_user_name') || "You";
             if(!feedData[idx].likedBy) feedData[idx].likedBy = [];
             
-            const userIndex = feedData[idx].likedBy.indexOf(currentUserName);
+            let currentLikes = [...feedData[idx].likedBy];
+            const userIndex = currentLikes.indexOf(currentUserName);
+
             if (userIndex === -1) {
-                feedData[idx].likedBy.push(currentUserName);
+                currentLikes.push(currentUserName);
             } else {
-                feedData[idx].likedBy.splice(userIndex, 1);
+                currentLikes.splice(userIndex, 1);
             }
-            saveToStorage();
-            renderFeed();
+
+            const { error } = await supabaseClient
+                .from('genx-table')
+                .update({ likedBy: currentLikes })
+                .eq('id', postId);
+
+            if(!error) {
+                feedData[idx].likedBy = currentLikes;
+                renderFeed();
+            }
         };
 
         window.toggleComments = (idx) => {
@@ -401,7 +418,8 @@
             box.style.display = box.style.display === 'block' ? 'none' : 'block';
         };
 
-        window.addComment = (idx) => {
+        // 6. ADD COMMENT
+        window.addComment = async (postId, idx) => {
             const input = document.getElementById(`commentInput-${idx}`);
             if(!input.value.trim()) return;
 
@@ -409,22 +427,35 @@
             const currentUserAvatar = localStorage.getItem('genx_user_avatar') || "https://www.w3schools.com/howto/img_avatar.png";
             
             if(!feedData[idx].comments) feedData[idx].comments = [];
-            feedData[idx].comments.push({
+            let currentComments = [...feedData[idx].comments];
+
+            currentComments.push({
                 user: currentUserName,
                 avatar: currentUserAvatar,
                 text: input.value
             });
-            saveToStorage();
-            renderFeed();
-            document.getElementById(`commentSection-${idx}`).style.display = 'block';
+
+            const { error } = await supabaseClient
+                .from('genx-table')
+                .update({ comments: currentComments })
+                .eq('id', postId);
+
+            if(!error) {
+                feedData[idx].comments = currentComments;
+                renderFeed();
+                document.getElementById(`commentSection-${idx}`).style.display = 'block';
+            }
         };
 
-        window.openLikesModal = (idx) => {
+        // 7. LIKES MODAL (FIXED BY ID LOOKUP)
+        window.openLikesModal = (postId) => {
             const modal = document.getElementById('likesModal');
             const listContainer = document.getElementById('likesModalList');
             listContainer.innerHTML = "";
+            
+            const post = feedData.find(p => p.id === postId);
+            const users = post ? (post.likedBy || []) : [];
 
-            const users = feedData[idx].likedBy || [];
             if(users.length === 0) {
                 listContainer.innerHTML = "<p style='color:#65676b; font-size:14px; text-align:center;'>No likes yet.</p>";
             } else {
@@ -443,7 +474,8 @@
             document.getElementById('likesModal').style.display = "none";
         };
 
-        renderFeed();
+        // Initial Data Fetch
+        fetchPostsFromCloud();
     </script>
 </body>
 </html>
