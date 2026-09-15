@@ -38,9 +38,8 @@
 
         /* --- Feed Styling --- */
         .feed { max-width: 650px; margin: 20px auto; padding: 0 10px; }
-        .post { background: white; margin-bottom: 20px; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #eef0f3; }
+        .post { background: white; margin-bottom: 20px; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #eef0f3; position: relative; }
 
-        /* --- Updated Family Badges --- */
         .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
         .badge-assets { background: #e8f8f5; color: #117a65; }
         .badge-talks { background: #fef9e7; color: #b7950b; }
@@ -50,8 +49,11 @@
         .post-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .author-name { font-weight: 700; color: #2c3e50; font-size: 15px; }
         .post-time { color: #7f8c8d; font-size: 11px; }
-        .post-text { margin: 12px 0; font-size: 14.5px; line-height: 1.6; white-space: pre-wrap; color: #34495e; }
-        .post img, .post video { width: 100%; border-radius: 8px; margin-top: 8px; max-height: 380px; object-fit: cover; background-color: #000; }
+        .post-text { margin: 12px 0; font-size: 14.5px; line-height: 1.6; white-space: pre-wrap; color: #34495e; font-family: "Poppins", sans-serif; }
+        
+        /* Media styles */
+        .post img, .post video { width: 100%; border-radius: 8px; margin-top: 12px; max-height: 400px; object-fit: cover; background-color: #f4f6f9; border: 1px solid #eaeded; }
+        
         .view-count { font-size: 12px; color: #7f8c8d; margin-top: 6px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
 
         .actions { display: flex; border-top: 1px solid #f2f4f4; margin-top: 15px; padding-top: 8px; }
@@ -78,13 +80,12 @@
         }
         .comment-item strong { color: #2e86c1; margin-right: 5px; }
     </style>
-
 </head>
 <body>
 
     <nav class="navbar">
         <div class="logo">GenX</div>
-        <div class="search-bar"><input type="text" id="searchInput" placeholder="Search assets, legacy notes, or family talks..."></div>
+        <div class="search-bar"><input type="text" id="searchInput" placeholder="Search posts, family updates, or members..."></div>
         <div class="menu-toggle" id="menu-toggle">☰</div>
         <ul class="nav-links" id="nav-links">
             <li><a href="index.html">Home</a></li>
@@ -98,7 +99,7 @@
             <li><a href="services.html">Services</a></li>
             <li><a href="contact.html">Contact</a></li>
             <li><a href="settings.html">Settings</a></li>
-<li><a href="download.html">Download Please</a></li>
+            <li><a href="download.html">Download Please</a></li>
         </ul>
     </nav>
 
@@ -107,6 +108,9 @@
     </div>
 
     <script>
+        const PLAYBOOK_API_KEY = "cK-uXCC8MEZB7s8mL-UeDd0dlwM0BLertz2MyCjwdQg";
+        const PLAYBOOK_API_URL = "https://api.playbook.com/v1/posts";
+
         document.addEventListener('DOMContentLoaded', () => {
             const menuToggle = document.getElementById('menu-toggle');
             const navLinks = document.getElementById('nav-links');
@@ -115,162 +119,124 @@
 
             menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
 
-            function generateSpecialPosts(count = 500) {
-                // Expanded types focusing directly on Men, Women, Children, and Grandparents/Legacy Life
-                const types = [
-                    { 
-                        cat: "Men's Life & Leadership", 
-                        badge: "badge-assets", 
-                        authors: ["Buba", "Kaka", "Mama", "Dai"], 
-                        content: [
-                            "Reflecting on the weights men carry silently. Balancing corporate pressures, financial stability for the household, and trying to be a compassionate anchor for the kids. Let's make time for a men's sit-down dinner this weekend.",
-                            "A note from the desk of the house patriarchs: True strength isn't about control; it's about building a foundation where our wives, sisters, and children feel entirely safe and celebrated.",
-                            "Working late on our updated family business blueprints. Leaving a clear roadmap for the boys and young men in the family to understand hard work, integrity, and building generational wealth."
-                        ] 
-                    },
-                    { 
-                        cat: "Women's Wisdom & Perspective", 
-                        badge: "badge-talks", 
-                        authors: ["Aama", "Maimaju", "Didi", "Kaki"], 
-                        content: [
-                            "Behind every smooth running house is a matrix of invisible labor, emotional intelligence, and fierce protection. To all the women in this family: Your career, your sacrifices, and your love hold our pillars together.",
-                            "Teaching the younger girls about ancestral recipes, financial autonomy, and self-worth today. A woman is the heart of the household, but she must always keep her mind sharp and independent.",
-                            "Quiet moments before the morning rush. Blessed to guide this family through stormy weather and joyful tides with grace, resilience, and unyielding support."
-                        ] 
-                    },
-                    { 
-                        cat: "Children & Future Generations", 
-                        badge: "badge-general", 
-                        authors: ["Family Sync", "School Tracker", "Nini"], 
-                        content: [
-                            "The laughter of children running through the halls of the ancestral home is the best melody. Milestone update: The school records and immunization cards for the kids have been neatly logged into our secure hub.",
-                            "Nurturing the little ones: Let's ensure the children spend less time on iPads and more time listening to stories from Hajurba and Hajurama this weekend. Preserving their childhood innocence is our job.",
-                            "So proud of our youngest generation setting academic and creative milestones! Celebrating their small wins today reminds us exactly why we build and save for their future."
-                        ] 
-                    },
-                    { 
-                        cat: "Legacy & Golden Years", 
-                        badge: "badge-legacy", 
-                        authors: ["Hajurba", "Hajurama"], 
-                        content: [
-                            "Mero pyaro Nati Ani Natini haru ko lagi:\nI have documented our early family struggles, migration history, and foundational values here. I might leave one day, but these words will always guide you.",
-                            "Watching my husband, my children, and my beautiful grandchildren gather together fills my aging heart. Remember: Wealth can disappear, but the family honor and unity you maintain will survive forever.",
-                            "Everything we have achieved is through pure honesty. I am leaving these records and assets safe so that your path forward is a little easier. Move ahead with profound kindness."
-                        ] 
-                    }
+            // ५०० वटा डमी पोस्टहरू बनाउने फंक्सन (फोटो र भिडियो सहित)
+            function generateSpecialPosts() {
+                let dummyPosts = [];
+                const badges = [
+                    { text: "GENERAL", cls: "badge-general" },
+                    { text: "ASSETS", cls: "badge-assets" },
+                    { text: "TALKS", cls: "badge-talks" },
+                    { text: "LEGACY", cls: "badge-legacy" }
                 ];
-
-                const randomUsers = ["Suman", "Prerna", "Kiran", "Niranjan", "Deepak", "Aayush", "Sita", "Ramesh", "Anjali"];
-                const randomTexts = ["Thank you for doing this for us.", "Noted with utmost respect.", "This is beautiful and very helpful.", "Extremely proud thoughts.", "We will pass this on safely.", "Sanchai khusi lagyo yo dekhera.", "Proud to be a part of this family, always."];
                 
-                // Highly stable, distinctive public-domain open video streams to prevent visual repetition
-                const sampleVideos = [
-                    "https://vjs.zencdn.net/v/oceans.mp4",
-                    "https://www.w3schools.com/html/mov_bbb.mp4",
-                    "https://www.w3schools.com/html/movie.mp4",
-                    "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
-                    "https://media.w3.org/2010/05/bunny/trailer.mp4",
-                    "https://media.w3.org/2010/05/video/movie_300.mp4"
-                ];
-
-                const arr = [];
-                for (let i = 0; i < count; i++) {
-                    const type = types[i % types.length];
-
-                    const comments = [];
-                    const commentCount = Math.floor(Math.random() * 5) + 4;
-                    for(let j=0; j < commentCount; j++) {
-                        comments.push({
-                            user: randomUsers[(i + j) % randomUsers.length], // Avoided purely random indexing to make data feel less repetitive
-                            text: randomTexts[(i + j) % randomTexts.length]
-                        });
+                for (let i = 1; i <= 500; i++) {
+                    let randomBadge = badges[i % badges.length];
+                    
+                    // केही पोस्टहरूमा डमी फोटो र भिडियो राख्ने लजिक
+                    let mediaContent = null;
+                    if (i % 4 === 0) {
+                        // हरेक चौथो पोस्टमा फोटो राख्ने
+                        mediaContent = `https://picsum.photos/600/400?random=${i}`;
+                    } else if (i % 9 === 0) {
+                        // हरेक नवौं पोस्टमा भिडियो राख्ने
+                        mediaContent = "https://www.w3schools.com/html/mov_bbb.mp4"; 
                     }
 
-                    const isVideo = i % 3 === 0;
-                    
-                    // Balanced distribution modulo calculations ensuring all media is used evenly
-                    const videoSelection = sampleVideos[Math.floor(i / 3) % sampleVideos.length];
-
-                    arr.push({
-                        id: i,
-                        category: type.cat,
-                        badgeClass: type.badge,
-                        authorName: type.authors[i % type.authors.length],
-                        text: type.content[Math.floor((i / types.length) % type.content.length)],
-                        mediaType: isVideo ? "video" : "image",
-                        image: isVideo ? "" : `https://picsum.photos/seed/family_${i}/650/380`,
-                        video: isVideo ? videoSelection : "",
-                        likes: Math.floor(Math.random() * 25) + 5,
-                        views: isVideo ? Math.floor(Math.random() * 450) + 45 : 0, 
+                    dummyPosts.push({
+                        id: "ex_" + i,
+                        authorName: "GenX Member " + i,
+                        text: "Welcome to GenX Portal! This is family update number " + i + ". Sharing our latest memories and discussions.",
+                        timestamp: Date.now() - (i * 3600000), 
+                        badge: randomBadge.text,
+                        badgeClass: randomBadge.cls,
+                        media: mediaContent, // यहाँ फोटो/भिडियो पास गरिएको छ
+                        likes: Math.floor(Math.random() * 100) + 1,
                         liked: false,
-                        comments: comments,
-                        time: new Date(Date.now() - (i * 7200000)).toISOString()
+                        comments: (i % 3 === 0) ? [{ author: "Admin", text: "Great update!" }] : [] 
                     });
                 }
-                return arr;
+                return dummyPosts;
             }
 
-            // Simple clear-out option to refresh old local storage data if present
-            let posts = JSON.parse(localStorage.getItem('genx_family_feed'));
-            if (!posts || posts.length === 0 || !posts[0].category.includes("Life")) {
-                posts = generateSpecialPosts(500);
-                localStorage.setItem('genx_family_feed', JSON.stringify(posts));
+            // लोकलस्टोरेज र डमी पोस्टहरू जोड्ने
+            let userPosts = JSON.parse(localStorage.getItem('fbPosts')) || [];
+            let allPosts = [...userPosts, ...generateSpecialPosts()];
+
+            // Playbook API बाट पनि पोस्ट तान्ने
+            async function fetchPostsFromPlaybook() {
+                try {
+                    const response = await fetch(PLAYBOOK_API_URL, {
+                        method: 'GET',
+                        headers: { 'Authorization': `Bearer ${PLAYBOOK_API_KEY}` }
+                    });
+                    if (response.ok) {
+                        const apiData = await response.json();
+                        if (Array.isArray(apiData) && apiData.length > 0) {
+                            allPosts = [...userPosts, ...apiData, ...generateSpecialPosts()];
+                            renderFeed(searchInput.value);
+                        }
+                    }
+                } catch (error) {
+                    console.log("Playbook API Fetch Error (Using Local Data):", error);
+                }
             }
 
             function renderFeed(filterText = "") {
                 postsList.innerHTML = "";
                 const term = filterText.toLowerCase();
 
-                const filtered = posts.filter(p => 
-                    p.authorName.toLowerCase().includes(term) || 
-                    p.text.toLowerCase().includes(term) || 
-                    p.category.toLowerCase().includes(term)
+                const filtered = allPosts.filter(p => 
+                    (p.authorName && p.authorName.toLowerCase().includes(term)) || 
+                    (p.text && p.text.toLowerCase().includes(term))
                 );
 
-                if(filtered.length === 0) {
-                    postsList.innerHTML = `<div style="text-align:center; padding: 40px; color: #7f8c8d;">No matching family records found.</div>`;
+                if (filtered.length === 0) {
+                    postsList.innerHTML = `<div style="text-align:center; padding: 40px; color: #7f8c8d; background:white; border-radius:12px;">No matching posts found.</div>`;
                     return;
                 }
 
-                filtered.forEach((post) => {
-                    const originalIndex = posts.findIndex(p => p.id === post.id);
-
+                filtered.forEach((post, index) => {
                     const postDiv = document.createElement('div');
                     postDiv.className = 'post';
-                    
+
+                    // फोटो वा भिडियो छुट्याउने लजिक
                     let mediaHTML = '';
-                    if (post.mediaType === 'video') {
-                        mediaHTML = `
-                            <video controls preload="metadata" onplay="incrementViews(${originalIndex})">
-                                <source src="${post.video}" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                            <div class="view-count" id="view-count-${originalIndex}">👁️ ${post.views} Views</div>
-                        `;
-                    } else {
-                        mediaHTML = `<img src="${post.image}" loading="lazy">`;
+                    if (post.media) {
+                        if (post.media.match(/\.(jpeg|jpg|gif|png)$/) != null || post.media.startsWith('data:image') || post.media.includes('picsum')) {
+                            mediaHTML = `<img src="${post.media}" loading="lazy" alt="Post Media">`;
+                        } else if (post.media.match(/\.(mp4|webm|ogg)$/) != null || post.media.startsWith('data:video') || post.media.includes('.mp4')) {
+                            mediaHTML = `<video controls loading="lazy"><source src="${post.media}" type="video/mp4">Your browser does not support HTML video.</video>`;
+                        } else {
+                            // यदि URL मात्रै छ भने त्यसलाई Image नै मान्ने (Fallback)
+                            mediaHTML = `<img src="${post.media}" loading="lazy" alt="Post Media">`;
+                        }
                     }
 
+                    const comments = post.comments || [];
+                    const timeString = post.timestamp ? new Date(post.timestamp).toLocaleString() : 'Just now';
+                    const badgeText = post.badge || 'GENERAL';
+                    const badgeClass = post.badgeClass || 'badge-general';
+
                     postDiv.innerHTML = `
-                        <span class="badge ${post.badgeClass}">${post.category}</span>
+                        <span class="badge ${badgeClass}">${badgeText}</span>
                         <div class="post-header">
-                            <span class="author-name">${post.authorName}</span>
-                            <span class="post-time">${new Date(post.time).toLocaleDateString()} at ${new Date(post.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                            <span class="author-name">${post.authorName || 'Family Member'}</span>
+                            <span class="post-time">${timeString}</span>
                         </div>
-                        <div class="post-text">${post.text}</div>
+                        <div class="post-text">${post.text || ''}</div>
                         ${mediaHTML}
                         <div class="actions">
-                            <button onclick="toggleLike(${originalIndex})">${post.liked ? '❤️' : '👍'} Acknowledgements (${post.likes})</button>
-                            <button onclick="toggleComments(${originalIndex})">💬 Comments (${post.comments.length})</button>
-                            <button onclick="alert('Internal Link Copied to Clipboard!')">🔗 Internal Link</button>
+                            <button onclick="toggleLike(${index})">${post.liked ? '❤️' : '👍'} Like (${post.likes || 0})</button>
+                            <button onclick="toggleComments(${index})">💬 Comments (${comments.length})</button>
+                            <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link Copied!')">🔗 Share</button>
                         </div>
-                        <div class="comments-section" id="sec-${originalIndex}">
+                        <div class="comments-section" id="sec-${index}">
                             <div class="comment-box">
-                                <input type="text" id="input-${originalIndex}" placeholder="Write an internal family update...">
-                                <button onclick="addMyComment(${originalIndex})">Submit</button>
+                                <input type="text" id="input-${index}" placeholder="Write a comment...">
+                                <button onclick="addComment(${index})">Send</button>
                             </div>
-                            <div class="comment-list" id="list-${originalIndex}">
-                                ${post.comments.map(c => `<div class="comment-item"><strong>${c.user}:</strong> ${c.text}</div>`).join('')}
+                            <div class="comment-list" id="list-${index}">
+                                ${comments.map(c => `<div class="comment-item"><strong>${c.author || 'User'}:</strong> ${c.text}</div>`).join('')}
                             </div>
                         </div>
                     `;
@@ -278,45 +244,35 @@
                 });
             }
 
-            window.addMyComment = (i) => {
-                const input = document.getElementById(`input-${i}`);
-                if (!input || !input.value.trim()) return;
-
-                posts[i].comments.unshift({ user: "You", text: input.value.trim() });
-                input.value = "";
-                saveAndRender();
-                document.getElementById(`sec-${i}`).style.display = 'block';
-            };
-
             window.toggleLike = (i) => {
-                posts[i].liked = !posts[i].liked;
-                posts[i].likes += posts[i].liked ? 1 : -1;
-                saveAndRender();
+                allPosts[i].liked = !allPosts[i].liked;
+                allPosts[i].likes = (allPosts[i].likes || 0) + (allPosts[i].liked ? 1 : -1);
+                renderFeed(searchInput.value);
             };
 
             window.toggleComments = (i) => {
                 const el = document.getElementById(`sec-${i}`);
-                if(el) {
-                    el.style.display = (el.style.display === 'block') ? 'none' : 'block';
-                }
+                if (el) el.style.display = (el.style.display === 'block') ? 'none' : 'block';
             };
 
-            window.incrementViews = (i) => {
-                posts[i].views += 1;
-                localStorage.setItem('genx_family_feed', JSON.stringify(posts));
-                const countEl = document.getElementById(`view-count-${i}`);
-                if (countEl) {
-                    countEl.innerHTML = `👁️ ${posts[i].views} Views`;
-                }
-            };
+            window.addComment = (i) => {
+                const input = document.getElementById(`input-${i}`);
+                if (!input || !input.value.trim()) return;
 
-            function saveAndRender() {
-                localStorage.setItem('genx_family_feed', JSON.stringify(posts));
+                if (!allPosts[i].comments) allPosts[i].comments = [];
+                allPosts[i].comments.push({
+                    author: 'You',
+                    text: input.value.trim()
+                });
+
                 renderFeed(searchInput.value);
-            }
+                document.getElementById(`sec-${i}`).style.display = 'block';
+            };
 
             searchInput.addEventListener('input', (e) => renderFeed(e.target.value));
+
             renderFeed();
+            fetchPostsFromPlaybook();
         });
     </script>
 </body>
