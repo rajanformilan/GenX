@@ -150,110 +150,169 @@
             background-color: #218838; 
         }
 
-        /* Post Feed Styling */
-        #postForm { 
-            display: flex; 
-            flex-direction: column; 
-            background-color: #fff; 
-            padding: 15px; 
-            border-radius: 8px; 
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
-            margin-bottom: 20px; 
-        }
-        #postText { 
-            resize: vertical; 
-            min-height: 80px; 
-            margin-bottom: 10px; 
-            padding: 10px; 
-            border: 1px solid #ccc; 
-            border-radius: 4px; 
-        }
-        #postForm button[type="submit"] { 
-            background-color: #1877f2; 
-            color: white; 
-            padding: 10px; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            margin-top: 10px; 
-        }
-        .post { 
-            background-color: #fff; 
-            padding: 15px; 
-            border-radius: 8px; 
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
-            margin-bottom: 10px; 
-            position: relative; 
-        }
-        .posted-by { 
-            font-size: 0.9em; 
-            color: #606770; 
-            margin-bottom: 10px; 
-        }
-        .post-text { 
-            margin-bottom: 10px; 
-            white-space: pre-wrap; 
-        }
-        .post-image, .post-video { 
-            max-width: 100%; 
-            height: auto; 
-            border-radius: 6px; 
-            margin-top: 10px; 
-        }
-        .post-actions button { 
-            background: none; 
-            border: none; 
-            cursor: pointer; 
-            color: #606770; 
-            font-weight: bold; 
-            margin-right: 15px; 
-        }
-        .like-btn.liked { 
-            color: #1877f2; 
-        }
+/* Post Feed Styling */
+    #postForm { 
+        display: flex; 
+        flex-direction: column; 
+        background-color: #fff; 
+        padding: 16px; 
+        border-radius: 12px; 
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); 
+        margin-bottom: 20px; 
+        border: 1px solid #e4e6eb;
+    }
 
-        /* Post Menu Dropdown */
-        .post-menu-btn { 
-            position: absolute; 
-            top: 10px; 
-            right: 10px; 
-            background: none !important; 
-            color: #606770 !important; 
-            font-size: 1.5em; 
-            padding: 0; 
-            margin: 0; 
-        }
-        .post-menu-dropdown { 
-            position: absolute; 
-            top: 35px; 
-            right: 10px; 
-            background-color: #fff; 
-            border: 1px solid #ddd; 
-            border-radius: 4px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
-            z-index: 100; 
-            display: none; 
-        }
-        .post-menu-dropdown button { 
-            display: block; 
-            width: 100%; 
-            text-align: left; 
-            padding: 8px 15px; 
-            background: none; 
-            border: none; 
-            cursor: pointer; 
-            white-space: nowrap; 
-        }
-        .post-menu-dropdown button:hover { 
-            background-color: #f2f2f2; 
-        }
+    #postText { 
+        resize: vertical; 
+        min-height: 80px; 
+        margin-bottom: 12px; 
+        padding: 12px; 
+        border: 1px solid #ccd0d5; 
+        border-radius: 8px; 
+        font-family: inherit;
+        font-size: 15px;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    #postText:focus {
+        border-color: #1877f2;
+    }
+
+    #postForm button[type="submit"] { 
+        background-color: #1877f2; 
+        color: white; 
+        padding: 10px 16px; 
+        border: none; 
+        border-radius: 20px; 
+        cursor: pointer; 
+        margin-top: 10px; 
+        font-weight: 600;
+        font-size: 14px;
+        transition: background-color 0.2s;
+    }
+
+    #postForm button[type="submit"]:hover {
+        background-color: #166fe5;
+    }
+
+    .post { 
+        background-color: #fff; 
+        padding: 16px; 
+        border-radius: 12px; 
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); 
+        margin-bottom: 16px; 
+        position: relative; 
+        border: 1px solid #e4e6eb;
+    }
+
+    .posted-by { 
+        font-size: 0.9em; 
+        color: #606770; 
+        margin-bottom: 10px; 
+    }
+
+    .post-text { 
+        margin-bottom: 12px; 
+        white-space: pre-wrap; 
+        font-family: inherit;
+        font-size: 15px;
+        color: #050505;
+    }
+
+    .post-image, .post-video { 
+        max-width: 100%; 
+        height: auto; 
+        border-radius: 8px; 
+        margin-top: 10px; 
+        background: #000;
+    }
+
+    .post-actions {
+        display: flex;
+        border-top: 1px solid #e4e6eb;
+        margin-top: 12px;
+        padding-top: 8px;
+    }
+
+    .post-actions button { 
+        background: none; 
+        border: none; 
+        cursor: pointer; 
+        color: #606770; 
+        font-weight: 600; 
+        font-size: 14px;
+        padding: 6px 12px;
+        border-radius: 4px;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .post-actions button:hover {
+        background-color: #f0f2f5;
+    }
+
+    .like-btn.liked { 
+        color: #1877f2; 
+    }
+
+    /* Post Menu Dropdown */
+    .post-menu-btn { 
+        position: absolute; 
+        top: 12px; 
+        right: 12px; 
+        background: transparent !important; 
+        color: #606770 !important; 
+        font-size: 1.2em; 
+        padding: 6px 10px; 
+        margin: 0; 
+        border-radius: 50%;
+    }
+
+    .post-menu-btn:hover {
+        background-color: #f0f2f5 !important;
+    }
+
+    .post-menu-dropdown { 
+        position: absolute; 
+        top: 45px; 
+        right: 12px; 
+        background-color: #fff; 
+        border: 1px solid #ccd0d5; 
+        border-radius: 8px; 
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
+        z-index: 100; 
+        display: none; 
+        overflow: hidden;
+        min-width: 140px;
+    }
+
+    .post-menu-dropdown button { 
+        display: block; 
+        width: 100%; 
+        text-align: left; 
+        padding: 10px 14px; 
+        background: none; 
+        border: none; 
+        cursor: pointer; 
+        white-space: nowrap; 
+        font-size: 14px;
+        color: #050505;
+    }
+
+    .post-menu-dropdown button:hover { 
+        background-color: #f2f2f2; 
+    }
     </style>
+
 </head>
 
 <body onload="loadProfile()">
-    
+
     <div class="banner-container">
-        <img src="unnamed (1).jpg" alt="Earn & Withdraw Banner">
+        <img src="wealth.jpg" alt="Earn & Withdraw Banner">
     </div>
     <div class="content-wrapper">
         <div class="profile-info">
@@ -281,7 +340,7 @@
             <button id="shareIdButton" onclick="toggleLegacyVisibility()">Share ID Info</button>
             <button id="saveAssetsButton" onclick="saveLegacyAssets()">Save Assets</button>
             <button id="postLegacyButton" onclick="postLegacyInfo()">Post Legacy Info</button>
-            
+
             <div id="assetDetails" class="hidden-info">
                 <div class="asset-item">
                     <label for="assetPropertiesInput">Properties Listing:</label>
@@ -402,7 +461,7 @@
         <h2>My Posts</h2>
         <div id="feed"></div>
     </div> 
-    
+
     <script>
         // --- CONSTANTS ---
         const WITHDRAWAL_TARGET_EMAIL = 'milankandel584@gmail.com';
@@ -489,14 +548,13 @@
             document.getElementById('assetAccountNumberInput').value = legacyData.accountNumber || '';
             document.getElementById('assetInvestmentsInput').value = legacyData.investments || '';
             document.getElementById('assetSharesInput').value = legacyData.shares || '';
-            
+
             const bankSelect = document.getElementById('assetBankSelect');
             const otherBankInput = document.getElementById('assetOtherBankInput');
             const storedBankName = legacyData.bankName;
-            
+
             let bankOptionFound = false;
             bankSelect.value = ""; 
-            
             for (let i = 0; i < bankSelect.options.length; i++) {
                 if (bankSelect.options[i].text.trim() === storedBankName || bankSelect.options[i].value === storedBankName) {
                     bankSelect.value = bankSelect.options[i].value;
@@ -599,7 +657,7 @@
                 }
             }
         }
-        
+
         // --- EARNINGS / WITHDRAWAL LOGIC ---
         function updateEarningsDisplay() {
             const storedProfile = JSON.parse(localStorage.getItem('userProfile')) || { earnings: 0 };
@@ -613,7 +671,7 @@
                 const msInDay = 1000 * 60 * 60 * 24;
                 daysSinceFirstPost = Math.floor((Date.now() - firstPostTimestamp) / msInDay);
             }
-            
+
             document.getElementById('currentEarnings').textContent = `$${storedProfile.earnings.toFixed(2)}`;
             document.getElementById('userPostCount').textContent = postCount;
             document.getElementById('daysSinceFirstPost').textContent = daysSinceFirstPost;
@@ -634,17 +692,17 @@
             if (daysSinceFirstPost < MIN_DAYS) {
                 return alert(`Withdrawal Failed: You need to have been posting for at least ${MIN_DAYS} days since your first post. You have been posting for ${daysSinceFirstPost} days.`);
             }
-            
+
             // --- Withdrawal Conditions Met ---
             const withdrawalAmount = MIN_WITHDRAWAL_AMOUNT; 
             const confirmation = confirm(`You meet the criteria! Withdraw $${withdrawalAmount.toFixed(2)}?\n\nThis will send a withdrawal request email to ${WITHDRAWAL_TARGET_EMAIL}.`);
-            
+
             if (!confirmation) {
                 return alert("Withdrawal cancelled by user.");
             }
 
             const storedProfile = JSON.parse(localStorage.getItem('userProfile'));
-            
+
             // 1. Send simulated email
             const emailContent = `
                 --- WITHDRAWAL REQUEST ---
@@ -659,10 +717,10 @@
                 -----------------------------
                 (Note: This is a front-end simulation.)
             `;
-            
+
             console.log("--- SIMULATED EMAIL CONTENT ---");
             console.log(emailContent);
-            
+
             // 2. Update earnings balance
             storedProfile.earnings -= withdrawalAmount;
             localStorage.setItem('userProfile', JSON.stringify(storedProfile));
@@ -720,7 +778,12 @@
             }
         }
 
+        // --- PLAYBOOK API CONFIGURATION ---
+        const PLAYBOOK_API_KEY = "cK-uXCC8MEZB7s8mL-UeDd0dlwM0BLertz2MyCjwdQg";
+        const PLAYBOOK_API_URL = "https://api.playbook.com/v1/posts";
+
         // --- POST/FEED LOGIC ---
+
         const postForm = document.getElementById('postForm');
         const postText = document.getElementById('postText');
         const postMedia = document.getElementById('postMedia');
@@ -731,44 +794,70 @@
         const currentUser = JSON.parse(localStorage.getItem('userProfile')) || { name: 'Current User' };
         const currentUserName = currentUser.name || 'Current User';
 
+        // Playbook API बाट पोस्टहरू लोड गर्ने
+        async function fetchPostsFromPlaybook() {
+            try {
+                const response = await fetch(PLAYBOOK_API_URL, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${PLAYBOOK_API_KEY}`
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        posts = data;
+                    }
+                }
+            } catch (error) {
+                console.error("Could not fetch from Playbook:", error);
+            }
+            renderPosts();
+        }
+
         function renderPosts() {
             feed.innerHTML = '';
-            // Only show the posts made by the current user on their profile page
-            const userPosts = posts.filter(post => post.authorName === currentUserName).reverse(); 
-            
+            const userPosts = posts.filter(post => post.authorName === currentUserName).sort((a, b) => b.timestamp - a.timestamp); 
+
             userPosts.forEach((post, idx) => {
-                // Find the original index of the post in the global posts array
                 const originalIndex = posts.findIndex(p => p.timestamp === post.timestamp);
                 if (originalIndex === -1) return;
-
                 let mediaHTML = '';
+
                 if (post.media) {
                     if (post.media.startsWith('data:image')) {
                         mediaHTML = `<img src="${post.media}" class="post-image" alt="User Image Post" />`;
-                    } else if (post.media.startsWith('data:video')) {
-                        mediaHTML = `<video src="${post.media}" class="post-video" controls>Your browser does not support the video tag.</video>`;
+                    } else {
+                        // भिडियोको लागि स्पष्ट भिडियो प्लेयर ट्याग
+                        mediaHTML = `<video src="${post.media}" class="post-video" controls style="width:100%; max-height:350px; border-radius:8px; margin-top:10px; background:#000;">Your browser does not support the video tag.</video>`;
                     }
                 }
 
                 const postDiv = document.createElement('div');
                 postDiv.className = 'post';
                 postDiv.id = `post-${originalIndex}`;
+
                 const likedClass = post.liked ? 'liked' : '';
-                const commentsCount = post.comments ? post.comments.length : 0;
-                
+                const comments = post.comments || [];
+                const commentsCount = comments.length;
+
+                let commentsHTML = '';
+                comments.forEach(c => {
+                    commentsHTML += `
+                        <div style="background: #f0f2f5; padding: 6px 10px; border-radius: 6px; margin-top: 5px; font-size: 13px;">
+                            <strong>${c.author}:</strong> ${c.text}
+                        </div>`;
+                });
+
                 function getPrivacyIcon(privacy) {
                     switch (privacy) {
-                        case 'public':
-                            return '🌐 Public';
-                        case 'friends':
-                            return '👥 Friends';
-                        case 'onlyme':
-                            return '🔒 Only Me';
-                        default:
-                            return '❓ Unknown';
+                        case 'public': return '🌐 Public';
+                        case 'friends': return '👥 Friends';
+                        case 'onlyme': return '🔒 Only Me';
+                        default: return '❓ Unknown';
                     }
                 }
-                
+
                 postDiv.innerHTML = `
                     <button class="post-menu-btn" onclick="togglePostMenu(${originalIndex})">...</button>
                     <div class="post-menu-dropdown" id="post-menu-${originalIndex}">
@@ -787,12 +876,63 @@
                     ${mediaHTML}
                     <div class="post-actions">
                         <button class="like-btn ${likedClass}" onclick="toggleLike(${originalIndex})">👍 Like</button>
-                        <button onclick="alert('Comment functionality is not implemented.')">💬 Comment (${commentsCount})</button>
+                        <button onclick="openCommentInput(${originalIndex})">💬 Comment (${commentsCount})</button>
+                    </div>
+                    
+                    <div id="comment-section-${originalIndex}" style="margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; display: none;">
+                        <div class="comments-list" style="max-height: 150px; overflow-y: auto; margin-bottom: 8px;">
+                            ${commentsHTML.length > 0 ? commentsHTML : '<p style="font-size: 12px; color: #777;">No comments yet. Be the first to comment!</p>'}
+                        </div>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="text" id="comment-input-${originalIndex}" placeholder="Write a comment..." style="flex: 1; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;" />
+                            <button onclick="addComment(${originalIndex})" style="padding: 6px 12px; background: #1877f2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;">Send</button>
+                        </div>
                     </div>
                 `;
                 feed.appendChild(postDiv);
             });
-            updateEarningsDisplay(); // Recalculate and display earnings after rendering
+            updateEarningsDisplay();
+        }
+
+        function openCommentInput(index) {
+            const section = document.getElementById(`comment-section-${index}`);
+            section.style.display = section.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function addComment(index) {
+            const input = document.getElementById(`comment-input-${index}`);
+            const commentText = input.value.trim();
+
+            if (commentText === "") return;
+
+            if (!posts[index].comments) {
+                posts[index].comments = [];
+            }
+
+            posts[index].comments.push({
+                author: currentUserName,
+                text: commentText,
+                timestamp: Date.now()
+            });
+
+            syncPostToPlaybook(posts[index]);
+            renderPosts();
+            document.getElementById(`comment-section-${index}`).style.display = 'block';
+        }
+
+        async function syncPostToPlaybook(postData) {
+            try {
+                await fetch(PLAYBOOK_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${PLAYBOOK_API_KEY}`
+                    },
+                    body: JSON.stringify(postData)
+                });
+            } catch (error) {
+                console.error("Playbook sync error:", error);
+            }
         }
 
         function addPost(text, media, authorName, privacy) {
@@ -805,26 +945,26 @@
                 liked: false,
                 comments: []
             };
-            posts.unshift(newPost); // Add to the beginning to show newest first
-            localStorage.setItem('fbPosts', JSON.stringify(posts));
 
-            // Award earnings for a new post
+            posts.unshift(newPost);
+            
+            // भिडियोलाई लोकल स्टोरेजमा नराखी सिधै Playbook मा पठाउने ताकि Quota एरर कहिल्यै नआओस्
+            syncPostToPlaybook(newPost);
+
             const storedProfile = JSON.parse(localStorage.getItem('userProfile'));
-            if (storedProfile.name === authorName) {
+            if (storedProfile && storedProfile.name === authorName) {
                 storedProfile.earnings = (storedProfile.earnings || 0) + EARNINGS_PER_POST;
                 localStorage.setItem('userProfile', JSON.stringify(storedProfile));
                 alert(`+ $${EARNINGS_PER_POST.toFixed(2)} earned for a new post!`);
             }
-            
+
             renderPosts();
         }
 
         postForm.addEventListener('submit', function(e) {
             e.preventDefault();
-
             const text = postText.value.trim();
             const privacy = postPrivacy.value;
-            let mediaData = null;
 
             if (text === '' && postMedia.files.length === 0) {
                 return alert("Post cannot be empty.");
@@ -833,15 +973,17 @@
             if (postMedia.files.length > 0) {
                 const file = postMedia.files[0];
                 const reader = new FileReader();
+
                 reader.onload = function(event) {
-                    mediaData = event.target.result;
+                    let mediaData = event.target.result;
                     addPost(text, mediaData, currentUserName, privacy);
-                    postText.value = '';
-                    postMedia.value = '';
                 };
+
                 reader.readAsDataURL(file);
+                postText.value = '';
+                postMedia.value = '';
             } else {
-                addPost(text, mediaData, currentUserName, privacy);
+                addPost(text, null, currentUserName, privacy);
                 postText.value = '';
                 postMedia.value = '';
             }
@@ -850,7 +992,6 @@
         function deletePost(index) {
             if (confirm("Are you sure you want to delete this post?")) {
                 posts.splice(index, 1);
-                localStorage.setItem('fbPosts', JSON.stringify(posts));
                 renderPosts();
             }
         }
@@ -860,17 +1001,17 @@
             const newText = prompt("Edit your post:", post.text);
             if (newText !== null) {
                 posts[index].text = newText.trim();
-                localStorage.setItem('fbPosts', JSON.stringify(posts));
+                syncPostToPlaybook(posts[index]);
                 renderPosts();
             }
         }
-        
+
         function changePrivacy(index) {
             const post = posts[index];
             const newPrivacy = prompt(`Change privacy for the post (current: ${post.privacy}). Enter 'public', 'friends', or 'onlyme':`);
             if (newPrivacy && ['public', 'friends', 'onlyme'].includes(newPrivacy.toLowerCase())) {
                 posts[index].privacy = newPrivacy.toLowerCase();
-                localStorage.setItem('fbPosts', JSON.stringify(posts));
+                syncPostToPlaybook(posts[index]);
                 renderPosts();
                 alert(`Post privacy changed to ${newPrivacy.toLowerCase()}.`);
             } else if (newPrivacy !== null) {
@@ -880,7 +1021,7 @@
 
         function toggleLike(index) {
             posts[index].liked = !posts[index].liked;
-            localStorage.setItem('fbPosts', JSON.stringify(posts));
+            syncPostToPlaybook(posts[index]);
             renderPosts();
         }
 
@@ -889,7 +1030,6 @@
             menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
 
-        // Utility function for time display
         function timeAgo(timestamp) {
             const seconds = Math.floor((new Date() - timestamp) / 1000);
             let interval = seconds / 31536000;
@@ -904,6 +1044,10 @@
             if (interval > 1) return Math.floor(interval) + " minutes ago";
             return Math.floor(seconds) + " seconds ago";
         }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchPostsFromPlaybook();
+        });
     </script>
 </body>
 </html>
